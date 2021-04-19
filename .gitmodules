@@ -10,3 +10,7 @@
 	path = linux
 	url = https://github.com/pipcet/linux
 	branch = pearl
+[submodule "mesa"]
+	path = mesa
+	url = https://github.com/pipcet/mesa
+	branch = pearl
