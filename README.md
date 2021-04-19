@@ -7,7 +7,7 @@ Platform name (SMC `RPlt`, ADT): J293
 
 ### Boot loader
 
-I sometimes use m1n1, particularly for development.
+I sometimes use m1n1 at https://github.com/AsahiLinux/m1n1, particularly for development.
 
 ### Preloader
 
