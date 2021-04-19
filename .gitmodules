@@ -2,3 +2,7 @@
 	path = m1n1
 	url = https://github.com/pipcet/m1n1
 	branch = pearl
+[submodule "preloader-m1"]
+	path = preloader-m1
+	url = https://github.com/pipcet/preloader-m1
+	branch = pearl
