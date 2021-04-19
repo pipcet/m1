@@ -6,3 +6,7 @@
 	path = preloader-m1
 	url = https://github.com/pipcet/preloader-m1
 	branch = pearl
+[submodule "linux"]
+	path = linux
+	url = https://github.com/pipcet/linux
+	branch = pearl
