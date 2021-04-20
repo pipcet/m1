@@ -3,6 +3,9 @@ M1N1DEVICE ?= /dev/ttyACM0
 MKDIR ?= mkdir -p
 CP ?= cp
 CAT ?= cat
+TAR ?= tar
+PWD = $(shell pwd)
+
 
 build:
 	$(MKDIR) build
@@ -32,11 +35,19 @@ build/Image-% build/m1-%.dtb: FORCE | build
 	$(CP) linux/o-$*/arch/arm64/boot/Image build/Image-$*
 	$(CP) linux/o-$*/arch/arm64/boot/dts/apple/apple-m1-j274.dtb build/m1-$*.dtb
 
+build/Image-minimal: build/Image
+build/Image-m1lli: build/Image
+
 build/linux.macho: build/Image build/m1.dtb | build
 	$(CP) build/Image preloader-m1
 	$(CP) build/m1.dtb preloader-m1/apple-m1-j274.dtb
 	$(MAKE) -C preloader-m1
 	$(CP) preloader-m1/linux.macho build/linux.macho
+
+build/modules.tar: build/Image | build
+	$(MKDIR) build/modules
+	$(MAKE) -C linux ARCH=arm64 CROSS_COMPILE=$(CROSS_COMPILE) O=o MODLIB=$(PWD)/build/modules modules_install
+	(cd build; $(TAR) cf modules.tar modules)
 
 build/linux-%.macho: build/Image-% build/m1-%.dtb | build
 	$(CP) build/Image-$* preloader-m1/Image
@@ -51,13 +62,13 @@ build/m1n1.macho: FORCE | build
 build/m1n1ux.macho: build/m1n1.macho build/linux.macho | build
 	$(CAT) $^ > $@
 
-build/kexec: FORCE
+build/kexec: FORCE | build
 	(cd kexec-tools; ./bootstrap)
 	(cd kexec-tools; LDFLAGS=-static CC=aarch64-linux-gnu-gcc BUILD_CC=gcc ./configure --target=aarch64-linux-gnu --host=x86_64-pc-linux-gnu TARGET_CC=aarch64-linux-gnu-gcc LD=aarch64-linux-gnu-ld)
 	$(MAKE) -C kexec-tools
 	cp kexec-tools/build/sbin/kexec build/kexec
 
-build/busybox: misc/busybox-config/m1lli
+build/busybox: misc/busybox-config/m1lli | build
 	cp misc/busybox-config/m1lli busybox/.config
 	$(MAKE) -C busybox oldconfig
 	$(MAKE) -C busybox
