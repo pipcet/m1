@@ -14,3 +14,7 @@
 	path = mesa
 	url = https://github.com/pipcet/mesa
 	branch = pearl
+[submodule "busybox"]
+	path = busybox
+	url = https://github.com/pipcet/busybox
+	branch = pearl
