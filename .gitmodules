@@ -22,3 +22,7 @@
 	path = kexec-tools
 	url = https://github.com/pipcet/kexec-tools
 	branch = pearl
+[submodule "m1lli"]
+	path = m1lli
+	url = https://github.com/pipcet/m1lli
+	branch = pearl
