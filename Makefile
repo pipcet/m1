@@ -57,8 +57,11 @@ build/kexec: FORCE
 	$(MAKE) -C kexec-tools
 	cp kexec-tools/build/sbin/kexec build/kexec
 
-build/busybox:
-	(cd busybox; false)
+build/busybox: misc/busybox-config/m1lli
+	cp misc/busybox-config/m1lli busybox/.config
+	$(MAKE) -C busybox oldconfig
+	$(MAKE) -C busybox
+	$(CP) busybox/busybox build/busybox
 
 m1n1-boot!: build/linux.macho
 	M1N1DEVICE=$(M1N1DEVICE) python3 ./m1n1/proxyclient/chainload.py ./build/linux.macho
