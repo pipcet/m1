@@ -6,7 +6,6 @@ CAT ?= cat
 TAR ?= tar
 PWD = $(shell pwd)
 
-
 build:
 	$(MKDIR) build
 
@@ -14,8 +13,9 @@ reconfigure-linux/%!: FORCE
 	$(MKDIR) linux/o
 	$(CP) misc/linux-config/$* linux/o/.config
 	$(MAKE) -C linux ARCH=arm64 CROSS_COMPILE=$(CROSS_COMPILE) O=o menuconfig
-	$(CP) linux/o/.config misc/linux-config/$*.new
-	diff -u misc/linux-config/$* misc/linux-config/$*.new
+	$(CP) misc/linux-config/$* misc/linux-config/$*.old
+	$(CP) linux/o/.config misc/linux-config/$*
+	diff -u misc/linux-config/$*.old misc/linux-config/$*
 
 build/Image build/m1.dtb: FORCE | build
 	$(MKDIR) linux/o
