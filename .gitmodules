@@ -18,3 +18,7 @@
 	path = busybox
 	url = https://github.com/pipcet/busybox
 	branch = pearl
+[submodule "kexec-tools"]
+	path = kexec-tools
+	url = https://github.com/pipcet/kexec-tools
+	branch = pearl
