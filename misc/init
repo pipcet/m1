@@ -1,0 +1,4 @@
+#!/bin/sh
+/bin/busybox mount -t proc proc proc
+/bin/busybox mount -t sysfs sys sys
+/bin/kexec -xsf /boot/Image --dtb=/sys/firmware/fdt
