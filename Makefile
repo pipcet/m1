@@ -16,9 +16,9 @@ reconfigure-linux/%!: FORCE
 
 build/Image build/m1.dtb: FORCE | build
 	$(MKDIR) linux/o
-	$(CP) misc/linux-config linux/o/.config
+	$(CP) misc/linux-config/o linux/o/.config
 	$(MAKE) -C linux ARCH=arm64 CROSS_COMPILE=$(CROSS_COMPILE) O=o oldconfig
-	diff -u misc/linux-config linux/o/.config
+	diff -u misc/linux-config/o linux/o/.config
 	$(MAKE) -C linux ARCH=arm64 CROSS_COMPILE=$(CROSS_COMPILE) O=o
 	$(CP) linux/o/arch/arm64/boot/Image build/Image
 	$(CP) linux/o/arch/arm64/boot/dts/apple/apple-m1-j274.dtb build/m1.dtb
