@@ -7,6 +7,13 @@ CAT ?= cat
 build:
 	$(MKDIR) build
 
+reconfigure-linux/%!: FORCE
+	$(MKDIR) linux/o
+	$(CP) misc/linux-config/$* linux/o/.config
+	$(MAKE) -C linux ARCH=arm64 CROSS_COMPILE=$(CROSS_COMPILE) O=o menuconfig
+	$(CP) linux/o/.config misc/linux-config/$*.new
+	diff -u misc/linux-config/$* misc/linux-config/$*.new
+
 build/Image build/m1.dtb: FORCE | build
 	$(MKDIR) linux/o
 	$(CP) misc/linux-config linux/o/.config
@@ -16,11 +23,26 @@ build/Image build/m1.dtb: FORCE | build
 	$(CP) linux/o/arch/arm64/boot/Image build/Image
 	$(CP) linux/o/arch/arm64/boot/dts/apple/apple-m1-j274.dtb build/m1.dtb
 
+build/Image-% build/m1-%.dtb: FORCE | build
+	$(MKDIR) linux/o-$*
+	$(CP) misc/linux-config/o-$* linux/o-$*/.config
+	$(MAKE) -C linux ARCH=arm64 CROSS_COMPILE=$(CROSS_COMPILE) O=o-$* oldconfig
+	diff -u misc/linux-config/o-$* linux/o-$*/.config
+	$(MAKE) -C linux ARCH=arm64 CROSS_COMPILE=$(CROSS_COMPILE) O=o-$*
+	$(CP) linux/o-$*/arch/arm64/boot/Image build/Image-$*
+	$(CP) linux/o-$*/arch/arm64/boot/dts/apple/apple-m1-j274.dtb build/m1-$*.dtb
+
 build/linux.macho: build/Image build/m1.dtb | build
 	$(CP) build/Image preloader-m1
 	$(CP) build/m1.dtb preloader-m1/apple-m1-j274.dtb
 	$(MAKE) -C preloader-m1
 	$(CP) preloader-m1/linux.macho build/linux.macho
+
+build/linux-%.macho: build/Image-% build/m1-%.dtb | build
+	$(CP) build/Image preloader-m1
+	$(CP) build/m1.dtb preloader-m1/apple-m1-j274.dtb
+	$(MAKE) -C preloader-m1
+	$(CP) preloader-m1/linux-$*.macho build/linux-$*.macho
 
 build/m1n1.macho: FORCE | build
 	$(MAKE) -C m1n1
