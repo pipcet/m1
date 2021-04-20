@@ -53,9 +53,15 @@ I'm not sure about that one, as video operations seem very fast...
 
 ### Camera: not supported
 ### Fingerprint reader: not supported
-### Power button: not supported
+### Power button: documented, no interrupt yet
 
 Long-press for poweroff works
+
+SMC key `MBSe`, bit 0.
+
+### Lid switch: documented, no interrupt yet
+
+SMC key `MSLD`, bit 0, 1 for closed.
 
 ### Ambient Light Sensor: not supported
 ### Audio: not supported
@@ -91,8 +97,10 @@ Charging works if power supply is connected at boot time and never disconnected.
 
 ### Audio: not supported
 
-### WiFi: supported (proprietary firmware blob)
-### Bluetooth: not supported
+### Wireless
+#### WiFi: supported (proprietary firmware blob)
+#### Bluetooth: not supported
+#### NFC: not supported (I'm not even sure it's present)
 
 ### Power management
 #### System reboot: supported
