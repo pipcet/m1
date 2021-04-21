@@ -8,7 +8,7 @@ while (<>) {
     }
     next unless $flags{CLOSE_WRITE};
     if ($dir =~ /^\.\/linux\// &&
-	$dir != /^\.\/linux\/o(|-.*)/) {
+	$dir !~ /^\.\/linux\/o(|-.*)\//) {
 	warn "linux changed ($dir)";
 	system("touch stamp/linux");
     }
