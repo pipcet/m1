@@ -221,7 +221,6 @@ CONFIG_ARCH_MMAP_RND_BITS_MIN=16
 CONFIG_ARCH_MMAP_RND_BITS_MAX=30
 CONFIG_ARCH_MMAP_RND_COMPAT_BITS_MIN=9
 CONFIG_ARCH_MMAP_RND_COMPAT_BITS_MAX=16
-CONFIG_NO_IOPORT_MAP=y
 CONFIG_IOTYPE_RANGES=y
 CONFIG_STACKTRACE_SUPPORT=y
 CONFIG_ILLEGAL_POINTER_VALUE=0xdead000000000000
@@ -502,6 +501,7 @@ CONFIG_ARM_APPLE_M1_CPUFREQ=y
 # CONFIG_ARM_SCPI_PROTOCOL is not set
 # CONFIG_ARM_SDE_INTERFACE is not set
 # CONFIG_FIRMWARE_MEMMAP is not set
+# CONFIG_FW_CFG_SYSFS is not set
 # CONFIG_GOOGLE_FIRMWARE is not set
 CONFIG_ARM_PSCI_FW=y
 # CONFIG_ARM_PSCI_CHECKER is not set
@@ -624,6 +624,8 @@ CONFIG_BLK_DEBUG_FS=y
 CONFIG_MSDOS_PARTITION=y
 CONFIG_EFI_PARTITION=y
 # end of Partition Types
+
+CONFIG_BLK_MQ_PCI=y
 
 #
 # IO Schedulers
@@ -830,8 +832,90 @@ CONFIG_HAVE_EBPF_JIT=y
 #
 CONFIG_ARM_AMBA=y
 CONFIG_HAVE_PCI=y
-# CONFIG_PCI is not set
+CONFIG_PCI=y
+CONFIG_PCI_DOMAINS=y
+CONFIG_PCI_DOMAINS_GENERIC=y
+CONFIG_PCI_SYSCALL=y
+# CONFIG_PCIEPORTBUS is not set
+CONFIG_PCIEASPM=y
+CONFIG_PCIEASPM_DEFAULT=y
+# CONFIG_PCIEASPM_POWERSAVE is not set
+# CONFIG_PCIEASPM_POWER_SUPERSAVE is not set
+# CONFIG_PCIEASPM_PERFORMANCE is not set
+# CONFIG_PCIE_PTM is not set
+CONFIG_PCI_MSI=y
+CONFIG_PCI_MSI_IRQ_DOMAIN=y
+CONFIG_PCI_QUIRKS=y
+# CONFIG_PCI_DEBUG is not set
+# CONFIG_PCI_STUB is not set
+CONFIG_PCI_ECAM=y
+# CONFIG_PCI_IOV is not set
+# CONFIG_PCI_PRI is not set
+# CONFIG_PCI_PASID is not set
+# CONFIG_PCI_P2PDMA is not set
+# CONFIG_PCIE_BUS_TUNE_OFF is not set
+CONFIG_PCIE_BUS_DEFAULT=y
+# CONFIG_PCIE_BUS_SAFE is not set
+# CONFIG_PCIE_BUS_PERFORMANCE is not set
+# CONFIG_PCIE_BUS_PEER2PEER is not set
+CONFIG_HOTPLUG_PCI=y
+# CONFIG_HOTPLUG_PCI_CPCI is not set
+# CONFIG_HOTPLUG_PCI_SHPC is not set
+
+#
+# PCI controller drivers
+#
+CONFIG_PCIE_APPLE_M1=y
+CONFIG_PCIE_APPLE_M1_NVME=y
+# CONFIG_PCI_FTPCI100 is not set
+CONFIG_PCI_HOST_COMMON=y
+# CONFIG_PCI_HOST_GENERIC is not set
+# CONFIG_PCIE_XILINX is not set
+# CONFIG_PCI_XGENE is not set
+# CONFIG_PCIE_ALTERA is not set
+# CONFIG_PCI_HOST_THUNDER_PEM is not set
+# CONFIG_PCI_HOST_THUNDER_ECAM is not set
+# CONFIG_PCIE_MICROCHIP_HOST is not set
+
+#
+# DesignWare PCI Core Support
+#
+# CONFIG_PCIE_DW_PLAT_HOST is not set
+# CONFIG_PCI_HISI is not set
+# CONFIG_PCIE_KIRIN is not set
+# CONFIG_PCI_MESON is not set
+# CONFIG_PCIE_AL is not set
+# end of DesignWare PCI Core Support
+
+#
+# Mobiveil PCIe Core Support
+#
+# CONFIG_PCIE_LAYERSCAPE_GEN4 is not set
+# end of Mobiveil PCIe Core Support
+
+#
+# Cadence PCIe controllers support
+#
+# CONFIG_PCIE_CADENCE_PLAT_HOST is not set
+# CONFIG_PCI_J721E_HOST is not set
+# end of Cadence PCIe controllers support
+# end of PCI controller drivers
+
+#
+# PCI Endpoint
+#
+# CONFIG_PCI_ENDPOINT is not set
+# end of PCI Endpoint
+
+#
+# PCI switch controller drivers
+#
+# CONFIG_PCI_SW_SWITCHTEC is not set
+# end of PCI switch controller drivers
+
+# CONFIG_CXL_BUS is not set
 # CONFIG_PCCARD is not set
+# CONFIG_RAPIDIO is not set
 
 #
 # Generic Driver Options
@@ -869,6 +953,7 @@ CONFIG_GENERIC_ARCH_TOPOLOGY=y
 # Bus devices
 #
 # CONFIG_BRCMSTB_GISB_ARB is not set
+# CONFIG_MOXTET is not set
 # CONFIG_VEXPRESS_CONFIG is not set
 # CONFIG_MHI_BUS is not set
 # end of Bus devices
@@ -889,20 +974,25 @@ CONFIG_OF_RESERVED_MEM=y
 # CONFIG_PARPORT is not set
 CONFIG_BLK_DEV=y
 # CONFIG_BLK_DEV_NULL_BLK is not set
+# CONFIG_BLK_DEV_PCIESSD_MTIP32XX is not set
 # CONFIG_ZRAM is not set
+# CONFIG_BLK_DEV_UMEM is not set
 # CONFIG_BLK_DEV_LOOP is not set
 
 #
 # DRBD disabled because PROC_FS or INET not selected
 #
 # CONFIG_BLK_DEV_NBD is not set
+# CONFIG_BLK_DEV_SX8 is not set
 # CONFIG_BLK_DEV_RAM is not set
 # CONFIG_CDROM_PKTCDVD is not set
 # CONFIG_ATA_OVER_ETH is not set
+# CONFIG_BLK_DEV_RSXX is not set
 
 #
 # NVME Support
 #
+# CONFIG_BLK_DEV_NVME is not set
 # CONFIG_NVME_FC is not set
 # CONFIG_NVME_TARGET is not set
 # end of NVME Support
@@ -912,8 +1002,11 @@ CONFIG_BLK_DEV=y
 #
 # CONFIG_AD525X_DPOT is not set
 # CONFIG_DUMMY_IRQ is not set
+# CONFIG_PHANTOM is not set
+# CONFIG_TIFM_CORE is not set
 # CONFIG_ICS932S401 is not set
 # CONFIG_ENCLOSURE_SERVICES is not set
+# CONFIG_HP_ILO is not set
 # CONFIG_APDS9802ALS is not set
 # CONFIG_ISL29003 is not set
 # CONFIG_ISL29020 is not set
@@ -922,7 +1015,9 @@ CONFIG_BLK_DEV=y
 # CONFIG_SENSORS_APDS990X is not set
 # CONFIG_HMC6352 is not set
 # CONFIG_DS1682 is not set
+# CONFIG_LATTICE_ECP3_CONFIG is not set
 # CONFIG_SRAM is not set
+# CONFIG_PCI_ENDPOINT_TEST is not set
 # CONFIG_XILINX_SDFEC is not set
 # CONFIG_PVPANIC is not set
 # CONFIG_HISI_HIKEY_USB is not set
@@ -932,12 +1027,16 @@ CONFIG_BLK_DEV=y
 # EEPROM support
 #
 CONFIG_EEPROM_AT24=y
+# CONFIG_EEPROM_AT25 is not set
 CONFIG_EEPROM_LEGACY=y
 CONFIG_EEPROM_MAX6875=y
 CONFIG_EEPROM_93CX6=y
+# CONFIG_EEPROM_93XX46 is not set
 CONFIG_EEPROM_IDT_89HPESX=y
 CONFIG_EEPROM_EE1004=y
 # end of EEPROM support
+
+# CONFIG_CB710_CORE is not set
 
 #
 # Texas Instruments shared transport line discipline
@@ -945,9 +1044,15 @@ CONFIG_EEPROM_EE1004=y
 # CONFIG_TI_ST is not set
 # end of Texas Instruments shared transport line discipline
 
+# CONFIG_SENSORS_LIS3_SPI is not set
 # CONFIG_SENSORS_LIS3_I2C is not set
 # CONFIG_ALTERA_STAPL is not set
+# CONFIG_GENWQE is not set
 # CONFIG_ECHO is not set
+# CONFIG_BCM_VK is not set
+# CONFIG_MISC_ALCOR_PCI is not set
+# CONFIG_MISC_RTSX_PCI is not set
+# CONFIG_HABANA_AI is not set
 # CONFIG_UACCE is not set
 # end of Misc devices
 
@@ -963,6 +1068,15 @@ CONFIG_HAVE_PATA_PLATFORM=y
 # CONFIG_ATA is not set
 # CONFIG_MD is not set
 # CONFIG_TARGET_CORE is not set
+# CONFIG_FUSION is not set
+
+#
+# IEEE 1394 (FireWire) support
+#
+# CONFIG_FIREWIRE is not set
+# CONFIG_FIREWIRE_NOSY is not set
+# end of IEEE 1394 (FireWire) support
+
 # CONFIG_NETDEVICES is not set
 # CONFIG_NVM is not set
 
@@ -1057,8 +1171,11 @@ CONFIG_LDISC_AUTOLOAD=y
 # CONFIG_SERIAL_AMBA_PL011 is not set
 # CONFIG_SERIAL_EARLYCON_ARM_SEMIHOST is not set
 # CONFIG_SERIAL_KGDB_NMI is not set
+# CONFIG_SERIAL_MAX3100 is not set
+# CONFIG_SERIAL_MAX310X is not set
 # CONFIG_SERIAL_UARTLITE is not set
 CONFIG_CONSOLE_POLL=y
+# CONFIG_SERIAL_JSM is not set
 # CONFIG_SERIAL_SIFIVE is not set
 # CONFIG_SERIAL_SCCNXP is not set
 # CONFIG_SERIAL_SC16IS7XX is not set
@@ -1067,6 +1184,7 @@ CONFIG_CONSOLE_POLL=y
 # CONFIG_SERIAL_ALTERA_UART is not set
 # CONFIG_SERIAL_XILINX_PS_UART is not set
 # CONFIG_SERIAL_ARC is not set
+# CONFIG_SERIAL_RP2 is not set
 # CONFIG_SERIAL_FSL_LPUART is not set
 # CONFIG_SERIAL_FSL_LINFLEXUART is not set
 # CONFIG_SERIAL_CONEXANT_DIGICOLOR is not set
@@ -1076,6 +1194,7 @@ CONFIG_CONSOLE_POLL=y
 
 # CONFIG_SERIAL_NONSTANDARD is not set
 # CONFIG_N_GSM is not set
+# CONFIG_NOZOMI is not set
 # CONFIG_NULL_TTY is not set
 # CONFIG_TRACE_SINK is not set
 # CONFIG_HVC_DCC is not set
@@ -1084,8 +1203,10 @@ CONFIG_CONSOLE_POLL=y
 # CONFIG_VIRTIO_CONSOLE is not set
 # CONFIG_IPMI_HANDLER is not set
 # CONFIG_HW_RANDOM is not set
+# CONFIG_APPLICOM is not set
 CONFIG_DEVMEM=y
 # CONFIG_RAW_DRIVER is not set
+CONFIG_DEVPORT=y
 # CONFIG_TCG_TPM is not set
 # CONFIG_XILLYBUS is not set
 # end of Character devices
@@ -1099,7 +1220,23 @@ CONFIG_I2C=y
 CONFIG_I2C_BOARDINFO=y
 # CONFIG_I2C_COMPAT is not set
 # CONFIG_I2C_CHARDEV is not set
-# CONFIG_I2C_MUX is not set
+CONFIG_I2C_MUX=y
+
+#
+# Multiplexer I2C Chip support
+#
+# CONFIG_I2C_ARB_GPIO_CHALLENGE is not set
+# CONFIG_I2C_MUX_GPIO is not set
+# CONFIG_I2C_MUX_GPMUX is not set
+# CONFIG_I2C_MUX_LTC4306 is not set
+# CONFIG_I2C_MUX_PCA9541 is not set
+# CONFIG_I2C_MUX_PCA954x is not set
+# CONFIG_I2C_MUX_PINCTRL is not set
+# CONFIG_I2C_MUX_REG is not set
+# CONFIG_I2C_DEMUX_PINCTRL is not set
+# CONFIG_I2C_MUX_MLXCPLD is not set
+# end of Multiplexer I2C Chip support
+
 # CONFIG_I2C_HELPER_AUTO is not set
 # CONFIG_I2C_SMBUS is not set
 
@@ -1116,12 +1253,32 @@ CONFIG_I2C_ALGOBIT=y
 #
 
 #
+# PC SMBus host controller drivers
+#
+# CONFIG_I2C_ALI1535 is not set
+# CONFIG_I2C_ALI1563 is not set
+# CONFIG_I2C_ALI15X3 is not set
+# CONFIG_I2C_AMD756 is not set
+# CONFIG_I2C_AMD8111 is not set
+# CONFIG_I2C_I801 is not set
+# CONFIG_I2C_ISCH is not set
+# CONFIG_I2C_PIIX4 is not set
+# CONFIG_I2C_NFORCE2 is not set
+# CONFIG_I2C_NVIDIA_GPU is not set
+# CONFIG_I2C_SIS5595 is not set
+# CONFIG_I2C_SIS630 is not set
+# CONFIG_I2C_SIS96X is not set
+# CONFIG_I2C_VIA is not set
+# CONFIG_I2C_VIAPRO is not set
+
+#
 # I2C system bus drivers (mostly embedded / system-on-chip)
 #
-# CONFIG_I2C_APPLE is not set
+CONFIG_I2C_APPLE=y
 # CONFIG_I2C_CADENCE is not set
 # CONFIG_I2C_CBUS_GPIO is not set
 # CONFIG_I2C_DESIGNWARE_PLATFORM is not set
+# CONFIG_I2C_DESIGNWARE_PCI is not set
 # CONFIG_I2C_EMEV2 is not set
 # CONFIG_I2C_GPIO is not set
 # CONFIG_I2C_NOMADIK is not set
@@ -1129,6 +1286,7 @@ CONFIG_I2C_ALGOBIT=y
 # CONFIG_I2C_PCA_PLATFORM is not set
 # CONFIG_I2C_RK3X is not set
 # CONFIG_I2C_SIMTEC is not set
+# CONFIG_I2C_THUNDERX is not set
 # CONFIG_I2C_XILINX is not set
 
 #
@@ -1148,7 +1306,6 @@ CONFIG_I2C_ALGOBIT=y
 # end of I2C support
 
 # CONFIG_I3C is not set
-# CONFIG_SPI is not set
 CONFIG_SPI=y
 # CONFIG_SPI_DEBUG is not set
 CONFIG_SPI_MASTER=y
@@ -1160,7 +1317,39 @@ CONFIG_SPI_MASTER=y
 # CONFIG_SPI_ALTERA is not set
 CONFIG_SPI_APPLE_MC=y
 # CONFIG_SPI_AXI_SPI_ENGINE is not set
-# CONFIG_SPMI is not set
+# CONFIG_SPI_BITBANG is not set
+# CONFIG_SPI_CADENCE is not set
+# CONFIG_SPI_CADENCE_QUADSPI is not set
+# CONFIG_SPI_DESIGNWARE is not set
+# CONFIG_SPI_NXP_FLEXSPI is not set
+# CONFIG_SPI_GPIO is not set
+# CONFIG_SPI_FSL_SPI is not set
+# CONFIG_SPI_OC_TINY is not set
+# CONFIG_SPI_PL022 is not set
+# CONFIG_SPI_PXA2XX is not set
+# CONFIG_SPI_ROCKCHIP is not set
+# CONFIG_SPI_SC18IS602 is not set
+# CONFIG_SPI_SIFIVE is not set
+# CONFIG_SPI_MXIC is not set
+# CONFIG_SPI_THUNDERX is not set
+# CONFIG_SPI_XCOMM is not set
+# CONFIG_SPI_XILINX is not set
+# CONFIG_SPI_ZYNQMP_GQSPI is not set
+# CONFIG_SPI_AMD is not set
+
+#
+# SPI Multiplexer support
+#
+# CONFIG_SPI_MUX is not set
+
+#
+# SPI Protocol Masters
+#
+# CONFIG_SPI_SPIDEV is not set
+# CONFIG_SPI_TLE62X0 is not set
+# CONFIG_SPI_SLAVE is not set
+CONFIG_SPMI=y
+CONFIG_SPMI_APPLE_M1=y
 # CONFIG_HSI is not set
 # CONFIG_PPS is not set
 
@@ -1245,6 +1434,26 @@ CONFIG_GPIO_CDEV_V1=y
 # end of MFD GPIO expanders
 
 #
+# PCI GPIO expanders
+#
+# CONFIG_GPIO_BT8XX is not set
+# CONFIG_GPIO_PCI_IDIO_16 is not set
+# CONFIG_GPIO_PCIE_IDIO_24 is not set
+# CONFIG_GPIO_RDC321X is not set
+# end of PCI GPIO expanders
+
+#
+# SPI GPIO expanders
+#
+# CONFIG_GPIO_74X164 is not set
+# CONFIG_GPIO_MAX3191X is not set
+# CONFIG_GPIO_MAX7301 is not set
+# CONFIG_GPIO_MC33880 is not set
+# CONFIG_GPIO_PISOSR is not set
+# CONFIG_GPIO_XRA1403 is not set
+# end of SPI GPIO expanders
+
+#
 # Virtual GPIO drivers
 #
 # CONFIG_GPIO_AGGREGATOR is not set
@@ -1275,6 +1484,7 @@ CONFIG_POWER_SUPPLY=y
 # CONFIG_BATTERY_DS2782 is not set
 # CONFIG_BATTERY_SBS is not set
 # CONFIG_CHARGER_SBS is not set
+# CONFIG_MANAGER_SBS is not set
 # CONFIG_BATTERY_BQ27XXX is not set
 # CONFIG_BATTERY_MAX17040 is not set
 # CONFIG_BATTERY_MAX17042 is not set
@@ -1311,6 +1521,7 @@ CONFIG_BCMA_POSSIBLE=y
 # CONFIG_MFD_AS3722 is not set
 # CONFIG_PMIC_ADP5520 is not set
 # CONFIG_MFD_AAT2870_CORE is not set
+# CONFIG_MFD_APPLE_SPMI_PMU is not set
 # CONFIG_MFD_ATMEL_FLEXCOM is not set
 # CONFIG_MFD_ATMEL_HLCDC is not set
 # CONFIG_MFD_BCM590XX is not set
@@ -1318,18 +1529,24 @@ CONFIG_BCMA_POSSIBLE=y
 # CONFIG_MFD_AXP20X_I2C is not set
 # CONFIG_MFD_MADERA is not set
 # CONFIG_PMIC_DA903X is not set
+# CONFIG_MFD_DA9052_SPI is not set
 # CONFIG_MFD_DA9052_I2C is not set
 # CONFIG_MFD_DA9055 is not set
 # CONFIG_MFD_DA9062 is not set
 # CONFIG_MFD_DA9063 is not set
 # CONFIG_MFD_DA9150 is not set
 # CONFIG_MFD_GATEWORKS_GSC is not set
+# CONFIG_MFD_MC13XXX_SPI is not set
 # CONFIG_MFD_MC13XXX_I2C is not set
 # CONFIG_MFD_MP2629 is not set
 # CONFIG_MFD_HI6421_PMIC is not set
 # CONFIG_HTC_PASIC3 is not set
 # CONFIG_HTC_I2CPLD is not set
+# CONFIG_LPC_ICH is not set
+# CONFIG_LPC_SCH is not set
+# CONFIG_MFD_INTEL_PMT is not set
 # CONFIG_MFD_IQS62X is not set
+# CONFIG_MFD_JANZ_CMODIO is not set
 # CONFIG_MFD_KEMPLD is not set
 # CONFIG_MFD_88PM800 is not set
 # CONFIG_MFD_88PM805 is not set
@@ -1347,8 +1564,11 @@ CONFIG_BCMA_POSSIBLE=y
 # CONFIG_MFD_MT6360 is not set
 # CONFIG_MFD_MT6397 is not set
 # CONFIG_MFD_MENF21BMC is not set
+# CONFIG_EZX_PCAP is not set
+# CONFIG_MFD_CPCAP is not set
 # CONFIG_MFD_RETU is not set
 # CONFIG_MFD_PCF50633 is not set
+# CONFIG_MFD_RDC321X is not set
 # CONFIG_MFD_RT5033 is not set
 # CONFIG_MFD_RC5T583 is not set
 # CONFIG_MFD_RK808 is not set
@@ -1377,6 +1597,7 @@ CONFIG_MFD_SYSCON=y
 # CONFIG_MFD_TPS6586X is not set
 # CONFIG_MFD_TPS65910 is not set
 # CONFIG_MFD_TPS65912_I2C is not set
+# CONFIG_MFD_TPS65912_SPI is not set
 # CONFIG_MFD_TPS80031 is not set
 # CONFIG_TWL4030_CORE is not set
 # CONFIG_TWL6040_CORE is not set
@@ -1384,10 +1605,13 @@ CONFIG_MFD_SYSCON=y
 # CONFIG_MFD_LM3533 is not set
 # CONFIG_MFD_TC3589X is not set
 # CONFIG_MFD_TQMX86 is not set
+# CONFIG_MFD_VX855 is not set
 # CONFIG_MFD_LOCHNAGAR is not set
 # CONFIG_MFD_ARIZONA_I2C is not set
+# CONFIG_MFD_ARIZONA_SPI is not set
 # CONFIG_MFD_WM8400 is not set
 # CONFIG_MFD_WM831X_I2C is not set
+# CONFIG_MFD_WM831X_SPI is not set
 # CONFIG_MFD_WM8350_I2C is not set
 # CONFIG_MFD_WM8994 is not set
 # CONFIG_MFD_ROHM_BD718XX is not set
@@ -1395,6 +1619,7 @@ CONFIG_MFD_SYSCON=y
 # CONFIG_MFD_ROHM_BD71828 is not set
 # CONFIG_MFD_STPMIC1 is not set
 # CONFIG_MFD_STMFX is not set
+# CONFIG_MFD_INTEL_M10_BMC is not set
 # end of Multifunction device drivers
 
 # CONFIG_REGULATOR is not set
@@ -1405,6 +1630,8 @@ CONFIG_MFD_SYSCON=y
 #
 # Graphics support
 #
+CONFIG_VGA_ARB=y
+CONFIG_VGA_ARB_MAX_GPUS=16
 # CONFIG_DRM is not set
 
 #
@@ -1429,14 +1656,40 @@ CONFIG_FB_CFB_IMAGEBLIT=y
 #
 # Frame buffer hardware drivers
 #
+# CONFIG_FB_CIRRUS is not set
+# CONFIG_FB_PM2 is not set
 # CONFIG_FB_ARMCLCD is not set
+# CONFIG_FB_CYBER2000 is not set
+# CONFIG_FB_ASILIANT is not set
+# CONFIG_FB_IMSTT is not set
 # CONFIG_FB_OPENCORES is not set
 # CONFIG_FB_S1D13XXX is not set
+# CONFIG_FB_NVIDIA is not set
+# CONFIG_FB_RIVA is not set
+# CONFIG_FB_I740 is not set
+# CONFIG_FB_MATROX is not set
+# CONFIG_FB_RADEON is not set
+# CONFIG_FB_ATY128 is not set
+# CONFIG_FB_ATY is not set
+# CONFIG_FB_S3 is not set
+# CONFIG_FB_SAVAGE is not set
+# CONFIG_FB_SIS is not set
+# CONFIG_FB_NEOMAGIC is not set
+# CONFIG_FB_KYRO is not set
+# CONFIG_FB_3DFX is not set
+# CONFIG_FB_VOODOO1 is not set
+# CONFIG_FB_VT8623 is not set
+# CONFIG_FB_TRIDENT is not set
+# CONFIG_FB_ARK is not set
+# CONFIG_FB_PM3 is not set
+# CONFIG_FB_CARMINE is not set
 # CONFIG_FB_IBM_GXT4500 is not set
 # CONFIG_FB_VIRTUAL is not set
 # CONFIG_FB_METRONOME is not set
+# CONFIG_FB_MB862XX is not set
 CONFIG_FB_SIMPLE=y
 # CONFIG_FB_SSD1307 is not set
+# CONFIG_FB_SM712 is not set
 # end of Frame buffer Devices
 
 #
@@ -1486,6 +1739,7 @@ CONFIG_USB_COMMON=y
 # CONFIG_USB_CONN_GPIO is not set
 CONFIG_USB_ARCH_HAS_HCD=y
 # CONFIG_USB is not set
+CONFIG_USB_PCI=y
 # CONFIG_USB_CDNS_SUPPORT is not set
 # CONFIG_USB_MUSB_HDRC is not set
 CONFIG_USB_DWC3=y
@@ -1495,6 +1749,7 @@ CONFIG_USB_DWC3_GADGET=y
 # Platform Glue Driver Support
 #
 CONFIG_USB_DWC3_APPLE_M1=y
+CONFIG_USB_DWC3_HAPS=y
 CONFIG_USB_DWC3_OF_SIMPLE=y
 # CONFIG_USB_DWC2 is not set
 # CONFIG_USB_CHIPIDEA is not set
@@ -1533,8 +1788,13 @@ CONFIG_USB_GADGET_STORAGE_NUM_BUFFERS=2
 # CONFIG_USB_SNP_UDC_PLAT is not set
 # CONFIG_USB_M66592 is not set
 # CONFIG_USB_BDC_UDC is not set
+# CONFIG_USB_AMD5536UDC is not set
 # CONFIG_USB_NET2272 is not set
+# CONFIG_USB_NET2280 is not set
+# CONFIG_USB_GOKU is not set
+# CONFIG_USB_EG20T is not set
 # CONFIG_USB_GADGET_XILINX is not set
+# CONFIG_USB_MAX3420_UDC is not set
 # end of USB Peripheral Controller
 
 CONFIG_USB_LIBCOMPOSITE=y
@@ -1611,6 +1871,8 @@ CONFIG_LEDS_CLASS=y
 # CONFIG_LEDS_AW2013 is not set
 # CONFIG_LEDS_BCM6328 is not set
 # CONFIG_LEDS_BCM6358 is not set
+# CONFIG_LEDS_CR0014114 is not set
+# CONFIG_LEDS_EL15203000 is not set
 # CONFIG_LEDS_LM3530 is not set
 # CONFIG_LEDS_LM3532 is not set
 # CONFIG_LEDS_LM3642 is not set
@@ -1624,6 +1886,7 @@ CONFIG_LEDS_CLASS=y
 # CONFIG_LEDS_LP8860 is not set
 # CONFIG_LEDS_PCA955X is not set
 # CONFIG_LEDS_PCA963X is not set
+# CONFIG_LEDS_DAC124S085 is not set
 # CONFIG_LEDS_BD2802 is not set
 # CONFIG_LEDS_LT3593 is not set
 # CONFIG_LEDS_TCA6507 is not set
@@ -1639,6 +1902,7 @@ CONFIG_LEDS_CLASS=y
 # CONFIG_LEDS_SYSCON is not set
 # CONFIG_LEDS_MLXREG is not set
 # CONFIG_LEDS_USER is not set
+# CONFIG_LEDS_SPI_BYTE is not set
 # CONFIG_LEDS_TI_LMU_COMMON is not set
 
 #
@@ -1671,15 +1935,20 @@ CONFIG_DMA_OF=y
 # CONFIG_DW_AXI_DMAC is not set
 # CONFIG_FSL_EDMA is not set
 # CONFIG_FSL_QDMA is not set
+# CONFIG_HISI_DMA is not set
 # CONFIG_INTEL_IDMA64 is not set
 # CONFIG_MV_XOR_V2 is not set
 # CONFIG_PL330_DMA is not set
+# CONFIG_PLX_DMA is not set
 # CONFIG_XILINX_DMA is not set
 # CONFIG_XILINX_ZYNQMP_DMA is not set
 # CONFIG_XILINX_ZYNQMP_DPDMA is not set
 # CONFIG_QCOM_HIDMA_MGMT is not set
 # CONFIG_QCOM_HIDMA is not set
 # CONFIG_DW_DMAC is not set
+# CONFIG_DW_DMAC_PCI is not set
+# CONFIG_DW_EDMA is not set
+# CONFIG_DW_EDMA_PCIE is not set
 # CONFIG_SF_PDMA is not set
 
 #
@@ -1752,7 +2021,7 @@ CONFIG_ARM_ARCH_TIMER_EVTSTREAM=y
 # end of Clock Source drivers
 
 CONFIG_MAILBOX=y
-# CONFIG_APPLE_IOP_MBOX is not set
+CONFIG_APPLE_IOP_MBOX=y
 # CONFIG_ARM_MHU is not set
 # CONFIG_ARM_MHU_V2 is not set
 # CONFIG_PLATFORM_MHU is not set
@@ -1842,6 +2111,8 @@ CONFIG_APPLE_DART_IOMMU=y
 # CONFIG_EXTCON is not set
 # CONFIG_MEMORY is not set
 # CONFIG_IIO is not set
+# CONFIG_NTB is not set
+# CONFIG_VME_BUS is not set
 # CONFIG_PWM is not set
 
 #
@@ -1850,8 +2121,10 @@ CONFIG_APPLE_DART_IOMMU=y
 CONFIG_IRQCHIP=y
 CONFIG_ARM_GIC=y
 CONFIG_ARM_GIC_MAX_NR=1
+CONFIG_ARM_GIC_V2M=y
 CONFIG_ARM_GIC_V3=y
 CONFIG_ARM_GIC_V3_ITS=y
+CONFIG_ARM_GIC_V3_ITS_PCI=y
 CONFIG_APPLE_AIC=y
 # CONFIG_AL_FIC is not set
 CONFIG_PARTITION_PERCPU=y
@@ -1863,9 +2136,9 @@ CONFIG_PARTITION_PERCPU=y
 #
 # PHY Subsystem
 #
-# CONFIG_GENERIC_PHY is not set
+CONFIG_GENERIC_PHY=y
 # CONFIG_PHY_XGENE is not set
-# CONFIG_PHY_APPLE_ATC_M1 is not set
+CONFIG_PHY_APPLE_ATC_M1=y
 # CONFIG_BCM_KONA_USB2_PHY is not set
 # CONFIG_PHY_CADENCE_TORRENT is not set
 # CONFIG_PHY_CADENCE_DPHY is not set
@@ -1881,6 +2154,7 @@ CONFIG_PARTITION_PERCPU=y
 # CONFIG_POWERCAP is not set
 # CONFIG_MCB is not set
 CONFIG_RAS=y
+# CONFIG_USB4 is not set
 
 #
 # Android
@@ -1892,6 +2166,7 @@ CONFIG_RAS=y
 # CONFIG_DAX is not set
 CONFIG_NVMEM=y
 CONFIG_NVMEM_SYSFS=y
+# CONFIG_NVMEM_SPMI_SDAM is not set
 # CONFIG_NVMEM_RMEM is not set
 
 #
@@ -2269,6 +2544,7 @@ CONFIG_DECOMPRESS_GZIP=y
 CONFIG_GENERIC_ALLOCATOR=y
 CONFIG_XARRAY_MULTI=y
 CONFIG_HAS_IOMEM=y
+CONFIG_HAS_IOPORT_MAP=y
 CONFIG_HAS_DMA=y
 CONFIG_DMA_OPS=y
 CONFIG_NEED_SG_DMA_LENGTH=y
