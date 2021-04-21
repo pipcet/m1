@@ -9,6 +9,13 @@ PWD = $(shell pwd)
 build:
 	$(MKDIR) build
 
+reconfigure-busybox!: FORCE
+	$(CP) misc/busybox-config/m1lli busybox/.config
+	$(MAKE) -C busybox menuconfig
+	$(CP) misc/busybox-config/m1lli misc/busybox-config/m1lli.old
+	$(CP) busybox/.config misc/busybox-config/m1lli
+	diff -u misc/busybox-config/m1lli.old misc/busybox-config/m1lli
+
 reconfigure-linux/%!: FORCE
 	$(MKDIR) linux/o
 	$(CP) misc/linux-config/$* linux/o/.config
