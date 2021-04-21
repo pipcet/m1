@@ -1,0 +1,2 @@
+#!/bin/sh
+/bin/kexec -sfx /Image --dtb=/sys/firmware/fdt

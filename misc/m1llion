@@ -1,0 +1,9 @@
+#!/bin/bash
+CONSOLE=$1
+KERNEL=$2
+NONCE=$(date --iso=ns|sha512sum|cut -c -40)
+echo "nonce is $NONCE"
+(echo; echo /bin/busybox uudecode '<<'$NONCE;
+ uuencode Image < $KERNEL;
+ echo; echo $NONCE; echo;
+ echo /bin/busybox sha512sum Image; echo /bin/busybox ls -l Image; echo /bin/busybox od -tx Image) | tee /dev/stderr > $CONSOLE
