@@ -38,6 +38,7 @@
 (cd /sys/kernel/config/usb_gadget/G1; /bin/busybox ln -s functions/acm.usb0 configs/c.1; /bin/busybox ln -s functions/eem.usb0 configs/c.1; /bin/busybox ln -s functions/mass_storage.usb0 configs/c.1)
 /bin/busybox echo 502280000.dwc3 > /sys/kernel/config/usb_gadget/G1/UDC
 /bin/busybox sleep 1
+echo "restarting dwc3"
 (cd /sys/bus/platform/drivers/dwc3;
  /bin/busybox echo 502280000.dwc3 > unbind;
  /bin/busybox sleep 1
@@ -50,8 +51,9 @@ done &
 while /bin/busybox true; do
     /bin/commfile;
 done &
-(/bin/busybox sleep 15 && /bin/kexec -sfx /boot/Image --dtb=/sys/firmware/fdt) &
+(/bin/busybox sleep 15 && ! test -e /noboot && /bin/kexec -sfx /boot/Image --dtb=/sys/firmware/fdt) &
 (/bin/busybox sleep 30 && /bin/busybox reboot) &
+read; touch /noboot
 while /bin/busybox true; do
     /bin/busybox ash
 done
