@@ -5,9 +5,13 @@ CP ?= cp
 CAT ?= cat
 TAR ?= tar
 PWD = $(shell pwd)
+SUDO ?= $(and $(filter pip,$(shell whoami)),sudo)
 
 build:
 	$(MKDIR) build
+
+build/m1n1:
+	$(MKDIR) build/m1n1
 
 stamp:
 	$(MKDIR) stamp
@@ -52,8 +56,9 @@ build/Image-% build/m1-%.dtb: stamp/linux misc/linux-config/o-% | build
 	$(CP) linux/o-$*/arch/arm64/boot/Image build/Image-$*
 	$(CP) linux/o-$*/arch/arm64/boot/dts/apple/apple-m1-j274.dtb build/m1-$*.dtb
 
-build/Image-minimal: build/Image build/m1lli build/busybox build/kexec build/commfile
-build/Image-m1lli: build/Image build/m1lli build/busybox build/kexec build/commfile
+build/Image-minimal: build/Image build/m1lli build/busybox build/kexec build/commfile misc/init misc/init-cpio-spec
+
+build/Image-m1lli: build/Image build/m1lli build/busybox build/kexec build/commfile misc/init misc/init-cpio-spec
 
 build/modules.tar: build/Image | build
 	$(MKDIR) build/modules
@@ -72,11 +77,15 @@ build/linux-%.macho: build/Image-% build/m1-%.dtb stamp/preloader-m1 | build
 	$(MAKE) -C preloader-m1
 	$(CP) preloader-m1/linux.macho build/linux-$*.macho
 
-build/m1n1.macho: stamp/m1n1 | build
+build/m1n1/m1n1.macho: stamp/m1n1 | build/m1n1
 	$(MAKE) -C m1n1
-	$(CP) m1n1/build/m1n1.macho build/m1n1.macho
+	$(CP) m1n1/build/m1n1.macho build/m1n1/m1n1.macho
 
-build/m1n1ux.macho: build/m1n1.macho build/linux.macho | build
+build/m1n1/m1n1.elf: stamp/m1n1 | build/m1n1
+	$(MAKE) -C m1n1
+	$(CP) m1n1/build/m1n1.elf build/m1n1/m1n1.elf
+
+build/m1n1ux.macho: build/m1n1/m1n1.macho build/linux.macho | build
 	$(CAT) $^ > $@
 
 build/kexec: stamp/kexec-tools | build
@@ -101,19 +110,50 @@ build/script: misc/script
 	$(CP) misc/script build/script
 	chmod u+x build/script
 
+build/m1n1/script: misc/script-m1n1
+	$(CP) misc/script-m1n1 build/m1n1/script
+	chmod u+x build/m1n1/script
+
 build/m1lli.tar: build/Image build/script
 	(cd build; tar cvf m1lli.tar Image script)
 
 build/m1lli.tar.gz: build/m1lli.tar
 	gzip < build/m1lli.tar > build/m1lli.tar.gz
 
+build/m1lli-m1lli.tar: build/Image-m1lli build/script
+	(cd build; mkdir m1lli-m1lli; cp Image-m1lli m1lli-m1lli/Image; cp script m1lli-m1lli/script; cd m1lli-m1lli; tar cvf m1lli-m1lli.tar Image script; cd ..; cp m1lli-m1lli/m1lli-m1lli.tar .)
+
+build/m1lli-m1lli.tar.gz: build/m1lli-m1lli.tar
+	gzip < build/m1lli-m1lli.tar > build/m1lli-m1lli.tar.gz
+
+build/m1n1/m1n1.tar: build/m1n1/m1n1.elf build/m1n1/script
+	(cd build/m1n1; tar cvf m1n1.tar m1n1.elf script)
+
+build/m1n1/m1n1.tar.gz: build/m1n1/m1n1.tar
+	gzip < build/m1n1/m1n1.tar > build/m1n1/m1n1.tar.gz
+
 m1lli-boot!: build/m1lli.tar.gz misc/commfile-server.pl FORCE
 	perl misc/commfile-server.pl build/m1lli.tar.gz
 
-m1n1-boot-m1lli!: build/linux-m1lli.macho FORCE
+m1n1-m1lli!: build/linux-m1lli.macho FORCE
 	M1N1DEVICE=$(M1N1DEVICE) python3 ./m1n1/proxyclient/chainload.py ./build/linux-m1lli.macho
+
+m1lli-m1lli!: build/m1lli-m1lli.tar.gz FORCE
+	$(SUDO) perl ./misc/commfile-server.pl ./build/m1lli-m1lli.tar.gz
 
 m1n1-boot!: build/linux.macho FORCE
 	M1N1DEVICE=$(M1N1DEVICE) python3 ./m1n1/proxyclient/chainload.py ./build/linux.macho
+
+m1n1-shell!: FORCE
+	M1N1DEVICE=$(M1N1DEVICE) python3 ./m1n1/proxyclient/shell.py
+
+m1n1-m1n1!: build/m1n1/m1n1.macho FORCE
+	M1N1DEVICE=$(M1N1DEVICE) python3 ./m1n1/proxyclient/chainload.py ./build/m1n1/m1n1.macho
+
+m1lli-m1n1!: build/m1n1/m1n1.tar.gz misc/commfile-server.pl FORCE
+	perl misc/commfile-server.pl build/m1n1/m1n1.tar.gz
+
+misc/linux-config/%.pospart: misc/linux-config/%
+	egrep -v '^#' < misc/linux-config/$* > misc/linux-config/$*.pospart
 
 .PHONY: FORCE
