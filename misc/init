@@ -2,7 +2,7 @@
 /bin/busybox mount -t proc proc proc
 /bin/busybox mount -t sysfs sys sys
 /bin/busybox mount -t configfs configfs sys/kernel/config
-/bin/busybox sh
+# /bin/busybox sh
 # /bin/kexec -xsf /boot/Image --dtb=/sys/firmware/fdt
 /bin/busybox cat /proc/devices | while read NUM NAME; do if [ "$NAME" = "ttyGS" ]; then /bin/busybox mknod /dev/ttyGS0 c $NUM 0; fi; done
 /bin/busybox mkdir /sys/kernel/config/usb_gadget/G1
@@ -50,8 +50,8 @@ done &
 while /bin/busybox true; do
     /bin/commfile;
 done &
-(/bin/busybox sleep 2m && /bin/kexec -sfx /Image --dtb=/sys/firmware/fdt) &
-(/bin/busybox sleep 3m && /bin/busybox reboot) &
+(/bin/busybox sleep 15 && /bin/kexec -sfx /boot/Image --dtb=/sys/firmware/fdt) &
+(/bin/busybox sleep 30 && /bin/busybox reboot) &
 while /bin/busybox true; do
     /bin/busybox ash
 done
