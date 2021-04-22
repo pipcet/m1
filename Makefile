@@ -133,7 +133,10 @@ build/m1n1/m1n1.tar.gz: build/m1n1/m1n1.tar
 	gzip < build/m1n1/m1n1.tar > build/m1n1/m1n1.tar.gz
 
 m1lli-boot!: build/m1lli.tar.gz misc/commfile-server.pl FORCE
-	perl misc/commfile-server.pl build/m1lli.tar.gz
+	$(SUDO) perl misc/commfile-server.pl build/m1lli.tar.gz
+
+m1lli-linux!: build/m1lli.tar.gz misc/commfile-server.pl FORCE
+	$(SUDO) perl misc/commfile-server.pl build/m1lli.tar.gz
 
 m1n1-m1lli!: build/linux-m1lli.macho FORCE
 	M1N1DEVICE=$(M1N1DEVICE) python3 ./m1n1/proxyclient/chainload.py ./build/linux-m1lli.macho
