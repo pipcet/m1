@@ -1,0 +1,2 @@
+#!/bin/sh
+/bin/kexec -sfx /m1n1.elf --dtb=/sys/firmware/fdt
