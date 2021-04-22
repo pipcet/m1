@@ -32,3 +32,6 @@ slink /bin/find busybox 777 0 0
 slink /bin/dmesg busybox 777 0 0
 slink /bin/head busybox 777 0 0
 slink /bin/grep busybox 777 0 0
+slink /bin/touch busybox 777 0 0
+slink /bin/more busybox 777 0 0
+slink /bin/less busybox 777 0 0
