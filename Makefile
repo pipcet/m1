@@ -45,7 +45,7 @@ build/Image build/m1.dtb: stamp/linux misc/linux-config/o | build
 	diff -u misc/linux-config/o linux/o/.config
 	$(MAKE) -C linux ARCH=arm64 CROSS_COMPILE=$(CROSS_COMPILE) O=o
 	$(CP) linux/o/arch/arm64/boot/Image build/Image
-	$(CP) linux/o/arch/arm64/boot/dts/apple/apple-m1-j274.dtb build/m1.dtb
+	$(CP) linux/o/arch/arm64/boot/dts/apple/apple-m1-j293.dtb build/m1.dtb
 
 build/Image-% build/m1-%.dtb: stamp/linux misc/linux-config/o-% | build
 	$(MKDIR) linux/o-$*
@@ -54,7 +54,7 @@ build/Image-% build/m1-%.dtb: stamp/linux misc/linux-config/o-% | build
 	diff -u misc/linux-config/o-$* linux/o-$*/.config
 	$(MAKE) -C linux ARCH=arm64 CROSS_COMPILE=$(CROSS_COMPILE) O=o-$*
 	$(CP) linux/o-$*/arch/arm64/boot/Image build/Image-$*
-	$(CP) linux/o-$*/arch/arm64/boot/dts/apple/apple-m1-j274.dtb build/m1-$*.dtb
+	$(CP) linux/o-$*/arch/arm64/boot/dts/apple/apple-m1-j293.dtb build/m1-$*.dtb
 
 build/Image-minimal: build/Image build/m1lli build/busybox build/kexec build/commfile misc/init misc/init-cpio-spec
 
@@ -67,13 +67,13 @@ build/modules.tar: build/Image | build
 
 build/linux.macho: build/Image build/m1.dtb stamp/preloader-m1 | build
 	$(CP) build/Image preloader-m1
-	$(CP) build/m1.dtb preloader-m1/apple-m1-j274.dtb
+	$(CP) build/m1.dtb preloader-m1/apple-m1-j293.dtb
 	$(MAKE) -C preloader-m1
 	$(CP) preloader-m1/linux.macho build/linux.macho
 
 build/linux-%.macho: build/Image-% build/m1-%.dtb stamp/preloader-m1 | build
 	$(CP) build/Image-$* preloader-m1/Image
-	$(CP) build/m1-$*.dtb preloader-m1/apple-m1-j274.dtb
+	$(CP) build/m1-$*.dtb preloader-m1/apple-m1-j293.dtb
 	$(MAKE) -C preloader-m1
 	$(CP) preloader-m1/linux.macho build/linux-$*.macho
 
