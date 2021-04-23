@@ -121,7 +121,7 @@ build/m1lli.tar.gz: build/m1lli.tar
 	gzip < build/m1lli.tar > build/m1lli.tar.gz
 
 build/m1lli-m1lli.tar: build/Image-m1lli build/script
-	(cd build; mkdir m1lli-m1lli; cp Image-m1lli m1lli-m1lli/Image; cp script m1lli-m1lli/script; cd m1lli-m1lli; tar cvf m1lli-m1lli.tar Image script; cd ..; cp m1lli-m1lli/m1lli-m1lli.tar .)
+	(cd build; $(MKDIR) m1lli-m1lli; cp Image-m1lli m1lli-m1lli/Image; cp script m1lli-m1lli/script; cd m1lli-m1lli; tar cvf m1lli-m1lli.tar Image script; cd ..; cp m1lli-m1lli/m1lli-m1lli.tar .)
 
 build/m1lli-m1lli.tar.gz: build/m1lli-m1lli.tar
 	gzip < build/m1lli-m1lli.tar > build/m1lli-m1lli.tar.gz
