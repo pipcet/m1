@@ -77,7 +77,11 @@ SMC key `MSLD`, bit 0, 1 for closed.
 ### USB host mode: supported
 ### USB power-receiving mode: not supported
 
-Charging works if power supply is connected at boot time and never disconnected.
+Charging works if power supply is connected at boot time and never
+disconnected.
+
+Charging also works if the relevant port is removed from the device
+tree and thus left untouched by Linux.
 
 ### Storage
 #### NVME storage: supported
