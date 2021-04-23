@@ -14,7 +14,11 @@ while (1) {
 	    my $str;
 	    next unless sysread($fh, $str, 32) == 32;
 	    warn $str;
-	    next unless $str eq "m1lli is ready and waiting\n\0\0\0\0\0";
+	    unless ($str eq "m1lli is ready and waiting\n\0\0\0\0\0") {
+		sysseek($fh, 1024 * 1024, SEEK_SET);
+		next unless sysread($fh, $str, 32) == 32;
+		next unless ($str eq "m1lli is ready and waiting\n\0\0\0\0\0");
+	    }
 	    my $size = length($data) + 32;
 	    my $str = sprintf("%d", $size);
 	    sysseek($fh, 0, SEEK_SET);
