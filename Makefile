@@ -23,14 +23,14 @@ stamp/%: | stamp
 stampserver: misc/stampserver.pl | stamp
 	inotifywait -m -r . | perl misc/stampserver.pl
 
-reconfigure-busybox!: FORCE
+reconfigure-busybox!:
 	$(CP) misc/busybox-config/m1lli busybox/.config
 	$(MAKE) -C busybox menuconfig
 	$(CP) misc/busybox-config/m1lli misc/busybox-config/m1lli.old
 	$(CP) busybox/.config misc/busybox-config/m1lli
 	diff -u misc/busybox-config/m1lli.old misc/busybox-config/m1lli
 
-reconfigure-linux/%!: FORCE
+reconfigure-linux/%!:
 	$(MKDIR) linux/o
 	$(CP) misc/linux-config/$* linux/o/.config
 	$(MAKE) -C linux ARCH=arm64 CROSS_COMPILE=$(CROSS_COMPILE) O=o menuconfig
@@ -56,9 +56,18 @@ build/Image-% build/m1-%.dtb: stamp/linux misc/linux-config/o-% | build
 	$(CP) linux/o-$*/arch/arm64/boot/Image build/Image-$*
 	$(CP) linux/o-$*/arch/arm64/boot/dts/apple/apple-m1-j293.dtb build/m1-$*.dtb
 
-build/Image-minimal: build/Image build/m1lli build/busybox build/kexec build/commfile misc/init misc/init-cpio-spec
+build/Image-minimal: build/Image build/m1lli build/busybox build/kexec build/commfile misc/init misc/init-cpio-spec binaries/perl.tar build/m1lli-scripts.tar build/m1.dtb build/dtc build/fdtoverlay
 
-build/Image-m1lli: build/Image build/m1lli build/busybox build/kexec build/commfile misc/init misc/init-cpio-spec
+build/Image-m1lli: build/Image build/m1lli build/busybox build/kexec build/commfile misc/init misc/init-cpio-spec binaries/perl.tar build/m1lli-scripts.tar build/m1.dtb build/dtc build/fdtoverlay
+
+build/m1lli-scripts.tar: m1lli/scripts/adt-convert.pl m1lli/scripts/adt-finalize.pl m1lli/scripts/adt-transform.pl m1lli/scripts/fdt-to-props.pl m1lli/scripts/fdtdiff.pl m1lli/scripts/props-to-fdt.pl m1lli/scripts/adt2fdt
+	(cd m1lli/scripts; tar cv adt-convert.pl adt-finalize.pl adt-transform.pl fdt-to-props.pl fdtdiff.pl props-to-fdt.pl adt2fdt) > build/m1lli-scripts.tar
+
+m1lli/scripts/%.pl: m1lli/src/%.pl
+	$(CP) m1lli/src/$*.pl m1lli/scripts/$*.pl
+
+m1lli/scripts/adt2fdt: m1lli/src/adt2fdt.cc
+	aarch64-linux-gnu-g++ -Os -static -o m1lli/scripts/adt2fdt m1lli/src/adt2fdt.cc
 
 build/modules.tar: build/Image | build
 	$(MKDIR) build/modules
@@ -74,6 +83,7 @@ build/linux.macho: build/Image build/m1.dtb stamp/preloader-m1 | build
 build/linux-%.macho: build/Image-% build/m1-%.dtb stamp/preloader-m1 | build
 	$(CP) build/Image-$* preloader-m1/Image
 	$(CP) build/m1-$*.dtb preloader-m1/apple-m1-j293.dtb
+# dd if=/dev/zero bs=$$x((0x480000)) count=1 >> preloader-m1/apple-m1-j293.dtb
 	$(MAKE) -C preloader-m1
 	$(CP) preloader-m1/linux.macho build/linux-$*.macho
 
@@ -84,6 +94,9 @@ build/m1n1/m1n1.macho: stamp/m1n1 | build/m1n1
 build/m1n1/m1n1.elf: stamp/m1n1 | build/m1n1
 	$(MAKE) -C m1n1
 	$(CP) m1n1/build/m1n1.elf build/m1n1/m1n1.elf
+
+build/m1n1/m1n1.image: build/boot-macho build/m1n1/m1n1.macho | build/m1n1
+	$(CAT) build/boot-macho build/m1n1/m1n1.macho > build/m1n1/m1n1.image
 
 build/m1n1ux.macho: build/m1n1/m1n1.macho build/linux.macho | build
 	$(CAT) $^ > $@
@@ -126,37 +139,53 @@ build/m1lli-m1lli.tar: build/Image-m1lli build/script
 build/m1lli-m1lli.tar.gz: build/m1lli-m1lli.tar
 	gzip < build/m1lli-m1lli.tar > build/m1lli-m1lli.tar.gz
 
-build/m1n1/m1n1.tar: build/m1n1/m1n1.elf build/m1n1/script
-	(cd build/m1n1; tar cvf m1n1.tar m1n1.elf script)
+build/m1n1/m1n1.tar: build/m1n1/m1n1.image build/m1n1/m1n1.elf build/m1n1/script
+	(cd build/m1n1; tar cvf m1n1.tar m1n1.image m1n1.elf script)
 
 build/m1n1/m1n1.tar.gz: build/m1n1/m1n1.tar
 	gzip < build/m1n1/m1n1.tar > build/m1n1/m1n1.tar.gz
 
-m1lli-boot!: build/m1lli.tar.gz misc/commfile-server.pl FORCE
+m1lli-boot!: build/m1lli.tar.gz misc/commfile-server.pl
 	$(SUDO) perl misc/commfile-server.pl build/m1lli.tar.gz
 
-m1lli-linux!: build/m1lli.tar.gz misc/commfile-server.pl FORCE
+m1lli-linux!: build/m1lli.tar.gz misc/commfile-server.pl
 	$(SUDO) perl misc/commfile-server.pl build/m1lli.tar.gz
 
-m1n1-m1lli!: build/linux-m1lli.macho FORCE
+m1n1-m1lli!: build/linux-m1lli.macho
 	M1N1DEVICE=$(M1N1DEVICE) python3 ./m1n1/proxyclient/chainload.py ./build/linux-m1lli.macho
 
-m1lli-m1lli!: build/m1lli-m1lli.tar.gz FORCE
+m1lli-m1lli!: build/m1lli-m1lli.tar.gz
 	$(SUDO) perl ./misc/commfile-server.pl ./build/m1lli-m1lli.tar.gz
 
-m1n1-boot!: build/linux.macho FORCE
+m1n1-boot!: build/linux.macho
 	M1N1DEVICE=$(M1N1DEVICE) python3 ./m1n1/proxyclient/chainload.py ./build/linux.macho
 
-m1n1-shell!: FORCE
+m1n1-shell!:
 	M1N1DEVICE=$(M1N1DEVICE) python3 ./m1n1/proxyclient/shell.py
 
-m1n1-m1n1!: build/m1n1/m1n1.macho FORCE
+m1n1-m1n1!: build/m1n1/m1n1.macho
 	M1N1DEVICE=$(M1N1DEVICE) python3 ./m1n1/proxyclient/chainload.py ./build/m1n1/m1n1.macho
 
-m1lli-m1n1!: build/m1n1/m1n1.tar.gz misc/commfile-server.pl FORCE
-	perl misc/commfile-server.pl build/m1n1/m1n1.tar.gz
+m1lli-m1n1!: build/m1n1/m1n1.tar.gz misc/commfile-server.pl
+	$(SUDO) perl misc/commfile-server.pl build/m1n1/m1n1.tar.gz
 
 misc/linux-config/%.pospart: misc/linux-config/%
 	egrep -v '^#' < misc/linux-config/$* > misc/linux-config/$*.pospart
 
-.PHONY: FORCE
+build/boot-macho: build/boot-macho.o
+	objcopy -O binary -S --dump-section .text=build/boot-macho build/boot-macho.o build/dummy
+
+build/boot-macho.o: misc/boot-macho.c
+	aarch64-linux-gnu-gcc -Os -fPIC -c -o build/boot-macho.o misc/boot-macho.c
+
+dtc:
+	$(MKDIR) dtc
+	(cd dtc; ln -s ../linux/scripts/dtc/* .; rm Makefile; rm -f libfdt)
+	(cd dtc; mkdir libfdt; cd libfdt; ln -s ../../linux/scripts/dtc/libfdt/* .)
+	cp misc/dtc-Makefile dtc/Makefile
+
+build/dtc build/fdtoverlay: dtc
+	$(MAKE) -C dtc
+	$(CP) dtc/dtc dtc/fdtoverlay build/
+
+.PHONY: %!
