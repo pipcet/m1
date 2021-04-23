@@ -1,2 +1,4 @@
 #!/bin/sh
-/bin/kexec -sfx /m1n1.elf --dtb=/sys/firmware/fdt
+#/bin/busybox dd if=/sys/firmware/devicetree/base/reserved-memory/bootargs@800000000/reg bs=8 count=1 of=m1n1.image seek=72 conv=notrunc
+echo /bin/kexec -fdxy /m1n1.image --dtb=/sys/firmware/fdt
+/bin/kexec -fdxy /m1n1.image --dtb=/sys/firmware/fdt
