@@ -7,7 +7,7 @@ TAR ?= tar
 PWD = $(shell pwd)
 SUDO ?= $(and $(filter pip,$(shell whoami)),sudo)
 
-all: build/m1lli.macho build/linux.macho build/m1n1/m1n1.tar.gz
+all: build/l1lli.macho build/m1lli.macho build/linux.macho build/m1n1/m1n1.tar.gz
 
 # directories
 
@@ -146,6 +146,12 @@ build/m1lli-m1lli.tar: build/Image-m1lli build/script
 build/m1lli-m1lli.tar.gz: build/m1lli-m1lli.tar
 	gzip < build/m1lli-m1lli.tar > build/m1lli-m1lli.tar.gz
 
+build/m1lli-l1lli.tar: build/Image-l1lli build/script
+	(cd build; $(MKDIR) m1lli-l1lli; cp Image-l1lli m1lli-l1lli/Image; cp script m1lli-l1lli/script; cd m1lli-l1lli; tar cvf m1lli-l1lli.tar Image script; cd ..; cp m1lli-l1lli/m1lli-l1lli.tar .)
+
+build/m1lli-l1lli.tar.gz: build/m1lli-l1lli.tar
+	gzip < build/m1lli-l1lli.tar > build/m1lli-l1lli.tar.gz
+
 build/m1n1/m1n1.tar: build/m1n1/m1n1.image build/m1n1/m1n1.elf build/m1n1/script
 	(cd build/m1n1; tar cvf m1n1.tar m1n1.image m1n1.elf script)
 
@@ -158,6 +164,9 @@ m1lli-linux!: build/m1lli.tar.gz misc/commfile-server.pl
 m1lli-m1lli!: build/m1lli-m1lli.tar.gz
 	$(SUDO) perl ./misc/commfile-server.pl ./build/m1lli-m1lli.tar.gz
 
+m1lli-l1lli!: build/m1lli-l1lli.tar.gz
+	$(SUDO) perl ./misc/commfile-server.pl ./build/m1lli-l1lli.tar.gz
+
 m1n1-shell!:
 	M1N1DEVICE=$(M1N1DEVICE) python3 ./m1n1/proxyclient/shell.py
 
@@ -166,6 +175,9 @@ m1n1-linux!: build/linux.macho
 
 m1n1-m1lli!: build/linux-m1lli.macho
 	M1N1DEVICE=$(M1N1DEVICE) python3 ./m1n1/proxyclient/chainload.py ./build/linux-m1lli.macho
+
+m1n1-lilli!: build/linux-l1lli.macho
+	M1N1DEVICE=$(M1N1DEVICE) python3 ./m1n1/proxyclient/chainload.py ./build/linux-l1lli.macho
 
 m1n1-m1n1!: build/m1n1/m1n1.macho
 	M1N1DEVICE=$(M1N1DEVICE) python3 ./m1n1/proxyclient/chainload.py ./build/m1n1/m1n1.macho
@@ -199,11 +211,17 @@ build/dtc build/fdtoverlay: dtc
 	$(MAKE) -C dtc
 	$(CP) dtc/dtc dtc/fdtoverlay build/
 
-%.dtb.dts: %.dtb linux/o/scripts/dtc/dtc
-	linux/o/scripts/dtc/dtc -O dts -I dtb < $*.dtb > $*.dtb.dts
+%.dtb.dts: %.dtb build/dtc
+	build/dtc -O dts -I dtb < $*.dtb > $*.dtb.dts
 
 %.dts.dtp: %.dts m1lli/src/fdt-to-props.pl
 	perl m1lli/src/fdt-to-props.pl < $*.dts > $*.dts.dtp
+
+%.dtp.dts: %.dtp m1lli/src/props-to-fdt.pl
+	perl m1lli/src/fdt-to-props.pl < $*.dtp > $*.dtp.dts
+
+%.dts.dtb: %.dts build/dtc
+	build/dtc -O dtb -I dts < $*.dts > $*.dts.dtb
 
 %.adtb.dtp: %.adtb m1lli/scripts/adt2fdt-native
 	m1lli/scripts/adt2fdt-native $*.adtb > $*.adtb.dtp
