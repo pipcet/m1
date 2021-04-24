@@ -87,7 +87,6 @@ build/linux.macho: build/Image build/m1.dtb stamp/preloader-m1 | build
 build/linux-%.macho: build/Image-% build/m1-%.dtb stamp/preloader-m1 | build
 	$(CP) build/Image-$* preloader-m1/Image
 	$(CP) build/m1-$*.dtb preloader-m1/apple-m1-j293.dtb
-# dd if=/dev/zero bs=$$x((0x480000)) count=1 >> preloader-m1/apple-m1-j293.dtb
 	$(MAKE) -C preloader-m1
 	$(CP) preloader-m1/linux.macho build/linux-$*.macho
 
@@ -176,11 +175,18 @@ m1lli-m1n1!: build/m1n1/m1n1.tar.gz misc/commfile-server.pl
 misc/linux-config/%.pospart: misc/linux-config/%
 	egrep -v '^#' < misc/linux-config/$* > misc/linux-config/$*.pospart
 
-build/boot-macho: build/boot-macho.o
-	objcopy -O binary -S --dump-section .text=build/boot-macho build/boot-macho.o build/dummy
+build/boot-macho: build/boot-macho.elf
+	objcopy -O binary -S --dump-section .text=build/boot-macho build/boot-macho.elf build/dummy
+	objcopy -O binary -S --only-section .text --only-section .data --only-section .got --only-section .last build/boot-macho.elf build/boot-macho
 
-build/boot-macho.o: misc/boot-macho.c
+build/boot-macho.s: misc/boot-macho.c
+	aarch64-linux-gnu-gcc -Os -fPIC -S -o build/boot-macho.s misc/boot-macho.c
+
+build/boot-macho.o: misc/boot-macho.S
 	aarch64-linux-gnu-gcc -Os -fPIC -c -o build/boot-macho.o misc/boot-macho.c
+
+build/boot-macho.elf: misc/boot-macho.c
+	aarch64-linux-gnu-gcc -static -nostdlib -nolibc -Os -fPIC -o build/boot-macho.elf misc/boot-macho.c
 
 dtc:
 	$(MKDIR) dtc
