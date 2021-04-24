@@ -20,6 +20,7 @@ stamp:
 stamp/%: | stamp
 	touch stamp/$*
 
+# echo $((1024*1024)) | sudo tee /proc/sys/fs/inotify/max_user_watches
 stampserver: misc/stampserver.pl | stamp
 	inotifywait -m -r . | perl misc/stampserver.pl
 
