@@ -58,7 +58,7 @@ build/Image-% build/m1-%.dtb: stamp/linux misc/linux-config/o-% | build
 
 build/Image-minimal: build/Image build/m1lli build/busybox build/kexec build/commfile misc/init misc/init-cpio-spec binaries/perl.tar build/m1lli-scripts.tar build/m1.dtb build/dtc build/fdtoverlay
 
-build/Image-m1lli: build/Image build/m1lli build/busybox build/kexec build/commfile misc/init misc/init-cpio-spec binaries/perl.tar build/m1lli-scripts.tar build/m1.dtb build/dtc build/fdtoverlay
+build/Image-m1lli: build/Image build/m1lli build/busybox build/kexec build/commfile misc/init misc/init-cpio-spec binaries/perl.tar build/m1lli-scripts.tar build/m1.dtb build/dtc build/fdtoverlay build/linux.macho
 
 build/m1lli-scripts.tar: m1lli/scripts/adt-convert.pl m1lli/scripts/adt-finalize.pl m1lli/scripts/adt-transform.pl m1lli/scripts/fdt-to-props.pl m1lli/scripts/fdtdiff.pl m1lli/scripts/props-to-fdt.pl m1lli/scripts/adt2fdt
 	(cd m1lli/scripts; tar cv adt-convert.pl adt-finalize.pl adt-transform.pl fdt-to-props.pl fdtdiff.pl props-to-fdt.pl adt2fdt) > build/m1lli-scripts.tar
