@@ -1,8 +1,8 @@
 #!/bin/sh
 if [ -e /fdt ]; then
-    /bin/kexec -sfx /Image --dtb=/fdt
+    /bin/kexec -fix /Image --dtb=/fdt
 elif [ -e /boot/fdt ]; then
-    /bin/kexec -sfx /Image --dtb=/boot/fdt
+    /bin/kexec -fix /Image --dtb=/boot/fdt
 else
-    /bin/kexec -sfx /Image --dtb=/sys/firmware/fdt
+    /bin/kexec -fix /Image --dtb=/sys/firmware/fdt
 fi
