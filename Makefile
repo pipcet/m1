@@ -7,6 +7,10 @@ TAR ?= tar
 PWD = $(shell pwd)
 SUDO ?= $(and $(filter pip,$(shell whoami)),sudo)
 
+all: build/m1lli.macho build/linux.macho build/m1n1/m1n1.tar.gz
+
+# directories
+
 build:
 	$(MKDIR) build
 
@@ -148,23 +152,20 @@ build/m1n1/m1n1.tar: build/m1n1/m1n1.image build/m1n1/m1n1.elf build/m1n1/script
 build/m1n1/m1n1.tar.gz: build/m1n1/m1n1.tar
 	gzip < build/m1n1/m1n1.tar > build/m1n1/m1n1.tar.gz
 
-m1lli-boot!: build/m1lli.tar.gz misc/commfile-server.pl
-	$(SUDO) perl misc/commfile-server.pl build/m1lli.tar.gz
-
 m1lli-linux!: build/m1lli.tar.gz misc/commfile-server.pl
 	$(SUDO) perl misc/commfile-server.pl build/m1lli.tar.gz
-
-m1n1-m1lli!: build/linux-m1lli.macho
-	M1N1DEVICE=$(M1N1DEVICE) python3 ./m1n1/proxyclient/chainload.py ./build/linux-m1lli.macho
 
 m1lli-m1lli!: build/m1lli-m1lli.tar.gz
 	$(SUDO) perl ./misc/commfile-server.pl ./build/m1lli-m1lli.tar.gz
 
-m1n1-boot!: build/linux.macho
-	M1N1DEVICE=$(M1N1DEVICE) python3 ./m1n1/proxyclient/chainload.py ./build/linux.macho
-
 m1n1-shell!:
 	M1N1DEVICE=$(M1N1DEVICE) python3 ./m1n1/proxyclient/shell.py
+
+m1n1-linux!: build/linux.macho
+	M1N1DEVICE=$(M1N1DEVICE) python3 ./m1n1/proxyclient/chainload.py ./build/linux.macho
+
+m1n1-m1lli!: build/linux-m1lli.macho
+	M1N1DEVICE=$(M1N1DEVICE) python3 ./m1n1/proxyclient/chainload.py ./build/linux-m1lli.macho
 
 m1n1-m1n1!: build/m1n1/m1n1.macho
 	M1N1DEVICE=$(M1N1DEVICE) python3 ./m1n1/proxyclient/chainload.py ./build/m1n1/m1n1.macho
