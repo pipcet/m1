@@ -192,4 +192,13 @@ build/dtc build/fdtoverlay: dtc
 	$(MAKE) -C dtc
 	$(CP) dtc/dtc dtc/fdtoverlay build/
 
+%.dtb.dts: %.dtb linux/o/scripts/dtc/dtc
+	linux/o/scripts/dtc/dtc -O dts -I dtb < $*.dtb > $*.dtb.dts
+
+%.dts.dtp: %.dts m1lli/src/fdt-to-props.pl
+	perl m1lli/src/fdt-to-props.pl < $*.dts > $*.dts.dtp
+
+%.adtb.dtp: %.adtb m1lli/scripts/adt2fdt-native
+	m1lli/scripts/adt2fdt-native $*.adtb > $*.adtb.dtp
+
 .PHONY: %!
