@@ -70,6 +70,9 @@ m1lli/scripts/%.pl: m1lli/src/%.pl
 m1lli/scripts/adt2fdt: m1lli/src/adt2fdt.cc
 	aarch64-linux-gnu-g++ -Os -static -o m1lli/scripts/adt2fdt m1lli/src/adt2fdt.cc
 
+m1lli/scripts/adt2fdt-native: m1lli/src/adt2fdt.cc
+	g++ -Os -o m1lli/scripts/adt2fdt-native m1lli/src/adt2fdt.cc
+
 build/modules.tar: build/Image | build
 	$(MKDIR) build/modules
 	$(MAKE) -C linux ARCH=arm64 CROSS_COMPILE=$(CROSS_COMPILE) O=o MODLIB=$(PWD)/build/modules modules_install
