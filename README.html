@@ -1,0 +1,924 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2021 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>&lrm;</title>
+<meta name="generator" content="Org mode" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org67a0dc4">1. m1</a>
+<ul>
+<li><a href="#orga81fd76">1.1. Software</a>
+<ul>
+<li><a href="#org326dd85">1.1.1. Boot loader</a></li>
+<li><a href="#org9644ff2">1.1.2. Preloader</a></li>
+<li><a href="#org071e681">1.1.3. Linux kernel</a></li>
+<li><a href="#org0cfa6be">1.1.4. Distribution</a></li>
+<li><a href="#org38d2dbf">1.1.5. Windowing System</a></li>
+</ul>
+</li>
+<li><a href="#org105dd9b">1.2. Hardware</a>
+<ul>
+<li><a href="#org075462f">1.2.1. CPU: supported</a></li>
+<li><a href="#orgd06cfb8">1.2.2. GPU: unsupported</a></li>
+<li><a href="#org65a4c00">1.2.3. Video output: supported, no acceleration</a></li>
+<li><a href="#orgf3d662a">1.2.4. Video codec acceleration: not supported</a></li>
+<li><a href="#org8f460c6">1.2.5. Camera: not supported</a></li>
+<li><a href="#orgba7db89">1.2.6. Fingerprint reader: not supported</a></li>
+<li><a href="#org2c3e2d8">1.2.7. Power button: documented, no interrupt yet</a></li>
+<li><a href="#orgce34a45">1.2.8. Lid switch: documented, no interrupt yet</a></li>
+<li><a href="#orga31673f">1.2.9. Ambient Light Sensor: not supported</a></li>
+<li><a href="#org180cf20">1.2.10. Audio: not supported</a></li>
+<li><a href="#orgea8e851">1.2.11. Keyboard: supported</a></li>
+<li><a href="#org8288422">1.2.12. Touch pad: supported</a></li>
+<li><a href="#org56ae39a">1.2.13. Touch bar: not supported</a></li>
+<li><a href="#org7f626bb">1.2.14. USB host mode: supported</a></li>
+<li><a href="#org9a20105">1.2.15. USB power-receiving mode: not supported</a></li>
+<li><a href="#org11f023c">1.2.16. Storage</a></li>
+<li><a href="#org971af47">1.2.17. Hardware sensors</a></li>
+<li><a href="#orga5786dc">1.2.18. Fans: read-only access documented</a></li>
+<li><a href="#orgea0cc19">1.2.19. Audio: not supported</a></li>
+<li><a href="#orgbfbd0f9">1.2.20. Wireless</a></li>
+<li><a href="#orgcec3825">1.2.21. Power management</a></li>
+<li><a href="#org823b4c1">1.2.22. RTC: supported</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#orgf15e61e">2. m1lli</a>
+<ul>
+<li><a href="#org4037cf2">2.1. kernel configuration</a>
+<ul>
+<li><a href="#org4b186e4">2.1.1. included features</a></li>
+<li><a href="#orgfb643e6">2.1.2. excluded features</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#orgc942e90">3. misc files</a></li>
+<li><a href="#org0e49edd">4. linux-config</a></li>
+<li><a href="#org00f265c">5. script</a></li>
+<li><a href="#org66b3105">6. dtc-Makefile</a></li>
+<li><a href="#orgc54c01c">7. stampserver.pl</a></li>
+<li><a href="#org422c54e">8. m1llion</a></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org67a0dc4" class="outline-2">
+<h2 id="org67a0dc4"><span class="section-number-2">1</span> m1</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+GNU/Linux on an Apple M1-based MacBook Pro
+</p>
+
+<p>
+Platform name (SMC <code>RPlt</code>, ADT): J293
+</p>
+</div>
+
+<div id="outline-container-orga81fd76" class="outline-3">
+<h3 id="orga81fd76"><span class="section-number-3">1.1</span> Software</h3>
+<div class="outline-text-3" id="text-1-1">
+</div>
+<div id="outline-container-org326dd85" class="outline-4">
+<h4 id="org326dd85"><span class="section-number-4">1.1.1</span> Boot loader</h4>
+<div class="outline-text-4" id="text-1-1-1">
+<p>
+I sometimes use m1n1 at [<a href="https://github.com/AsahiLinux/m1n1">https://github.com/AsahiLinux/m1n1</a>], particularly for development.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org9644ff2" class="outline-4">
+<h4 id="org9644ff2"><span class="section-number-4">1.1.2</span> Preloader</h4>
+<div class="outline-text-4" id="text-1-1-2">
+<p>
+Corellium preloader at [<a href="https://github.com/corellium/preloader-m1">https://github.com/corellium/preloader-m1</a>], modified version.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org071e681" class="outline-4">
+<h4 id="org071e681"><span class="section-number-4">1.1.3</span> Linux kernel</h4>
+<div class="outline-text-4" id="text-1-1-3">
+<p>
+Based on the Corellium repo at [<a href="https://github.com/corellium/linux-m1">https://github.com/corellium/linux-m1</a>], currently Linux 5.12.0-rc7
+</p>
+</div>
+</div>
+
+<div id="outline-container-org0cfa6be" class="outline-4">
+<h4 id="org0cfa6be"><span class="section-number-4">1.1.4</span> Distribution</h4>
+<div class="outline-text-4" id="text-1-1-4">
+<p>
+Debian GNU/Linux sid, [<a href="https://www.debian.org">https://www.debian.org</a>].
+</p>
+</div>
+</div>
+
+<div id="outline-container-org38d2dbf" class="outline-4">
+<h4 id="org38d2dbf"><span class="section-number-4">1.1.5</span> Windowing System</h4>
+<div class="outline-text-4" id="text-1-1-5">
+<p>
+X.org, [<a href="https://www.xorg.freedesktop.org">https://www.xorg.freedesktop.org</a>].
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org105dd9b" class="outline-3">
+<h3 id="org105dd9b"><span class="section-number-3">1.2</span> Hardware</h3>
+<div class="outline-text-3" id="text-1-2">
+<ul class="org-ul">
+<li class="on"><code>[X]</code> CPU
+<ul class="org-ul">
+<li class="on"><code>[X]</code> CPU power management</li>
+</ul></li>
+<li class="trans"><code>[-]</code> Graphics
+<ul class="org-ul">
+<li class="on"><code>[X]</code> frame buffer
+<ul class="org-ul">
+<li class="on"><code>[X]</code> forced to <code>x8r8g8b8</code></li>
+</ul></li>
+<li class="trans"><code>[-]</code> back light
+<ul class="org-ul">
+<li class="on"><code>[X]</code> power-saving mode</li>
+<li class="off"><code>[&#xa0;]</code> brightness control</li>
+</ul></li>
+<li class="off"><code>[&#xa0;]</code> bitblt</li>
+<li class="off"><code>[&#xa0;]</code> GPU</li>
+<li class="off"><code>[&#xa0;]</code> scaler</li>
+<li class="off"><code>[&#xa0;]</code> Video decode acceleration</li>
+</ul></li>
+<li class="trans"><code>[-]</code> HID
+<ul class="org-ul">
+<li class="on"><code>[X]</code> keyboard
+<ul class="org-ul">
+<li class="on"><code>[X]</code> keyboard backlight</li>
+</ul></li>
+<li class="on"><code>[X]</code> touch pad</li>
+<li class="trans"><code>[-]</code> power button
+<ul class="org-ul">
+<li class="trans"><code>[-]</code> SMC</li>
+<li class="off"><code>[&#xa0;]</code> power button interrupt</li>
+</ul></li>
+<li class="trans"><code>[-]</code> lid switch
+<ul class="org-ul">
+<li class="trans"><code>[-]</code> SMC</li>
+<li class="off"><code>[&#xa0;]</code> lid switch interrupt</li>
+</ul></li>
+<li class="off"><code>[&#xa0;]</code> touch bar
+<ul class="org-ul">
+<li class="off"><code>[&#xa0;]</code> touch bar display</li>
+<li class="off"><code>[&#xa0;]</code> touch bar touch screen</li>
+</ul></li>
+<li class="off"><code>[&#xa0;]</code> fingerprint reader</li>
+<li class="on"><code>[X]</code> USB HID</li>
+</ul></li>
+<li class="trans"><code>[-]</code> connectivity
+<ul class="org-ul">
+<li class="on"><code>[X]</code> wireless LAN</li>
+<li class="off"><code>[&#xa0;]</code> Bluetooth</li>
+</ul></li>
+<li class="off"><code>[&#xa0;]</code> audio</li>
+<li class="trans"><code>[-]</code> sensors
+<ul class="org-ul">
+<li class="off"><code>[&#xa0;]</code> camera</li>
+<li class="off"><code>[&#xa0;]</code> microphone</li>
+<li class="trans"><code>[-]</code> battery status indicators
+<ul class="org-ul">
+<li class="trans"><code>[-]</code> SMC</li>
+</ul></li>
+<li class="off"><code>[&#xa0;]</code> ambient light sensor</li>
+<li class="trans"><code>[-]</code> temperature sensors
+<ul class="org-ul">
+<li class="trans"><code>[-]</code> SMC</li>
+<li class="off"><code>[&#xa0;]</code> ADT</li>
+</ul></li>
+<li class="trans"><code>[-]</code> power sensors
+<ul class="org-ul">
+<li class="trans"><code>[-]</code> SMC</li>
+</ul></li>
+</ul></li>
+<li class="trans"><code>[-]</code> other hardware
+<ul class="org-ul">
+<li class="on"><code>[X]</code> RTC</li>
+<li class="on"><code>[X]</code> NVRAM</li>
+<li class="on"><code>[X]</code> SPI NOR flash</li>
+<li class="trans"><code>[-]</code> fans
+<ul class="org-ul">
+<li class="trans"><code>[-]</code> SMC status</li>
+<li class="off"><code>[&#xa0;]</code> control</li>
+</ul></li>
+</ul></li>
+<li class="on"><code>[X]</code> storage
+<ul class="org-ul">
+<li class="on"><code>[X]</code> NVMe</li>
+<li class="on"><code>[X]</code> USB storage</li>
+</ul></li>
+<li class="trans"><code>[-]</code> system power management
+<ul class="org-ul">
+<li class="trans"><code>[-]</code> charging
+<ul class="org-ul">
+<li class="on"><code>[X]</code> when connected on boot</li>
+<li class="off"><code>[&#xa0;]</code> always</li>
+</ul></li>
+<li class="on"><code>[X]</code> system reboot</li>
+<li class="on"><code>[X]</code> system shutdown</li>
+<li class="off"><code>[&#xa0;]</code> system suspend/resume</li>
+<li class="trans"><code>[-]</code> WDT</li>
+</ul></li>
+</ul>
+</div>
+
+<div id="outline-container-org075462f" class="outline-4">
+<h4 id="org075462f"><span class="section-number-4">1.2.1</span> CPU: supported</h4>
+<div class="outline-text-4" id="text-1-2-1">
+<p>
+Apple M1 SOC. Four "performance" cores plus four "efficiency" cores each implementing identical ARM64/AArch64-compatible instruction sets.
+</p>
+</div>
+
+<ol class="org-ol">
+<li><a id="orgf54e077"></a>CPU power management: supported<br /></li>
+</ol>
+</div>
+
+<div id="outline-container-orgd06cfb8" class="outline-4">
+<h4 id="orgd06cfb8"><span class="section-number-4">1.2.2</span> GPU: unsupported</h4>
+<div class="outline-text-4" id="text-1-2-2">
+<p>
+Apple M1 SOC.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org65a4c00" class="outline-4">
+<h4 id="org65a4c00"><span class="section-number-4">1.2.3</span> Video output: supported, no acceleration</h4>
+<div class="outline-text-4" id="text-1-2-3">
+</div>
+<ol class="org-ol">
+<li><a id="org0acf577"></a>Frame buffer: supported<br />
+<div class="outline-text-5" id="text-1-2-3-1">
+<p>
+2560x1600 <code>x8r8g8b8</code> frame buffer, supported through the simple-framebuffer driver.
+</p>
+</div>
+</li>
+
+<li><a id="org9ea7248"></a>Bitblt: not supported(?)<br />
+<div class="outline-text-5" id="text-1-2-3-2">
+<p>
+I'm not sure about that one, as video operations seem very fast&#x2026;
+</p>
+</div>
+</li>
+
+<li><a id="org0b70742"></a>LCD backlight: disabling documented, no brightness control<br /></li>
+</ol>
+</div>
+
+<div id="outline-container-orgf3d662a" class="outline-4">
+<h4 id="orgf3d662a"><span class="section-number-4">1.2.4</span> Video codec acceleration: not supported</h4>
+</div>
+
+<div id="outline-container-org8f460c6" class="outline-4">
+<h4 id="org8f460c6"><span class="section-number-4">1.2.5</span> Camera: not supported</h4>
+</div>
+<div id="outline-container-orgba7db89" class="outline-4">
+<h4 id="orgba7db89"><span class="section-number-4">1.2.6</span> Fingerprint reader: not supported</h4>
+</div>
+<div id="outline-container-org2c3e2d8" class="outline-4">
+<h4 id="org2c3e2d8"><span class="section-number-4">1.2.7</span> Power button: documented, no interrupt yet</h4>
+<div class="outline-text-4" id="text-1-2-7">
+<p>
+Long-press for poweroff works
+</p>
+
+<p>
+SMC key <code>MBSe</code>, bit 0.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgce34a45" class="outline-4">
+<h4 id="orgce34a45"><span class="section-number-4">1.2.8</span> Lid switch: documented, no interrupt yet</h4>
+<div class="outline-text-4" id="text-1-2-8">
+<p>
+SMC key <code>MSLD</code>, bit 0, 1 for closed.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga31673f" class="outline-4">
+<h4 id="orga31673f"><span class="section-number-4">1.2.9</span> Ambient Light Sensor: not supported</h4>
+</div>
+<div id="outline-container-org180cf20" class="outline-4">
+<h4 id="org180cf20"><span class="section-number-4">1.2.10</span> Audio: not supported</h4>
+</div>
+
+<div id="outline-container-orgea8e851" class="outline-4">
+<h4 id="orgea8e851"><span class="section-number-4">1.2.11</span> Keyboard: supported</h4>
+<div class="outline-text-4" id="text-1-2-11">
+</div>
+<ol class="org-ol">
+<li><a id="org2286577"></a>keyboard backlight: supported, not yet merged<br /></li>
+</ol>
+</div>
+<div id="outline-container-org8288422" class="outline-4">
+<h4 id="org8288422"><span class="section-number-4">1.2.12</span> Touch pad: supported</h4>
+</div>
+<div id="outline-container-org56ae39a" class="outline-4">
+<h4 id="org56ae39a"><span class="section-number-4">1.2.13</span> Touch bar: not supported</h4>
+<div class="outline-text-4" id="text-1-2-13">
+</div>
+<ol class="org-ol">
+<li><a id="orgea2ff1b"></a>Touch bar display: not supported<br /></li>
+<li><a id="orged2bbf6"></a>Touch bar touchscreen: not supported<br /></li>
+<li><a id="orgfc6f0a0"></a>Touch bar backlight: not supported<br /></li>
+</ol>
+</div>
+
+<div id="outline-container-org7f626bb" class="outline-4">
+<h4 id="org7f626bb"><span class="section-number-4">1.2.14</span> USB host mode: supported</h4>
+</div>
+<div id="outline-container-org9a20105" class="outline-4">
+<h4 id="org9a20105"><span class="section-number-4">1.2.15</span> USB power-receiving mode: not supported</h4>
+<div class="outline-text-4" id="text-1-2-15">
+<p>
+Charging works if power supply is connected at boot time and never
+disconnected.
+</p>
+
+<p>
+Charging also works if the relevant port is removed from the device
+tree and thus left untouched by Linux.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org11f023c" class="outline-4">
+<h4 id="org11f023c"><span class="section-number-4">1.2.16</span> Storage</h4>
+<div class="outline-text-4" id="text-1-2-16">
+</div>
+<ol class="org-ol">
+<li><a id="org544ce95"></a>NVME storage: supported<br /></li>
+<li><a id="org24e652d"></a>SPI NOR flash (boot ROM): supported<br /></li>
+<li><a id="orgfb11d0f"></a>NVRAM: supported<br /></li>
+<li><a id="org76f65d2"></a>RTC: supported<br /></li>
+<li><a id="org6f9b96a"></a>USB mass storage: supported<br /></li>
+</ol>
+</div>
+
+<div id="outline-container-org971af47" class="outline-4">
+<h4 id="org971af47"><span class="section-number-4">1.2.17</span> Hardware sensors</h4>
+<div class="outline-text-4" id="text-1-2-17">
+</div>
+<ol class="org-ol">
+<li><a id="orga8fd4c2"></a>Temperature sensors: documented<br /></li>
+<li><a id="org2266486"></a>Power meters: documented<br /></li>
+<li><a id="orga765834"></a>Voltage meters: documented<br /></li>
+<li><a id="org4a0ae0a"></a>Battery status: documented<br /></li>
+</ol>
+</div>
+<div id="outline-container-orga5786dc" class="outline-4">
+<h4 id="orga5786dc"><span class="section-number-4">1.2.18</span> Fans: read-only access documented</h4>
+<div class="outline-text-4" id="text-1-2-18">
+</div>
+<ol class="org-ol">
+<li><a id="org36f5374"></a>Fan status: documented<br /></li>
+<li><a id="org8fa6195"></a>Fan control: not supported<br /></li>
+</ol>
+</div>
+
+<div id="outline-container-orgea0cc19" class="outline-4">
+<h4 id="orgea0cc19"><span class="section-number-4">1.2.19</span> Audio: not supported</h4>
+</div>
+
+<div id="outline-container-orgbfbd0f9" class="outline-4">
+<h4 id="orgbfbd0f9"><span class="section-number-4">1.2.20</span> Wireless</h4>
+<div class="outline-text-4" id="text-1-2-20">
+</div>
+<ol class="org-ol">
+<li><a id="org5af4847"></a>WiFi: supported (proprietary firmware blob)<br /></li>
+<li><a id="orgf6aa1bc"></a>Bluetooth: not supported<br /></li>
+<li><a id="org789148c"></a>NFC: not supported (I'm not even sure it's present)<br /></li>
+</ol>
+</div>
+
+<div id="outline-container-orgcec3825" class="outline-4">
+<h4 id="orgcec3825"><span class="section-number-4">1.2.21</span> Power management</h4>
+<div class="outline-text-4" id="text-1-2-21">
+</div>
+<ol class="org-ol">
+<li><a id="orgc22f3e7"></a>System reboot: supported<br /></li>
+<li><a id="orgbc67414"></a>System poweroff: supported<br /></li>
+<li><a id="org7798862"></a>System suspend/resume: not supported<br /></li>
+</ol>
+</div>
+
+<div id="outline-container-org823b4c1" class="outline-4">
+<h4 id="org823b4c1"><span class="section-number-4">1.2.22</span> RTC: supported</h4>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf15e61e" class="outline-2">
+<h2 id="orgf15e61e"><span class="section-number-2">2</span> m1lli</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+It's not quite m1n1 [<a href="https://github.com/AsahiLinux/m1n1">https://github.com/AsahiLinux/m1n1</a>].
+</p>
+
+<p>
+This is a bootloader for Linux based on a somewhat minified Linux kernel and the `kexec()` feature.  So m1lli refers to the kernel and some minimal userspace code.
+</p>
+
+<p>
+The idea is that the initial kernel, which is all that we need to interact with MacOS for, will be stable enough so it doesn't need to be flashed very often.
+</p>
+</div>
+
+<div id="outline-container-org4037cf2" class="outline-3">
+<h3 id="org4037cf2"><span class="section-number-3">2.1</span> kernel configuration</h3>
+<div class="outline-text-3" id="text-2-1">
+</div>
+<div id="outline-container-org4b186e4" class="outline-4">
+<h4 id="org4b186e4"><span class="section-number-4">2.1.1</span> included features</h4>
+<div class="outline-text-4" id="text-2-1-1">
+</div>
+<ol class="org-ol">
+<li><a id="orgab528e7"></a>a single CPU core<br /></li>
+<li><a id="orgbea6ea3"></a>keyboard (I'd like to get rid of this again)<br /></li>
+<li><a id="org5cd3cd1"></a>USB gadget-mode code<br /></li>
+</ol>
+</div>
+<div id="outline-container-orgfb643e6" class="outline-4">
+<h4 id="orgfb643e6"><span class="section-number-4">2.1.2</span> excluded features</h4>
+<div class="outline-text-4" id="text-2-1-2">
+</div>
+<ol class="org-ol">
+<li><a id="org63db274"></a>kernel modules<br /></li>
+<li><a id="orge506a76"></a>NVMe<br /></li>
+<li><a id="org4203343"></a>wireless LAN<br /></li>
+<li><a id="org621e615"></a>USB host-mode code<br /></li>
+<li><a id="org41cb03b"></a>SMP code<br /></li>
+<li><a id="orgb243fdb"></a>SMC code<br />
+<div class="outline-text-5" id="text-2-1-2-6">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Stage</th>
+<th scope="col" class="org-left">l1lli</th>
+<th scope="col" class="org-left">stage2</th>
+<th scope="col" class="org-left">Linux</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">SMP</td>
+<td class="org-left">no</td>
+<td class="org-left">no</td>
+<td class="org-left">yes</td>
+</tr>
+
+<tr>
+<td class="org-left">kernel modules</td>
+<td class="org-left">no</td>
+<td class="org-left">yes</td>
+<td class="org-left">yes</td>
+</tr>
+
+<tr>
+<td class="org-left">uses devicetree</td>
+<td class="org-left">no</td>
+<td class="org-left">yes</td>
+<td class="org-left">yes</td>
+</tr>
+
+<tr>
+<td class="org-left">writes devicetree</td>
+<td class="org-left">yes</td>
+<td class="org-left">no</td>
+<td class="org-left">no</td>
+</tr>
+
+<tr>
+<td class="org-left">kexec</td>
+<td class="org-left">yes</td>
+<td class="org-left">yes</td>
+<td class="org-left">no</td>
+</tr>
+
+<tr>
+<td class="org-left">can reboot</td>
+<td class="org-left">no</td>
+<td class="org-left">yes</td>
+<td class="org-left">yes</td>
+</tr>
+
+<tr>
+<td class="org-left">USB</td>
+<td class="org-left">no</td>
+<td class="org-left">sometimes</td>
+<td class="org-left">yes</td>
+</tr>
+
+<tr>
+<td class="org-left">keyboard</td>
+<td class="org-left">no</td>
+<td class="org-left">sometimes</td>
+<td class="org-left">yes</td>
+</tr>
+
+<tr>
+<td class="org-left">framebuffer</td>
+<td class="org-left">no</td>
+<td class="org-left">yes</td>
+<td class="org-left">yes</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+</table>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Stage</th>
+<th scope="col" class="org-left">SMP</th>
+<th scope="col" class="org-left">modules</th>
+<th scope="col" class="org-left">uses DT</th>
+<th scope="col" class="org-left">kexec</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">l1lli</td>
+<td class="org-left">no</td>
+<td class="org-left">no</td>
+<td class="org-left">no</td>
+<td class="org-left">yes</td>
+</tr>
+
+<tr>
+<td class="org-left">stage2</td>
+<td class="org-left">no</td>
+<td class="org-left">yes</td>
+<td class="org-left">yes</td>
+<td class="org-left">yes</td>
+</tr>
+
+<tr>
+<td class="org-left">Linux</td>
+<td class="org-left">yes</td>
+<td class="org-left">yes</td>
+<td class="org-left">yes</td>
+<td class="org-left">no</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+#+INCLUDE "commfile/README.org" :minlevel 2
+#+INCLUDE "l1lli/README.org" :minlevel 2
+#+INCLUDE "m1n1/README.org" :minlevel 2
+#+INCLUDE "machoImage/README.org" :minlevel 2
+#+INCLUDE "scripts/README.org" :minlevel 2
+#+INCLUDE "src/README.org" :minlevel 2
+#+INCLUDE "stage2/README.org" :minlevel 2
+</p>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div id="outline-container-orgc942e90" class="outline-2">
+<h2 id="orgc942e90"><span class="section-number-2">3</span> misc files</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+To be moved to other directories if and when they prove to be useful.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org0e49edd" class="outline-2">
+<h2 id="org0e49edd"><span class="section-number-2">4</span> linux-config</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+Linux configurations, to be moved to m1lli.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org00f265c" class="outline-2">
+<h2 id="org00f265c"><span class="section-number-2">5</span> script</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+Generic m1lli boot script, to be moved to m1lli.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org66b3105" class="outline-2">
+<h2 id="org66b3105"><span class="section-number-2">6</span> dtc-Makefile</h2>
+<div class="outline-text-2" id="text-6">
+<p>
+Makefile for dtc.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgc54c01c" class="outline-2">
+<h2 id="orgc54c01c"><span class="section-number-2">7</span> stampserver.pl</h2>
+<div class="outline-text-2" id="text-7">
+<p>
+A hack to make make make targets when directories are modified.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org422c54e" class="outline-2">
+<h2 id="org422c54e"><span class="section-number-2">8</span> m1llion</h2>
+<div class="outline-text-2" id="text-8">
+<p>
+Interact with m1lli over an ACM interface. To be moved to m1lli.
+</p>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="date">Created: 2021</p>
+<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>
