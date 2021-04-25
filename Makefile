@@ -37,6 +37,7 @@ reconfigure-busybox!:
 	$(CP) busybox/.config misc/busybox-config/m1lli
 	diff -u misc/busybox-config/m1lli.old misc/busybox-config/m1lli
 
+# $(MAKE) -C linux ARCH=arm64 CROSS_COMPILE=$(CROSS_COMPILE) O=o tinyconfig
 reconfigure-linux/%!:
 	$(MKDIR) linux/o
 	$(CP) misc/linux-config/$* linux/o/.config
@@ -158,8 +159,8 @@ build/m1lli-m1lli.tar.gz: build/m1lli-m1lli.tar
 build/m1lli.m1lli: build/m1lli-m1lli.tar.gz
 	$(CP) build/m1lli-m1lli.tar.gz build/m1lli.m1lli
 
-build/m1lli-l1lli.tar: build/Image-l1lli build/script
-	(cd build; $(MKDIR) m1lli-l1lli; cp Image-l1lli m1lli-l1lli/Image; cp script m1lli-l1lli/script; cd m1lli-l1lli; tar cvf m1lli-l1lli.tar Image script; cd ..; cp m1lli-l1lli/m1lli-l1lli.tar .)
+build/m1lli-l1lli.tar: build/l1lli.image build/script
+	(cd build; $(MKDIR) m1lli-l1lli; cp l1lli.image m1lli-l1lli/Image; cp script m1lli-l1lli/script; cd m1lli-l1lli; tar cvf m1lli-l1lli.tar Image script; cd ..; cp m1lli-l1lli/m1lli-l1lli.tar .)
 
 build/m1lli-l1lli.tar.gz: build/m1lli-l1lli.tar
 	gzip < build/m1lli-l1lli.tar > build/m1lli-l1lli.tar.gz
