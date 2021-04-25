@@ -26,6 +26,66 @@ Debian GNU/Linux sid, [https://www.debian.org].
 X.org, [https://www.xorg.freedesktop.org].
 
 ** Hardware
+- [X] CPU
+  - [X] CPU power management
+- [-] Graphics
+  - [X] frame buffer
+    - [X] forced to =x8r8g8b8=
+  - [-] back light
+    - [X] power-saving mode
+    - [ ] brightness control
+  - [ ] bitblt
+  - [ ] GPU
+  - [ ] scaler
+  - [ ] Video decode acceleration
+- [-] HID
+  - [X] keyboard
+    - [X] keyboard backlight
+  - [X] touch pad
+  - [-] power button
+    - [-] SMC
+    - [ ] power button interrupt
+  - [-] lid switch
+    - [-] SMC
+    - [ ] lid switch interrupt
+  - [ ] touch bar
+    - [ ] touch bar display
+    - [ ] touch bar touch screen
+  - [ ] fingerprint reader
+  - [X] USB HID
+- [-] connectivity
+  - [X] wireless LAN
+  - [ ] Bluetooth
+- [ ] audio
+- [-] sensors
+  - [ ] camera
+  - [ ] microphone
+  - [-] battery status indicators
+    - [-] SMC
+  - [ ] ambient light sensor
+  - [-] temperature sensors
+    - [-] SMC
+    - [ ] ADT
+  - [-] power sensors
+    - [-] SMC
+- [-] other hardware
+  - [X] RTC
+  - [X] NVRAM
+  - [X] SPI NOR flash
+  - [-] fans
+    - [-] SMC status
+    - [ ] control
+- [X] storage
+  - [X] NVMe
+  - [X] USB storage
+- [-] system power management
+  - [-] charging
+    - [X] when connected on boot
+    - [ ] always
+  - [X] system reboot
+  - [X] system shutdown
+  - [ ] system suspend/resume
+  - [-] WDT
 
 *** CPU: supported
 
