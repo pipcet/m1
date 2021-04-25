@@ -92,11 +92,11 @@ build/linux.macho: build/Image build/m1.dtb stamp/preloader-m1 | build
 	$(MAKE) -C preloader-m1
 	$(CP) preloader-m1/linux.macho build/linux.macho
 
-build/linux-%.macho: build/Image-% build/m1-%.dtb stamp/preloader-m1 | build
+build/%.macho: build/Image-% build/m1-%.dtb stamp/preloader-m1 | build
 	$(CP) build/Image-$* preloader-m1/Image
 	$(CP) build/m1-$*.dtb preloader-m1/apple-m1-j293.dtb
 	$(MAKE) -C preloader-m1
-	$(CP) preloader-m1/linux.macho build/linux-$*.macho
+	$(CP) preloader-m1/linux.macho build/$*.macho
 
 build/m1n1/m1n1.macho: stamp/m1n1 | build/m1n1
 	$(MAKE) -C m1n1
@@ -178,11 +178,11 @@ m1n1-shell!:
 m1n1-linux!: build/linux.macho
 	M1N1DEVICE=$(M1N1DEVICE) python3 ./m1n1/proxyclient/chainload.py ./build/linux.macho
 
-m1n1-m1lli!: build/linux-m1lli.macho
-	M1N1DEVICE=$(M1N1DEVICE) python3 ./m1n1/proxyclient/chainload.py ./build/linux-m1lli.macho
+m1n1-m1lli!: build/m1lli.macho
+	M1N1DEVICE=$(M1N1DEVICE) python3 ./m1n1/proxyclient/chainload.py ./build/m1lli.macho
 
-m1n1-lilli!: build/linux-l1lli.macho
-	M1N1DEVICE=$(M1N1DEVICE) python3 ./m1n1/proxyclient/chainload.py ./build/linux-l1lli.macho
+m1n1-lilli!: build/l1lli.macho
+	M1N1DEVICE=$(M1N1DEVICE) python3 ./m1n1/proxyclient/chainload.py ./build/l1lli.macho
 
 m1n1-m1n1!: build/m1n1/m1n1.macho
 	M1N1DEVICE=$(M1N1DEVICE) python3 ./m1n1/proxyclient/chainload.py ./build/m1n1/m1n1.macho
