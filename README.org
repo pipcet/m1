@@ -172,3 +172,6 @@ tree and thus left untouched by Linux.
 **** System suspend/resume: not supported
 
 *** RTC: supported
+
+#+INCLUDE: "m1lli/README.org" :minlevel 1
+#+INCLUDE: "misc/README.org" :minlevel 1

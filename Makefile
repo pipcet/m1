@@ -231,4 +231,9 @@ build/dtc build/fdtoverlay: dtc
 %.adtb.dtp: %.adtb m1lli/scripts/adt2fdt-native
 	m1lli/scripts/adt2fdt-native $*.adtb > $*.adtb.dtp
 
+# This shortens dates. Update in 2999.
+README.html: README.org $(wildcard */README.org) $(wildcard */*/README.org)
+	emacs README.org --batch -Q -f org-html-export-to-html
+	sed -i -e 's/\(2[0-9][0-9][0-9]\)-[0-9][0-9]-[0-9][0-9] [A-Z][a-z][a-z] [0-9][0-9]:[0-9][0-9]/\1/g' README.html
+
 .PHONY: %!
