@@ -9,6 +9,8 @@ SUDO ?= $(and $(filter pip,$(shell whoami)),sudo)
 
 all: build/l1lli.macho build/m1lli.macho build/linux.macho build/m1n1/m1n1.tar.gz
 
+# main targets
+
 # directories
 
 build:
@@ -43,29 +45,31 @@ reconfigure-linux/%!:
 	$(CP) linux/o/.config misc/linux-config/$*
 	diff -u misc/linux-config/$*.old misc/linux-config/$*
 
-build/Image build/m1.dtb: stamp/linux misc/linux-config/o | build
+build/m1.dtb: build/linux.image
+	$(MAKE) linux/o/arch/arm64/boot/dts/apple/apple-m1-j293.dtb.dts.dtb
+	$(CP) linux/o/arch/arm64/boot/dts/apple/apple-m1-j293.dtb.dts.dtb build/m1.dtb
+
+build/linux.image: stamp/linux misc/linux-config/o | build
 	$(MKDIR) linux/o
 	$(CP) misc/linux-config/o linux/o/.config
 	$(MAKE) -C linux ARCH=arm64 CROSS_COMPILE=$(CROSS_COMPILE) O=o oldconfig
 	diff -u misc/linux-config/o linux/o/.config
 	$(MAKE) -C linux ARCH=arm64 CROSS_COMPILE=$(CROSS_COMPILE) O=o
-	$(CP) linux/o/arch/arm64/boot/Image build/Image
-	$(MAKE) linux/o/arch/arm64/boot/dts/apple/apple-m1-j293.dtb.dts.dtb
-	$(CP) linux/o/arch/arm64/boot/dts/apple/apple-m1-j293.dtb.dts.dtb build/m1.dtb
+	$(CP) linux/o/arch/arm64/boot/Image build/linux.image
 
-build/Image-% build/m1-%.dtb: stamp/linux misc/linux-config/o-% | build
+build/%.image build/m1-%.dtb: stamp/linux misc/linux-config/o-% | build
 	$(MKDIR) linux/o-$*
 	$(CP) misc/linux-config/o-$* linux/o-$*/.config
 	$(MAKE) -C linux ARCH=arm64 CROSS_COMPILE=$(CROSS_COMPILE) O=o-$* oldconfig
 	diff -u misc/linux-config/o-$* linux/o-$*/.config
 	$(MAKE) -C linux ARCH=arm64 CROSS_COMPILE=$(CROSS_COMPILE) O=o-$*
-	$(CP) linux/o-$*/arch/arm64/boot/Image build/Image-$*
+	$(CP) linux/o-$*/arch/arm64/boot/Image build/$*.image
 	$(MAKE) linux/o-$*/arch/arm64/boot/dts/apple/apple-m1-j293.dtb.dts.dtb
 	$(CP) linux/o-$*/arch/arm64/boot/dts/apple/apple-m1-j293.dtb.dts.dtb build/m1-$*.dtb
 
-build/Image-m1lli: build/Image build/m1lli build/busybox build/kexec build/commfile misc/init m1lli/stage2/init m1lli/l1lli/linux-initrd-spec binaries/perl.tar.gz build/m1lli-scripts.tar build/m1.dtb build/dtc build/fdtoverlay build/linux.macho
+build/m1lli.image: build/linux.image build/m1lli build/busybox build/kexec build/commfile misc/init m1lli/stage2/init m1lli/l1lli/linux-initrd-spec binaries/perl.tar.gz build/m1lli-scripts.tar build/m1.dtb build/dtc build/fdtoverlay build/linux.macho
 
-build/Image-l1lli: build/Image-m1lli build/m1lli build/busybox build/kexec build/commfile misc/init m1lli/l1lli/init m1lli/l1lli/linux-initrd-spec binaries/perl.tar.gz build/m1lli-scripts.tar build/m1.dtb build/dtc build/fdtoverlay build/linux.macho
+build/l1lli.image: build/m1lli.image build/m1lli build/busybox build/kexec build/commfile misc/init m1lli/l1lli/init m1lli/l1lli/linux-initrd-spec binaries/perl.tar.gz build/m1lli-scripts.tar build/m1.dtb build/dtc build/fdtoverlay build/linux.macho
 
 build/m1lli-scripts.tar: m1lli/scripts/adt-convert.pl m1lli/scripts/adt-finalize.pl m1lli/scripts/adt-transform.pl m1lli/scripts/fdt-to-props.pl m1lli/scripts/fdtdiff.pl m1lli/scripts/props-to-fdt.pl m1lli/scripts/adt2fdt m1lli/scripts/copy-fdt-props.pl
 	(cd m1lli/scripts; tar cv adt-convert.pl adt-finalize.pl adt-transform.pl fdt-to-props.pl fdtdiff.pl props-to-fdt.pl adt2fdt copy-fdt-props.pl) > build/m1lli-scripts.tar
@@ -79,19 +83,19 @@ m1lli/scripts/adt2fdt: m1lli/src/adt2fdt.cc
 m1lli/scripts/adt2fdt-native: m1lli/src/adt2fdt.cc
 	g++ -Os -o m1lli/scripts/adt2fdt-native m1lli/src/adt2fdt.cc
 
-build/modules.tar: build/Image | build
+build/modules.tar: build/linux.image | build
 	$(MKDIR) build/modules
 	$(MAKE) -C linux ARCH=arm64 CROSS_COMPILE=$(CROSS_COMPILE) O=o MODLIB=$(PWD)/build/modules modules_install
 	(cd build; $(TAR) cf modules.tar modules)
 
-build/linux.macho: build/Image build/m1.dtb $(wildcard preloader-m1/*.c) $(wildcard preloader-m1/*.h) $(wildcard preloader-m1/*.S) $(wildcard preloader-m1/Makefile) | build
-	$(CP) build/Image preloader-m1
+build/linux.macho: build/linux.image build/m1.dtb $(wildcard preloader-m1/*.c) $(wildcard preloader-m1/*.h) $(wildcard preloader-m1/*.S) $(wildcard preloader-m1/Makefile) | build
+	$(CP) build/linux.image preloader-m1/Image
 	$(CP) build/m1.dtb preloader-m1/apple-m1-j293.dtb
 	$(MAKE) -C preloader-m1
 	$(CP) preloader-m1/linux.macho build/linux.macho
 
-build/%.macho: build/Image-% build/m1-%.dtb $(wildcard preloader-m1/*.c) $(wildcard preloader-m1/*.h) $(wildcard preloader-m1/*.S) $(wildcard preloader-m1/Makefile) | build
-	$(CP) build/Image-$* preloader-m1/Image
+build/%.macho: build/%.image build/m1-%.dtb $(wildcard preloader-m1/*.c) $(wildcard preloader-m1/*.h) $(wildcard preloader-m1/*.S) $(wildcard preloader-m1/Makefile) | build
+	$(CP) build/$*.image preloader-m1/Image
 	$(CP) build/m1-$*.dtb preloader-m1/apple-m1-j293.dtb
 	$(MAKE) -C preloader-m1
 	$(CP) preloader-m1/linux.macho build/$*.macho
@@ -136,11 +140,14 @@ build/m1n1/script: misc/script-m1n1
 	$(CP) misc/script-m1n1 build/m1n1/script
 	chmod u+x build/m1n1/script
 
-build/m1lli.tar: build/Image build/script
-	(cd build; tar cvf m1lli.tar Image script)
+build/m1lli.tar: build/linux.image build/script
+	(cd build; cp linux.image Image; tar cvf m1lli.tar Image script)
 
 build/m1lli.tar.gz: build/m1lli.tar
 	gzip < build/m1lli.tar > build/m1lli.tar.gz
+
+build/linux.m1lli: build/m1lli.tar.gz
+	$(CP) build/m1lli.tar.gz build/linux.m1lli
 
 build/m1lli-m1lli.tar: build/Image-m1lli build/script
 	(cd build; $(MKDIR) m1lli-m1lli; cp Image-m1lli m1lli-m1lli/Image; cp script m1lli-m1lli/script; cd m1lli-m1lli; tar cvf m1lli-m1lli.tar Image script; cd ..; cp m1lli-m1lli/m1lli-m1lli.tar .)
@@ -148,11 +155,17 @@ build/m1lli-m1lli.tar: build/Image-m1lli build/script
 build/m1lli-m1lli.tar.gz: build/m1lli-m1lli.tar
 	gzip < build/m1lli-m1lli.tar > build/m1lli-m1lli.tar.gz
 
+build/m1lli.m1lli: build/m1lli-m1lli.tar.gz
+	$(CP) build/m1lli-m1lli.tar.gz build/m1lli.m1lli
+
 build/m1lli-l1lli.tar: build/Image-l1lli build/script
 	(cd build; $(MKDIR) m1lli-l1lli; cp Image-l1lli m1lli-l1lli/Image; cp script m1lli-l1lli/script; cd m1lli-l1lli; tar cvf m1lli-l1lli.tar Image script; cd ..; cp m1lli-l1lli/m1lli-l1lli.tar .)
 
 build/m1lli-l1lli.tar.gz: build/m1lli-l1lli.tar
 	gzip < build/m1lli-l1lli.tar > build/m1lli-l1lli.tar.gz
+
+build/l1lli.m1lli: build/m1lli-l1lli.tar.gz
+	$(CP) build/m1lli-l1lli.tar.gz build/l1lli.m1lli
 
 build/m1n1/m1n1.tar: build/m1n1/m1n1.image.macho.image build/m1n1/m1n1.elf build/m1n1/script
 	cp build/m1n1/m1n1.macho.image build/m1n1/m1n1.macho
@@ -200,11 +213,11 @@ build/machoImage.elf: m1lli/machoImage/machoImage.c
 build/Image-macho: m1lli/machoImage/Image-macho.c
 	gcc -o build/Image-macho m1lli/machoImage/Image-macho.c
 
-%.image.macho: %.image build/machoImage
-	cat build/machoImage $*.image > $*.image.macho
+%.macho.image: %.macho build/machoImage
+	cat build/machoImage $*.macho > $*.macho.image
 
-%.macho.image: %.macho build/Image-macho
-	build/Image-macho $*.macho $*.macho.image
+%.image.macho: %.image build/Image-macho
+	build/Image-macho $*.image $*.image.macho
 
 dtc:
 	$(MKDIR) dtc
