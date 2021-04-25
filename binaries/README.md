@@ -1,4 +1,4 @@
-# perl.tar
+# perl.tar.gz
 
 This is a binary file containing the Perl interpreter and required libraries. It has been built on a Debian GNU/Linux sid system by running:
 
