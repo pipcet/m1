@@ -1,0 +1,23 @@
+* misc files
+
+To be moved to other directories if and when they prove to be useful.
+
+* linux-config
+
+Linux configurations, to be moved to m1lli.
+
+* script
+
+Generic m1lli boot script, to be moved to m1lli.
+
+* dtc-Makefile
+
+Makefile for dtc.
+
+* stampserver.pl
+
+A hack to make make make targets when directories are modified.
+
+* m1llion
+
+Interact with m1lli over an ACM interface. To be moved to m1lli.
