@@ -84,13 +84,13 @@ build/modules.tar: build/Image | build
 	$(MAKE) -C linux ARCH=arm64 CROSS_COMPILE=$(CROSS_COMPILE) O=o MODLIB=$(PWD)/build/modules modules_install
 	(cd build; $(TAR) cf modules.tar modules)
 
-build/linux.macho: build/Image build/m1.dtb stamp/preloader-m1 | build
+build/linux.macho: build/Image build/m1.dtb $(wildcard preloader-m1/*.c) $(wildcard preloader-m1/*.h) $(wildcard preloader-m1/*.S) $(wildcard preloader-m1/Makefile) | build
 	$(CP) build/Image preloader-m1
 	$(CP) build/m1.dtb preloader-m1/apple-m1-j293.dtb
 	$(MAKE) -C preloader-m1
 	$(CP) preloader-m1/linux.macho build/linux.macho
 
-build/%.macho: build/Image-% build/m1-%.dtb stamp/preloader-m1 | build
+build/%.macho: build/Image-% build/m1-%.dtb $(wildcard preloader-m1/*.c) $(wildcard preloader-m1/*.h) $(wildcard preloader-m1/*.S) $(wildcard preloader-m1/Makefile) | build
 	$(CP) build/Image-$* preloader-m1/Image
 	$(CP) build/m1-$*.dtb preloader-m1/apple-m1-j293.dtb
 	$(MAKE) -C preloader-m1
