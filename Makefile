@@ -274,4 +274,5 @@ m1lli/asm-snippets/%.bin.s: m1lli/asm-snippets/%.bin
 m1lli/asm-snippets/%.h: m1lli/asm-snippets/%.s
 	(NAME=$$(echo $* | sed -e 's/\..*//' -e 's/-/_/g'); echo "unsigned int $$NAME[] = {";  cat $< | tail -n +8 | sed -e 's/\t/ /g' | sed -e 's/^\(.*\):[ \t]*\([0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]\)[ \t]*\(.*\)$$/\t0x\2 \/\* \1: \3 \*\/,/g'; echo "};") > m1lli/asm-snippets/$*.h
 
+.SECONDARY:
 .PHONY: %!
