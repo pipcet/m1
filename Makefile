@@ -211,6 +211,9 @@ build/machoImage: build/machoImage.elf
 build/machoImage.elf: m1lli/machoImage/machoImage.c
 	aarch64-linux-gnu-gcc -static -nostdlib -nolibc -Os -fPIC -o build/machoImage.elf m1lli/machoImage/machoImage.c
 
+build/machoImage.s: m1lli/machoImage/machoImage.c
+	aarch64-linux-gnu-gcc -S -static -nostdlib -nolibc -Os -fPIC -o build/machoImage.s m1lli/machoImage/machoImage.c
+
 build/Image-macho: m1lli/machoImage/Image-macho.c
 	gcc -o build/Image-macho m1lli/machoImage/Image-macho.c
 
