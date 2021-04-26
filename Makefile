@@ -193,7 +193,7 @@ m1n1-linux!: build/linux.macho
 m1n1-m1lli!: build/m1lli.macho
 	M1N1DEVICE=$(M1N1DEVICE) python3 ./m1n1/proxyclient/chainload.py ./build/m1lli.macho
 
-m1n1-lilli!: build/l1lli.macho
+m1n1-l1lli!: build/l1lli.macho
 	M1N1DEVICE=$(M1N1DEVICE) python3 ./m1n1/proxyclient/chainload.py ./build/l1lli.macho
 
 m1n1-m1n1!: build/m1n1/m1n1.macho
