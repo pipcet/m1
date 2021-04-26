@@ -253,4 +253,25 @@ README.html: README.org $(wildcard */README.org) $(wildcard */*/README.org)
 	emacs README.org --batch -Q -f org-html-export-to-html
 	sed -i -e 's/\(2[0-9][0-9][0-9]\)-[0-9][0-9]-[0-9][0-9] [A-Z][a-z][a-z] [0-9][0-9]:[0-9][0-9]/\1/g' README.html
 
+m1lli/asm-snippets/%.c.S: m1lli/asm-snippets/%.c
+	aarch64-linux-gnu-gcc -Os -S -o m1lli/asm-snippets/$*.c.S m1lli/asm-snippets/$*.c
+
+m1lli/asm-snippets/%.o.S: m1lli/asm-snippets/%.S
+	aarch64-linux-gnu-gcc -Os -c -o m1lli/asm-snippets/$*.o.S m1lli/asm-snippets/$*.S
+
+m1lli/asm-snippets/%.S.elf: m1lli/asm-snippets/%.S
+	aarch64-linux-gnu-gcc -Os -static -nostdlib -o m1lli/asm-snippets/$*.S.elf m1lli/asm-snippets/$*.S
+
+m1lli/asm-snippets/%.elf.bin: m1lli/asm-snippets/%.elf
+	objcopy -O binary -S --only-section .pretext.0 --only-section .text --only-section .data --only-section .got --only-section .last --only-section .text.2 m1lli/asm-snippets/$*.elf m1lli/asm-snippets/$*.elf.bin
+
+m1lli/asm-snippets/%.bin.s: m1lli/asm-snippets/%.bin
+	objdump -maarch64 -D -bbinary $< > $@
+
+#m1lli/asm-snippets/%.h: m1lli/asm-snippets/%
+#:	(NAME=$$(echo $* | sed -e 's/\..*//' -e 's/-/_/g'); echo "unsigned int $$NAME[] = {";  cat m1lli/asm-snippets/$* | od -tx4 --width=4 -Anone -v | sed -e 's/ \(.*\)/\t0x\1,/'; echo "};") > m1lli/asm-snippets/$*.h
+
+m1lli/asm-snippets/%.h: m1lli/asm-snippets/%.s
+	(NAME=$$(echo $* | sed -e 's/\..*//' -e 's/-/_/g'); echo "unsigned int $$NAME[] = {";  cat $< | tail -n +8 | sed -e 's/\t/ /g' | sed -e 's/^\(.*\):[ \t]*\([0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]\)[ \t]*\(.*\)$$/\t0x\2 \/\* \1: \3 \*\/,/g'; echo "};") > m1lli/asm-snippets/$*.h
+
 .PHONY: %!
