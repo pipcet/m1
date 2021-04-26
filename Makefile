@@ -214,6 +214,9 @@ build/machoImage.elf: m1lli/machoImage/machoImage.c
 build/machoImage.s: m1lli/machoImage/machoImage.c
 	aarch64-linux-gnu-gcc -S -static -nostdlib -nolibc -Os -fPIC -o build/machoImage.s m1lli/machoImage/machoImage.c
 
+build/linux-to-macho: m1lli/macho-linux/linux-to-macho.c
+	gcc -o $@ $<
+
 build/Image-macho: m1lli/machoImage/Image-macho.c
 	gcc -o build/Image-macho m1lli/machoImage/Image-macho.c
 
@@ -253,8 +256,11 @@ README.html: README.org $(wildcard */README.org) $(wildcard */*/README.org)
 	emacs README.org --batch -Q -f org-html-export-to-html
 	sed -i -e 's/\(2[0-9][0-9][0-9]\)-[0-9][0-9]-[0-9][0-9] [A-Z][a-z][a-z] [0-9][0-9]:[0-9][0-9]/\1/g' README.html
 
+hammer!:
+	while true; do make build/linux.image.macho; M1N1DEVICE=$(M1N1DEVICE) python3 ./m1n1/proxyclient/chainload.py ./build/linux.image.macho; sleep 1; done
+
 m1lli/asm-snippets/%.c.S: m1lli/asm-snippets/%.c
-	aarch64-linux-gnu-gcc -Os -S -o m1lli/asm-snippets/$*.c.S m1lli/asm-snippets/$*.c
+	aarch64-linux-gnu-gcc -march=armv8.4-a -Os -S -o m1lli/asm-snippets/$*.c.S m1lli/asm-snippets/$*.c
 
 m1lli/asm-snippets/%.o.S: m1lli/asm-snippets/%.S
 	aarch64-linux-gnu-gcc -Os -c -o m1lli/asm-snippets/$*.o.S m1lli/asm-snippets/$*.S
