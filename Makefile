@@ -85,8 +85,9 @@ m1lli/scripts/adt2fdt-native: m1lli/src/adt2fdt.cc
 	g++ -Os -o m1lli/scripts/adt2fdt-native m1lli/src/adt2fdt.cc
 
 build/modules.tar: build/linux.image | build
+	rm -rf build/modules
 	$(MKDIR) build/modules
-	$(MAKE) -C linux ARCH=arm64 CROSS_COMPILE=$(CROSS_COMPILE) O=o MODLIB=$(PWD)/build/modules modules_install
+	$(MAKE) -C linux ARCH=arm64 CROSS_COMPILE=$(CROSS_COMPILE) O=o INSTALL_MOD_PATH=$(PWD)/build/modules modules_install
 	(cd build; $(TAR) cf modules.tar modules)
 
 build/linux.macho: build/linux.image build/m1.dtb $(wildcard preloader-m1/*.c) $(wildcard preloader-m1/*.h) $(wildcard preloader-m1/*.S) $(wildcard preloader-m1/Makefile) | build
