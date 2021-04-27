@@ -50,7 +50,7 @@ build/m1.dtb: build/linux.image
 	$(MAKE) linux/o/arch/arm64/boot/dts/apple/apple-m1-j293.dtb.dts.dtb
 	$(CP) linux/o/arch/arm64/boot/dts/apple/apple-m1-j293.dtb.dts.dtb build/m1.dtb
 
-build/linux.image: stamp/linux misc/linux-config/o | build
+build/linux.image: stamp/linux misc/linux-config/o m1lli/asm-snippets/minimal-dt.dts.dtb.h | build
 	$(MKDIR) linux/o
 	$(CP) misc/linux-config/o linux/o/.config
 	$(MAKE) -C linux ARCH=arm64 CROSS_COMPILE=$(CROSS_COMPILE) O=o oldconfig
@@ -217,7 +217,7 @@ build/machoImage.s: m1lli/machoImage/machoImage.c
 build/linux-to-macho: m1lli/macho-linux/linux-to-macho.c
 	gcc -o $@ $<
 
-build/Image-macho: m1lli/machoImage/Image-macho.c
+build/Image-macho: m1lli/machoImage/Image-macho.c m1lli/asm-snippets/perform-alignment.S.elf.bin.h m1lli/asm-snippets/perform-alignment-2.S.elf.bin.h m1lli/asm-snippets/remap-to-physical.S.elf.bin.h m1lli/asm-snippets/jump-to-start-of-page.S.elf.bin.h m1lli/asm-snippets/enable-all-clocks.S.elf.bin.h m1lli/asm-snippets/bring-up-phys.S.elf.bin.h
 	gcc -o build/Image-macho m1lli/machoImage/Image-macho.c
 
 %.macho.image: %.macho build/machoImage
@@ -257,7 +257,7 @@ README.html: README.org $(wildcard */README.org) $(wildcard */*/README.org)
 	sed -i -e 's/\(2[0-9][0-9][0-9]\)-[0-9][0-9]-[0-9][0-9] [A-Z][a-z][a-z] [0-9][0-9]:[0-9][0-9]/\1/g' README.html
 
 hammer!:
-	while true; do make build/linux.image.macho; M1N1DEVICE=$(M1N1DEVICE) python3 ./m1n1/proxyclient/chainload.py ./build/linux.image.macho; sleep 1; done
+	while true; do make -j12 build/l1lli.image.macho && (M1N1DEVICE=$(M1N1DEVICE) python3 ./m1n1/proxyclient/chainload.py ./build/l1lli.image.macho); sleep 1; done
 
 m1lli/asm-snippets/%.c.S: m1lli/asm-snippets/%.c
 	aarch64-linux-gnu-gcc -march=armv8.4-a -Os -S -o m1lli/asm-snippets/$*.c.S m1lli/asm-snippets/$*.c
@@ -279,6 +279,9 @@ m1lli/asm-snippets/%.bin.s: m1lli/asm-snippets/%.bin
 
 m1lli/asm-snippets/%.h: m1lli/asm-snippets/%.s
 	(NAME=$$(echo $* | sed -e 's/\..*//' -e 's/-/_/g'); echo "unsigned int $$NAME[] = {";  cat $< | tail -n +8 | sed -e 's/\t/ /g' | sed -e 's/^\(.*\):[ \t]*\([0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]\)[ \t]*\(.*\)$$/\t0x\2 \/\* \1: \3 \*\/,/g'; echo "};") > m1lli/asm-snippets/$*.h
+
+m1lli/asm-snippets/%.dtb.h: m1lli/asm-snippets/%.dtb
+	(echo "{";  cat m1lli/asm-snippets/$*.dtb | od -tx4 --width=4 -Anone -v | sed -e 's/ \(.*\)/\t0x\1,/'; echo "};") > m1lli/asm-snippets/$*.dtb.h
 
 .SECONDARY:
 .PHONY: %!
