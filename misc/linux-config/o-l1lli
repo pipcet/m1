@@ -134,7 +134,6 @@ CONFIG_EXPERT=y
 # CONFIG_SYSFS_SYSCALL is not set
 # CONFIG_FHANDLE is not set
 # CONFIG_POSIX_TIMERS is not set
-# CONFIG_PRINTK is not set
 # CONFIG_BUG is not set
 # CONFIG_BASE_FULL is not set
 # CONFIG_FUTEX is not set
@@ -146,6 +145,7 @@ CONFIG_EXPERT=y
 # CONFIG_AIO is not set
 # CONFIG_IO_URING is not set
 # CONFIG_ADVISE_SYSCALLS is not set
+CONFIG_PRINTK=y
 # CONFIG_MEMBARRIER is not set
 # CONFIG_KALLSYMS is not set
 # CONFIG_BPF_SYSCALL is not set
