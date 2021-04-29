@@ -20,5 +20,9 @@ jobs:
     - run: make -kj3 oldconfig-linux/stage2!
     - run: make -kj3 oldconfig-linux/linux!
     - run: make -kj3 build/linux.image
+    - run: make -kj3 build/stage2.image
+    - run: make -kj3 build/stage1.image
     - run: make -kj3 artifacts/up/linux.image
+    - run: make -kj3 artifacts/up/stage2.image
+    - run: make -kj3 artifacts/up/stage1.image
     - run: make -kj3 artifact-push!
