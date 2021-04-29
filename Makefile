@@ -200,6 +200,9 @@ m1lli-m1n1!: build/m1n1/m1n1.tar.gz misc/commfile-server.pl
 misc/linux-config/%.pospart: misc/linux-config/%
 	egrep -v '^#' < misc/linux-config/$* > misc/linux-config/$*.pospart
 
+build/image-to-macho: m1lli/macho-image/image-to-macho.c m1lli/asm-snippets/.all
+	gcc -Os -o $@ $<
+
 build/machoImage: build/machoImage.elf
 	objcopy -O binary -S --only-section .text --only-section .data --only-section .got --only-section .last build/machoImage.elf build/machoImage
 
