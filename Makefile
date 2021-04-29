@@ -58,7 +58,7 @@ build/%.image: stamp/linux m1lli/%/linux.config | build
 	$(CP) m1lli/$*/linux.config linux/o/$*/.config
 	$(MAKE) -C linux ARCH=arm64 CROSS_COMPILE=$(CROSS_COMPILE) O=o/$* oldconfig
 	diff -u m1lli/$*/linux.config linux/o/$*/.config
-	$(MAKE) -C linux ARCH=arm64 CROSS_COMPILE=$(CROSS_COMPILE) O=o/$*
+	$(MAKE) -C linux ARCH=arm64 CROSS_COMPILE=$(CROSS_COMPILE) O=o/$* Image
 	$(CP) linux/o/$*/arch/arm64/boot/Image build/$*.image
 	$(MAKE) linux/o/$*/arch/arm64/boot/dts/apple/apple-m1-j293.dtb.dts.dtb
 	$(CP) linux/o/$*/arch/arm64/boot/dts/apple/apple-m1-j293.dtb.dts.dtb build/$*.dtb
