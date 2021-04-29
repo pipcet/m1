@@ -1,9 +1,9 @@
 name: workflow
 on:
   push:
-    branches: [ master, pearl ]
+    branches: [ main, pearl ]
   pull_request:
-    branches: [ master, pearl ]
+    branches: [ main, pearl ]
 jobs:
   all:
     name: all
