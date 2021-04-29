@@ -14,4 +14,7 @@ jobs:
         submodules: true
     - run: sudo apt-get install gcc-aarch64-linux-gnu
     - run: sudo apt-get install binutils-aarch64-linux-gnu
+    - run: make -kj3 oldconfig-linux/stage1!
+    - run: make -kj3 oldconfig-linux/stage2!
+    - run: make -kj3 oldconfig-linux/linux!
     - run: make -kj3 build/linux.image

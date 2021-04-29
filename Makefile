@@ -33,6 +33,14 @@ reconfigure-busybox!:
 	$(CP) busybox/.config m1lli/busybox/busybox.config
 	diff -u m1lli/busybox/busybox.config.old m1lli/busybox/busybox.config
 
+oldconfig-linux/%!: m1lli/%/linux.config
+	$(MKDIR) linux/o/$*
+	$(CP) m1lli/$*/linux.config linux/o/$*/.config
+	$(MAKE) -C linux ARCH=arm64 CROSS_COMPILE=$(CROSS_COMPILE) O=o/$* oldconfig
+	$(CP) m1lli/$*/linux.config m1lli/$*/linux.config.old
+	$(CP) linux/o/$*/.config m1lli/$*/linux.config
+	diff -u m1lli/$*/linux.config.old m1lli/$*/linux.config || true
+
 # $(MAKE) -C linux ARCH=arm64 CROSS_COMPILE=$(CROSS_COMPILE) O=o tinyconfig
 reconfigure-linux/%!: m1lli/%/linux.config
 	$(MKDIR) linux/o/$*
