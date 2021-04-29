@@ -7,7 +7,7 @@ TAR ?= tar
 PWD = $(shell pwd)
 SUDO ?= $(and $(filter pip,$(shell whoami)),sudo)
 
-all: build/stage1.macho build/stage2.macho build/linux.macho build/m1n1/m1n1.tar.gz
+all: build/stage1.macho build/stage2.macho build/linux.macho build/m1n1.tar.gz
 
 build:
 	$(MKDIR) build
@@ -102,18 +102,18 @@ build/%.macho: build/%.image build/m1-%.dtb $(wildcard preloader-m1/*.c) $(wildc
 	$(MAKE) -C preloader-m1
 	$(CP) preloader-m1/linux.macho build/$*.macho
 
-build/m1n1/m1n1.macho: stamp/m1n1 | build/m1n1
+build/m1n1.macho: stamp/m1n1 | build/m1n1
 	$(MAKE) -C m1n1
-	$(CP) m1n1/build/m1n1.macho build/m1n1/m1n1.macho
+	$(CP) m1n1/build/m1n1.macho $@
 
-build/m1n1/m1n1.elf: stamp/m1n1 | build/m1n1
+build/m1n1.elf: stamp/m1n1 | build/m1n1
 	$(MAKE) -C m1n1
-	$(CP) m1n1/build/m1n1.elf build/m1n1/m1n1.elf
+	$(CP) m1n1/build/m1n1.elf $@
 
-build/m1n1/m1n1.image: build/machoImage build/m1n1/m1n1.macho | build/m1n1
-	$(CAT) build/machoImage build/m1n1/m1n1.macho > build/m1n1/m1n1.image
+build/m1n1.image: build/macho-to-image build/m1n1.macho | build/m1n1
+	$(CAT) $< build/m1n1.macho > $@
 
-build/m1n1ux.macho: build/m1n1/m1n1.macho build/linux.macho | build
+build/m1n1ux.macho: build/m1n1.macho build/linux.macho | build
 	$(CAT) $^ > $@
 
 build/kexec: stamp/kexec-tools | build
@@ -144,9 +144,9 @@ build/%.image.m1lli.d/script: m1lli/%/m1lli-script build/%.m1lli.d
 build/%.image.m1lli.d/Image: build/%.image
 	$(CP) $< $@
 
-build/m1n1/script: misc/script-m1n1
-	$(CP) misc/script-m1n1 build/m1n1/script
-	chmod u+x build/m1n1/script
+build/script: misc/script-m1n1
+	$(CP) misc/script-m1n1 build/script
+	chmod u+x build/script
 
 build/m1lli.tar: build/linux.image build/script
 	(cd build; cp linux.image Image; tar cvf $< Image script)
@@ -175,12 +175,12 @@ build/%-m1lli.tar.gz: build/%-m1lli.tar
 build/%.m1lli: build/%-m1lli.tar.gz
 	$(CP) $< $@
 
-build/m1n1/m1n1.tar: build/m1n1/m1n1.image.macho.image build/m1n1/m1n1.elf build/m1n1/script
-	cp build/m1n1/m1n1.macho.image build/m1n1/m1n1.macho
+build/m1n1.tar: build/m1n1.image.macho.image build/m1n1.elf build/script
+	cp build/m1n1.macho.image build/m1n1.macho
 	(cd build/m1n1; tar cvf m1n1.tar m1n1.image m1n1.elf script)
 
-build/m1n1/m1n1.tar.gz: build/m1n1/m1n1.tar
-	gzip < build/m1n1/m1n1.tar > build/m1n1/m1n1.tar.gz
+build/m1n1.tar.gz: build/m1n1.tar
+	gzip < build/m1n1.tar > build/m1n1.tar.gz
 
 m1lli-%!: build/%-m1lli.m1lli
 	$(SUDO) perl ./misc/commfile-server.pl $<
@@ -191,11 +191,11 @@ m1n1-shell!:
 m1n1-%!: build/%.macho
 	M1N1DEVICE=$(M1N1DEVICE) python3 ./m1n1/proxyclient/chainload.py $<
 
-m1n1-m1n1!: build/m1n1/m1n1.macho
-	M1N1DEVICE=$(M1N1DEVICE) python3 ./m1n1/proxyclient/chainload.py ./build/m1n1/m1n1.macho
+m1n1-m1n1!: build/m1n1.macho
+	M1N1DEVICE=$(M1N1DEVICE) python3 ./m1n1/proxyclient/chainload.py ./build/m1n1.macho
 
-m1lli-m1n1!: build/m1n1/m1n1.tar.gz misc/commfile-server.pl
-	$(SUDO) perl misc/commfile-server.pl build/m1n1/m1n1.tar.gz
+m1lli-m1n1!: build/m1n1.tar.gz misc/commfile-server.pl
+	$(SUDO) perl misc/commfile-server.pl build/m1n1.tar.gz
 
 misc/linux-config/%.pospart: misc/linux-config/%
 	egrep -v '^#' < misc/linux-config/$* > misc/linux-config/$*.pospart
@@ -225,14 +225,11 @@ m1lli/asm-snippets/.all: \
 	m1lli/asm-snippets/x8r8g8b8..h
 	touch $@
 
-build/Image-macho: m1lli/machoImage/Image-macho.c m1lli/asm-snippets/.all
-	gcc -o $@ $<
-
 %.macho.image: %.macho build/machoImage
 	cat build/machoImage $< > $@
 
-%.image.macho: %.image build/Image-macho
-	build/Image-macho $< $@
+%.image.macho: %.image build/image-to-macho
+	build/image-to-macho $< $@
 
 dtc:
 	$(MKDIR) $@
