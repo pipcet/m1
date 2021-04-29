@@ -9,14 +9,11 @@ SUDO ?= $(and $(filter pip,$(shell whoami)),sudo)
 
 all: build/stage1.macho build/stage2.macho build/linux.macho build/m1n1.tar.gz
 
-build:
-	$(MKDIR) build
+build m1lli/scripts build/m1n1:
+	$(MKDIR) $@
 
 clean:
 	rm -rf build m1lli/asm-snippets/*.*.* linux/o
-
-build/m1n1:
-	$(MKDIR) build/m1n1
 
 stamp:
 	$(MKDIR) stamp
@@ -75,8 +72,8 @@ build/stage1.image: build/stage2.image build/m1lli build/busybox build/kexec bui
 build/m1lli-scripts.tar: m1lli/scripts/adt-convert.pl m1lli/scripts/adt-finalize.pl m1lli/scripts/adt-transform.pl m1lli/scripts/fdt-to-props.pl m1lli/scripts/fdtdiff.pl m1lli/scripts/props-to-fdt.pl m1lli/scripts/adt2fdt m1lli/scripts/copy-fdt-props.pl
 	(cd m1lli/scripts; tar cv adt-convert.pl adt-finalize.pl adt-transform.pl fdt-to-props.pl fdtdiff.pl props-to-fdt.pl adt2fdt copy-fdt-props.pl) > build/m1lli-scripts.tar
 
-m1lli/scripts/%.pl: m1lli/src/%.pl
-	$(CP) m1lli/src/$*.pl m1lli/scripts/$*.pl
+m1lli/scripts/%.pl: m1lli/src/%.pl | m1lli/scripts
+	$(CP) $< $@
 
 m1lli/scripts/adt2fdt: m1lli/src/adt2fdt.cc
 	aarch64-linux-gnu-g++ -Os -static -o m1lli/scripts/adt2fdt m1lli/src/adt2fdt.cc
