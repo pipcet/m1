@@ -284,5 +284,14 @@ m1lli/asm-snippets/%.h: m1lli/asm-snippets/%.c.S.elf.bin.s.h
 m1lli/asm-snippets/%.h: m1lli/asm-snippets/%.S.elf.bin.s.h
 	$(CP) $< $@
 
+# GitHub integration
+
+.github-init:
+	bash github/artifact-init
+	touch $@
+
+artifacts artifacts/up artifacts/down: | .github-init
+	$(MKDIR) $@
+
 .SECONDARY:
 .PHONY: %!
