@@ -78,8 +78,8 @@ m1lli/scripts/%.pl: m1lli/src/%.pl
 m1lli/scripts/adt2fdt: m1lli/src/adt2fdt.cc
 	aarch64-linux-gnu-g++ -Os -static -o m1lli/scripts/adt2fdt m1lli/src/adt2fdt.cc
 
-m1lli/scripts/adt2fdt-native: m1lli/src/adt2fdt.cc
-	g++ -Os -o m1lli/scripts/adt2fdt-native m1lli/src/adt2fdt.cc
+m1lli/scripts/adt2fdt.native: m1lli/src/adt2fdt.cc
+	g++ -Os -o $@ $<
 
 build/modules.tar: build/linux.image | build
 	rm -rf build/modules
@@ -224,12 +224,15 @@ dtc:
 	(cd dtc; mkdir libfdt; cd libfdt; ln -s ../../linux/scripts/dtc/libfdt/* .)
 	cp misc/dtc-Makefile $@/Makefile
 
+build/dtc.native build/fdtoverlay.native: build/linux.image
+	$(CP) linux/o-linux/scripts/dtc/dtc build/dtc.native
+	$(CP) linux/o-linux/scripts/dtc/fdtoverlay build/fdtoverlay.native
 build/dtc build/fdtoverlay: dtc
 	$(MAKE) -C dtc
 	$(CP) dtc/dtc dtc/fdtoverlay build/
 
-%.dtb.dts: %.dtb build/dtc
-	build/dtc -O dts -I dtb < $< > $@
+%.dtb.dts: %.dtb build/dtc.native
+	build/dtc.native -O dts -I dtb < $< > $@
 
 %.dts.dtp: %.dts m1lli/src/fdt-to-props.pl
 	perl m1lli/src/fdt-to-props.pl < $< > $@
@@ -237,11 +240,11 @@ build/dtc build/fdtoverlay: dtc
 %.dtp.dts: %.dtp m1lli/src/props-to-fdt.pl
 	perl m1lli/src/fdt-to-props.pl < $< > $@
 
-%.dts.dtb: %.dts build/dtc
-	build/dtc -O dtb -I dts < $< > $@
+%.dts.dtb: %.dts build/dtc.native
+	build/dtc.native -O dtb -I dts < $< > $@
 
-%.adtb.dtp: %.adtb m1lli/scripts/adt2fdt-native
-	m1lli/scripts/adt2fdt-native $< > $@
+%.adtb.dtp: %.adtb m1lli/scripts/adt2fdt.native
+	m1lli/scripts/adt2fdt.native $< > $@
 
 # This shortens dates. Update in 2999.
 README.html: README.org $(wildcard */README.org) $(wildcard */*/README.org)
