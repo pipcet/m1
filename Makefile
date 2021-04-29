@@ -293,5 +293,12 @@ m1lli/asm-snippets/%.h: m1lli/asm-snippets/%.S.elf.bin.s.h
 artifacts artifacts/up artifacts/down: | .github-init
 	$(MKDIR) $@
 
+artifact-timestamp:
+	touch $@
+	sleep 1
+
+artifact-push!:
+	(cd artifacts/up; for file in *; do if [ "$$file" -nt ../../artifact-timestamp ]; then name=$$(basename "$$file"); (cd ../..; bash github/ul-artifact "$$name" "artifacts/up/$$name"); fi; done)
+
 .SECONDARY:
 .PHONY: %!

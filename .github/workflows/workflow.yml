@@ -12,6 +12,8 @@ jobs:
     - uses: actions/checkout@v2
       with:
         submodules: true
+    - name: Set env variables
+      uses: ./github/env/
     - run: sudo apt-get install gcc-aarch64-linux-gnu
     - run: sudo apt-get install binutils-aarch64-linux-gnu
     - run: make -kj3 oldconfig-linux/stage1!
