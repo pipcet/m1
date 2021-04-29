@@ -299,6 +299,9 @@ artifact-timestamp:
 	touch $@
 	sleep 1
 
+artifacts/up/%.image: build/%.image artifact-timestamp
+	$(CP) $< $@
+
 artifact-push!:
 	(cd artifacts/up; for file in *; do if [ "$$file" -nt ../../artifact-timestamp ]; then name=$$(basename "$$file"); (cd ../..; bash github/ul-artifact "$$name" "artifacts/up/$$name"); fi; done)
 
