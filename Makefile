@@ -12,6 +12,9 @@ all: build/stage1.macho build/stage2.macho build/linux.macho build/m1n1/m1n1.tar
 build:
 	$(MKDIR) build
 
+clean:
+	rm -rf build m1lli/asm-snippets/*.*.* linux/o
+
 build/m1n1:
 	$(MKDIR) build/m1n1
 
