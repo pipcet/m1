@@ -224,9 +224,11 @@ dtc:
 	(cd dtc; mkdir libfdt; cd libfdt; ln -s ../../linux/scripts/dtc/libfdt/* .)
 	cp misc/dtc-Makefile $@/Makefile
 
-build/dtc.native build/fdtoverlay.native: build/linux.image
-	$(CP) linux/o/linux/scripts/dtc/dtc build/dtc.native
-	$(CP) linux/o/linux/scripts/dtc/fdtoverlay build/fdtoverlay.native
+build/dtc.native build/fdtoverlay.native:
+	$(MKDIR) linux/o/scripts
+	(cd linux; make O=o/scripts ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- scripts)
+	$(CP) linux/o/scripts/scripts/dtc/dtc build/dtc.native
+	$(CP) linux/o/scripts/scripts/dtc/fdtoverlay build/fdtoverlay.native
 build/dtc build/fdtoverlay: dtc
 	$(MAKE) -C dtc
 	$(CP) dtc/dtc dtc/fdtoverlay build/
