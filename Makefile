@@ -226,6 +226,8 @@ dtc:
 
 build/dtc.native build/fdtoverlay.native:
 	$(MKDIR) linux/o/scripts
+	$(CP) m1lli/linux/linux.config linux/o/scripts/.config
+	(cd linux; make O=o/scripts ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- oldconfig)
 	(cd linux; make O=o/scripts ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- scripts)
 	$(CP) linux/o/scripts/scripts/dtc/dtc build/dtc.native
 	$(CP) linux/o/scripts/scripts/dtc/fdtoverlay build/fdtoverlay.native
