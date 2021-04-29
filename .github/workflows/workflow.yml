@@ -1,0 +1,16 @@
+name: workflow
+on:
+  push:
+    branches: [ master, pearl ]
+  pull_request:
+    branches: [ master, pearl ]
+jobs:
+  all:
+    name: all
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+    - run:
+      make build/linux.image
