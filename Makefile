@@ -7,11 +7,7 @@ TAR ?= tar
 PWD = $(shell pwd)
 SUDO ?= $(and $(filter pip,$(shell whoami)),sudo)
 
-all: build/l1lli.macho build/m1lli.macho build/linux.macho build/m1n1/m1n1.tar.gz
-
-# main targets
-
-# directories
+all: build/stage1.macho build/stage2.macho build/linux.macho build/m1n1/m1n1.tar.gz
 
 build:
 	$(MKDIR) build
@@ -38,39 +34,29 @@ reconfigure-busybox!:
 	diff -u misc/busybox-config/m1lli.old misc/busybox-config/m1lli
 
 # $(MAKE) -C linux ARCH=arm64 CROSS_COMPILE=$(CROSS_COMPILE) O=o tinyconfig
-reconfigure-linux/%!:
-	$(MKDIR) linux/o
-	$(CP) misc/linux-config/$* linux/o/.config
-	$(MAKE) -C linux ARCH=arm64 CROSS_COMPILE=$(CROSS_COMPILE) O=o menuconfig
-	$(CP) misc/linux-config/$* misc/linux-config/$*.old
-	$(CP) linux/o/.config misc/linux-config/$*
-	diff -u misc/linux-config/$*.old misc/linux-config/$*
+reconfigure-linux/%!: m1lli/%/linux.config
+	$(MKDIR) linux/o/$*
+	$(CP) m1lli/$*/linux.config linux/o/$*/.config
+	$(MAKE) -C linux ARCH=arm64 CROSS_COMPILE=$(CROSS_COMPILE) O=o/$* menuconfig
+	$(CP) m1lli/$*/linux.config m1lli/$*/linux.config.old
+	$(CP) linux/o/$*/.config m1lli/$*/linux.config
+	diff -u m1lli/$*/linux.config.old m1lli/$*/linux.config
 
-build/m1.dtb: build/linux.image
-	$(MAKE) linux/o/arch/arm64/boot/dts/apple/apple-m1-j293.dtb.dts.dtb
-	$(CP) linux/o/arch/arm64/boot/dts/apple/apple-m1-j293.dtb.dts.dtb build/m1.dtb
+build/%.image build/%.dtb: stamp/linux m1lli/%/linux.config | build
+	$(MKDIR) linux/o/$*
+	$(CP) m1lli/$*/linux.config linux/o/$*/.config
+	$(MAKE) -C linux ARCH=arm64 CROSS_COMPILE=$(CROSS_COMPILE) O=o/$* oldconfig
+	diff -u m1lli/$*/linux.config linux/o/$*/.config
+	$(MAKE) -C linux ARCH=arm64 CROSS_COMPILE=$(CROSS_COMPILE) O=o/$*
+	$(CP) linux/o/$*/arch/arm64/boot/Image build/$*.image
+	$(MAKE) linux/o/$*/arch/arm64/boot/dts/apple/apple-m1-j293.dtb.dts.dtb
+	$(CP) linux/o/$*/arch/arm64/boot/dts/apple/apple-m1-j293.dtb.dts.dtb build/$*.dtb
 
-build/linux.image: stamp/linux misc/linux-config/o m1lli/asm-snippets/minimal-dt.dts.dtb.h | build
-	$(MKDIR) linux/o
-	$(CP) misc/linux-config/o linux/o/.config
-	$(MAKE) -C linux ARCH=arm64 CROSS_COMPILE=$(CROSS_COMPILE) O=o oldconfig
-	diff -u misc/linux-config/o linux/o/.config
-	$(MAKE) -C linux ARCH=arm64 CROSS_COMPILE=$(CROSS_COMPILE) O=o
-	$(CP) linux/o/arch/arm64/boot/Image build/linux.image
 
-build/%.image build/m1-%.dtb: stamp/linux misc/linux-config/o-% | build
-	$(MKDIR) linux/o-$*
-	$(CP) misc/linux-config/o-$* linux/o-$*/.config
-	$(MAKE) -C linux ARCH=arm64 CROSS_COMPILE=$(CROSS_COMPILE) O=o-$* oldconfig
-	diff -u misc/linux-config/o-$* linux/o-$*/.config
-	$(MAKE) -C linux ARCH=arm64 CROSS_COMPILE=$(CROSS_COMPILE) O=o-$*
-	$(CP) linux/o-$*/arch/arm64/boot/Image build/$*.image
-	$(MAKE) linux/o-$*/arch/arm64/boot/dts/apple/apple-m1-j293.dtb.dts.dtb
-	$(CP) linux/o-$*/arch/arm64/boot/dts/apple/apple-m1-j293.dtb.dts.dtb build/m1-$*.dtb
 
-build/m1lli.image: build/linux.image build/m1lli build/busybox build/kexec build/commfile misc/init m1lli/stage2/init m1lli/stage2/init-cpio-spec m1lli/l1lli/linux-initrd-spec binaries/perl.tar.gz build/m1lli-scripts.tar build/m1.dtb build/dtc build/fdtoverlay build/linux.macho
+build/stage2.image: build/linux.image build/m1lli build/busybox build/kexec build/commfile misc/init m1lli/stage2/init m1lli/stage2/init-cpio-spec m1lli/stage1/linux-initrd-spec binaries/perl.tar.gz build/m1lli-scripts.tar build/m1.dtb build/dtc build/fdtoverlay build/linux.macho
 
-build/l1lli.image: build/m1lli.image build/m1lli build/busybox build/kexec build/commfile misc/init m1lli/l1lli/init m1lli/l1lli/linux-initrd-spec binaries/perl.tar.gz build/m1lli-scripts.tar build/m1.dtb build/dtc build/fdtoverlay build/linux.macho
+build/stage1.image: build/stage2.image build/m1lli build/busybox build/kexec build/commfile misc/init m1lli/stage1/init m1lli/stage1/linux-initrd-spec binaries/perl.tar.gz build/m1lli-scripts.tar build/m1.dtb build/dtc build/fdtoverlay build/linux.macho
 
 build/m1lli-scripts.tar: m1lli/scripts/adt-convert.pl m1lli/scripts/adt-finalize.pl m1lli/scripts/adt-transform.pl m1lli/scripts/fdt-to-props.pl m1lli/scripts/fdtdiff.pl m1lli/scripts/props-to-fdt.pl m1lli/scripts/adt2fdt m1lli/scripts/copy-fdt-props.pl
 	(cd m1lli/scripts; tar cv adt-convert.pl adt-finalize.pl adt-transform.pl fdt-to-props.pl fdtdiff.pl props-to-fdt.pl adt2fdt copy-fdt-props.pl) > build/m1lli-scripts.tar
@@ -122,8 +108,8 @@ build/kexec: stamp/kexec-tools | build
 	$(MAKE) -C kexec-tools
 	$(CP) kexec-tools/build/sbin/kexec build/kexec
 
-build/busybox: misc/busybox-config/m1lli stamp/busybox | build
-	$(CP) misc/busybox-config/m1lli busybox/.config
+build/busybox: m1lli/busybox/busybox.config stamp/busybox | build
+	$(CP) $< busybox/.config
 	$(MAKE) -C busybox oldconfig
 	$(MAKE) -C busybox
 	$(CP) busybox/busybox build/busybox
@@ -134,40 +120,46 @@ build/m1lli: m1lli/src/m1lli.c
 build/commfile: m1lli/src/commfile.c
 	aarch64-linux-gnu-gcc -static -Os -o build/commfile m1lli/src/commfile.c
 
-build/script: misc/script
-	$(CP) misc/script build/script
-	chmod u+x build/script
+build/%.image.m1lli.d: m1lli/%/m1lli-script
+	$(MKDIR) $@
+
+build/%.image.m1lli.d/script: m1lli/%/m1lli-script build/%.m1lli.d
+	$(CP) $< $@
+	chmod u+x $@
+
+build/%.image.m1lli.d/Image: build/%.image
+	$(CP) $< $@
 
 build/m1n1/script: misc/script-m1n1
 	$(CP) misc/script-m1n1 build/m1n1/script
 	chmod u+x build/m1n1/script
 
 build/m1lli.tar: build/linux.image build/script
-	(cd build; cp linux.image Image; tar cvf m1lli.tar Image script)
+	(cd build; cp linux.image Image; tar cvf $< Image script)
 
 build/m1lli.tar.gz: build/m1lli.tar
 	gzip < build/m1lli.tar > build/m1lli.tar.gz
 
+%.image.m1lli: build/%.image.m1lli.d/script build/%.image.m1lli.d/Image
+	(cd $(dir $<); tar czv .) > $@
+
+m1lli/%.m1lli!: %.m1lli
+	$(SUDO) perl misc/commfile-server.pl $<
+
 build/linux.m1lli: build/m1lli.tar.gz
 	$(CP) build/m1lli.tar.gz build/linux.m1lli
 
-build/m1lli-m1lli.tar: build/Image-m1lli build/script
-	(cd build; $(MKDIR) m1lli-m1lli; cp Image-m1lli m1lli-m1lli/Image; cp script m1lli-m1lli/script; cd m1lli-m1lli; tar cvf m1lli-m1lli.tar Image script; cd ..; cp m1lli-m1lli/m1lli-m1lli.tar .)
+build/%-m1lli.tar: build/%.image build/script
+	$(MKDIR) build/$*-m1lli
+	$(CP) $< build/$*-m1lli/Image
+	$(CP) build/script build/$*-m1lli/script
+	(cd build; cd $*-m1lli; tar cvf ../$*-m1lli.tar Image script)
 
-build/m1lli-m1lli.tar.gz: build/m1lli-m1lli.tar
-	gzip < build/m1lli-m1lli.tar > build/m1lli-m1lli.tar.gz
+build/%-m1lli.tar.gz: build/%-m1lli.tar
+	gzip < $< > $@
 
-build/m1lli.m1lli: build/m1lli-m1lli.tar.gz
-	$(CP) build/m1lli-m1lli.tar.gz build/m1lli.m1lli
-
-build/m1lli-l1lli.tar: build/l1lli.image build/script
-	(cd build; $(MKDIR) m1lli-l1lli; cp l1lli.image m1lli-l1lli/Image; cp script m1lli-l1lli/script; cd m1lli-l1lli; tar cvf m1lli-l1lli.tar Image script; cd ..; cp m1lli-l1lli/m1lli-l1lli.tar .)
-
-build/m1lli-l1lli.tar.gz: build/m1lli-l1lli.tar
-	gzip < build/m1lli-l1lli.tar > build/m1lli-l1lli.tar.gz
-
-build/l1lli.m1lli: build/m1lli-l1lli.tar.gz
-	$(CP) build/m1lli-l1lli.tar.gz build/l1lli.m1lli
+build/%.m1lli: build/%-m1lli.tar.gz
+	$(CP) $< $@
 
 build/m1n1/m1n1.tar: build/m1n1/m1n1.image.macho.image build/m1n1/m1n1.elf build/m1n1/script
 	cp build/m1n1/m1n1.macho.image build/m1n1/m1n1.macho
@@ -176,26 +168,14 @@ build/m1n1/m1n1.tar: build/m1n1/m1n1.image.macho.image build/m1n1/m1n1.elf build
 build/m1n1/m1n1.tar.gz: build/m1n1/m1n1.tar
 	gzip < build/m1n1/m1n1.tar > build/m1n1/m1n1.tar.gz
 
-m1lli-linux!: build/m1lli.tar.gz misc/commfile-server.pl
-	$(SUDO) perl misc/commfile-server.pl build/m1lli.tar.gz
-
-m1lli-m1lli!: build/m1lli-m1lli.tar.gz
-	$(SUDO) perl ./misc/commfile-server.pl ./build/m1lli-m1lli.tar.gz
-
-m1lli-l1lli!: build/m1lli-l1lli.tar.gz
-	$(SUDO) perl ./misc/commfile-server.pl ./build/m1lli-l1lli.tar.gz
+m1lli-%!: build/%-m1lli.m1lli
+	$(SUDO) perl ./misc/commfile-server.pl $<
 
 m1n1-shell!:
 	M1N1DEVICE=$(M1N1DEVICE) python3 ./m1n1/proxyclient/shell.py
 
-m1n1-linux!: build/linux.macho
-	M1N1DEVICE=$(M1N1DEVICE) python3 ./m1n1/proxyclient/chainload.py ./build/linux.macho
-
-m1n1-m1lli!: build/m1lli.macho
-	M1N1DEVICE=$(M1N1DEVICE) python3 ./m1n1/proxyclient/chainload.py ./build/m1lli.macho
-
-m1n1-l1lli!: build/l1lli.macho
-	M1N1DEVICE=$(M1N1DEVICE) python3 ./m1n1/proxyclient/chainload.py ./build/l1lli.macho
+m1n1-%!: build/%.macho
+	M1N1DEVICE=$(M1N1DEVICE) python3 ./m1n1/proxyclient/chainload.py $<
 
 m1n1-m1n1!: build/m1n1/m1n1.macho
 	M1N1DEVICE=$(M1N1DEVICE) python3 ./m1n1/proxyclient/chainload.py ./build/m1n1/m1n1.macho
@@ -210,47 +190,47 @@ build/machoImage: build/machoImage.elf
 	objcopy -O binary -S --only-section .text --only-section .data --only-section .got --only-section .last build/machoImage.elf build/machoImage
 
 build/machoImage.elf: m1lli/machoImage/machoImage.c
-	aarch64-linux-gnu-gcc -static -nostdlib -nolibc -Os -fPIC -o build/machoImage.elf m1lli/machoImage/machoImage.c
+	aarch64-linux-gnu-gcc -static -nostdlib -nolibc -Os -fPIC -o $@ $<
 
 build/machoImage.s: m1lli/machoImage/machoImage.c
-	aarch64-linux-gnu-gcc -S -static -nostdlib -nolibc -Os -fPIC -o build/machoImage.s m1lli/machoImage/machoImage.c
+	aarch64-linux-gnu-gcc -S -static -nostdlib -nolibc -Os -fPIC -o $@ $<
 
 build/linux-to-macho: m1lli/macho-linux/linux-to-macho.c
 	gcc -o $@ $<
 
-build/Image-macho: m1lli/machoImage/Image-macho.c m1lli/asm-snippets/perform-alignment.S.elf.bin.h m1lli/asm-snippets/perform-alignment-2.S.elf.bin.h m1lli/asm-snippets/remap-to-physical.S.elf.bin.h m1lli/asm-snippets/jump-to-start-of-page.S.elf.bin.h m1lli/asm-snippets/enable-all-clocks.S.elf.bin.h m1lli/asm-snippets/bring-up-phys.S.elf.bin.h
-	gcc -o build/Image-macho m1lli/machoImage/Image-macho.c
+build/Image-macho: m1lli/machoImage/Image-macho.c m1lli/asm-snippets/perform-alignment.h m1lli/asm-snippets/perform-alignment-2.h m1lli/asm-snippets/remap-to-physical.h m1lli/asm-snippets/jump-to-start-of-page.h m1lli/asm-snippets/enable-all-clocks.h m1lli/asm-snippets/bring-up-phys.h m1lli/asm-snippets/x8r8g8b8.h
+	gcc -o $@ $<
 
 %.macho.image: %.macho build/machoImage
-	cat build/machoImage $*.macho > $*.macho.image
+	cat build/machoImage $< > $@
 
 %.image.macho: %.image build/Image-macho
-	build/Image-macho $*.image $*.image.macho
+	build/Image-macho $< $@
 
 dtc:
-	$(MKDIR) dtc
+	$(MKDIR) $@
 	(cd dtc; ln -s ../linux/scripts/dtc/* .; rm Makefile; rm -f libfdt)
 	(cd dtc; mkdir libfdt; cd libfdt; ln -s ../../linux/scripts/dtc/libfdt/* .)
-	cp misc/dtc-Makefile dtc/Makefile
+	cp misc/dtc-Makefile $@/Makefile
 
 build/dtc build/fdtoverlay: dtc
 	$(MAKE) -C dtc
 	$(CP) dtc/dtc dtc/fdtoverlay build/
 
 %.dtb.dts: %.dtb build/dtc
-	build/dtc -O dts -I dtb < $*.dtb > $*.dtb.dts
+	build/dtc -O dts -I dtb < $< > $@
 
 %.dts.dtp: %.dts m1lli/src/fdt-to-props.pl
-	perl m1lli/src/fdt-to-props.pl < $*.dts > $*.dts.dtp
+	perl m1lli/src/fdt-to-props.pl < $< > $@
 
 %.dtp.dts: %.dtp m1lli/src/props-to-fdt.pl
-	perl m1lli/src/fdt-to-props.pl < $*.dtp > $*.dtp.dts
+	perl m1lli/src/fdt-to-props.pl < $< > $@
 
 %.dts.dtb: %.dts build/dtc
-	build/dtc -O dtb -I dts < $*.dts > $*.dts.dtb
+	build/dtc -O dtb -I dts < $< > $@
 
 %.adtb.dtp: %.adtb m1lli/scripts/adt2fdt-native
-	m1lli/scripts/adt2fdt-native $*.adtb > $*.adtb.dtp
+	m1lli/scripts/adt2fdt-native $< > $@
 
 # This shortens dates. Update in 2999.
 README.html: README.org $(wildcard */README.org) $(wildcard */*/README.org)
@@ -258,19 +238,19 @@ README.html: README.org $(wildcard */README.org) $(wildcard */*/README.org)
 	sed -i -e 's/\(2[0-9][0-9][0-9]\)-[0-9][0-9]-[0-9][0-9] [A-Z][a-z][a-z] [0-9][0-9]:[0-9][0-9]/\1/g' README.html
 
 hammer!:
-	while true; do make -j12 build/l1lli.image.macho && (M1N1DEVICE=$(M1N1DEVICE) python3 ./m1n1/proxyclient/chainload.py ./build/l1lli.image.macho); sleep 1; done
+	while true; do make -j12 build/stage1.image.macho && (M1N1DEVICE=$(M1N1DEVICE) python3 ./m1n1/proxyclient/chainload.py ./build/stage1.image.macho); sleep 1; done
 
 m1lli/asm-snippets/%.c.S: m1lli/asm-snippets/%.c
-	aarch64-linux-gnu-gcc -march=armv8.4-a -Os -S -o m1lli/asm-snippets/$*.c.S m1lli/asm-snippets/$*.c
+	aarch64-linux-gnu-gcc -march=armv8.4-a -Os -S -o $@ $<
 
 m1lli/asm-snippets/%.o.S: m1lli/asm-snippets/%.S
-	aarch64-linux-gnu-gcc -Os -c -o m1lli/asm-snippets/$*.o.S m1lli/asm-snippets/$*.S
+	aarch64-linux-gnu-gcc -Os -c -o $@ $<
 
 m1lli/asm-snippets/%.S.elf: m1lli/asm-snippets/%.S
-	aarch64-linux-gnu-gcc -Os -static -nostdlib -o m1lli/asm-snippets/$*.S.elf m1lli/asm-snippets/$*.S
+	aarch64-linux-gnu-gcc -Os -static -nostdlib -o $@ $<
 
 m1lli/asm-snippets/%.elf.bin: m1lli/asm-snippets/%.elf
-	objcopy -O binary -S --only-section .pretext.0 --only-section .text --only-section .data --only-section .got --only-section .last --only-section .text.2 m1lli/asm-snippets/$*.elf m1lli/asm-snippets/$*.elf.bin
+	objcopy -O binary -S --only-section .pretext.0 --only-section .text --only-section .data --only-section .got --only-section .last --only-section .text.2 $< $@
 
 m1lli/asm-snippets/%.bin.s: m1lli/asm-snippets/%.bin
 	objdump -maarch64 -D -bbinary $< > $@
@@ -278,11 +258,12 @@ m1lli/asm-snippets/%.bin.s: m1lli/asm-snippets/%.bin
 #m1lli/asm-snippets/%.h: m1lli/asm-snippets/%
 #:	(NAME=$$(echo $* | sed -e 's/\..*//' -e 's/-/_/g'); echo "unsigned int $$NAME[] = {";  cat m1lli/asm-snippets/$* | od -tx4 --width=4 -Anone -v | sed -e 's/ \(.*\)/\t0x\1,/'; echo "};") > m1lli/asm-snippets/$*.h
 
-m1lli/asm-snippets/%.h: m1lli/asm-snippets/%.s
-	(NAME=$$(echo $* | sed -e 's/\..*//' -e 's/-/_/g'); echo "unsigned int $$NAME[] = {";  cat $< | tail -n +8 | sed -e 's/\t/ /g' | sed -e 's/^\(.*\):[ \t]*\([0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]\)[ \t]*\(.*\)$$/\t0x\2 \/\* \1: \3 \*\/,/g'; echo "};") > m1lli/asm-snippets/$*.h
+m1lli/asm-snippets/%.s.h: m1lli/asm-snippets/%.s
+	(NAME=$$(echo $* | sed -e 's/\..*//' -e 's/-/_/g'); echo "unsigned int $$NAME[] = {";  cat $< | tail -n +8 | sed -e 's/\t/ /g' | sed -e 's/^\(.*\):[ \t]*\([0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]\)[ \t]*\(.*\)$$/\t0x\2 \/\* \1: \3 \*\/,/g'; echo "};") > $@
 
 m1lli/asm-snippets/%.dtb.h: m1lli/asm-snippets/%.dtb
-	(echo "{";  cat m1lli/asm-snippets/$*.dtb | od -tx4 --width=4 -Anone -v | sed -e 's/ \(.*\)/\t0x\1,/'; echo "};") > m1lli/asm-snippets/$*.dtb.h
+	(echo "{";  cat $< | od -tx4 --width=4 -Anone -v | sed -e 's/ \(.*\)/\t0x\1,/'; echo "};") > $@
+
 
 .SECONDARY:
 .PHONY: %!
