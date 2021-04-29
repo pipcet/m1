@@ -14,4 +14,4 @@ jobs:
         submodules: true
     - run: sudo apt-get install gcc-aarch64-linux-gnu
     - run: sudo apt-get install binutils-aarch64-linux-gnu
-    - run: make build/linux.image
+    - run: make -kj3 build/linux.image
