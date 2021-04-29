@@ -209,7 +209,17 @@ build/machoImage.s: m1lli/machoImage/machoImage.c
 build/linux-to-macho: m1lli/macho-linux/linux-to-macho.c
 	gcc -o $@ $<
 
-build/Image-macho: m1lli/machoImage/Image-macho.c m1lli/asm-snippets/perform-alignment.h m1lli/asm-snippets/perform-alignment-2.h m1lli/asm-snippets/remap-to-physical.h m1lli/asm-snippets/jump-to-start-of-page.h m1lli/asm-snippets/enable-all-clocks.h m1lli/asm-snippets/bring-up-phys.h m1lli/asm-snippets/x8r8g8b8.h
+m1lli/asm-snippets/.all: \
+	m1lli/asm-snippets/perform-alignment..h \
+	m1lli/asm-snippets/perform-alignment-2..h \
+	m1lli/asm-snippets/remap-to-physical..h \
+	m1lli/asm-snippets/jmup-to-start-of-page..h \
+	m1lli/asm-snippets/enable-all-clocks..h \
+	m1lli/asm-snippets/bring-up-phys..h \
+	m1lli/asm-snippets/x8r8g8b8..h
+	touch $@
+
+build/Image-macho: m1lli/machoImage/Image-macho.c m1lli/asm-snippets/.all
 	gcc -o $@ $<
 
 %.macho.image: %.macho build/machoImage
@@ -282,10 +292,10 @@ m1lli/asm-snippets/%.s.h: m1lli/asm-snippets/%.s
 m1lli/asm-snippets/%.dtb.h: m1lli/asm-snippets/%.dtb
 	(echo "{";  cat $< | od -tx4 --width=4 -Anone -v | sed -e 's/ \(.*\)/\t0x\1,/'; echo "};") > $@
 
-m1lli/asm-snippets/%.h: m1lli/asm-snippets/%.c.S.elf.bin.s.h
+m1lli/asm-snippets/%..h: m1lli/asm-snippets/%.c.S.elf.bin.s.h
 	$(CP) $< $@
 
-m1lli/asm-snippets/%.h: m1lli/asm-snippets/%.S.elf.bin.s.h
+m1lli/asm-snippets/%..h: m1lli/asm-snippets/%.S.elf.bin.s.h
 	$(CP) $< $@
 
 # GitHub integration
