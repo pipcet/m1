@@ -314,7 +314,7 @@ artifact-timestamp:
 	touch $@
 	sleep 1
 
-artifacts/up/%.image: build/%.image artifact-timestamp
+artifacts/up/%.image: build/%.image artifact-timestamp | artifacts/up
 	$(CP) $< $@
 
 artifact-push!:
