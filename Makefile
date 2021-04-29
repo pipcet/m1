@@ -225,8 +225,8 @@ dtc:
 	cp misc/dtc-Makefile $@/Makefile
 
 build/dtc.native build/fdtoverlay.native: build/linux.image
-	$(CP) linux/o-linux/scripts/dtc/dtc build/dtc.native
-	$(CP) linux/o-linux/scripts/dtc/fdtoverlay build/fdtoverlay.native
+	$(CP) linux/o/linux/scripts/dtc/dtc build/dtc.native
+	$(CP) linux/o/linux/scripts/dtc/fdtoverlay build/fdtoverlay.native
 build/dtc build/fdtoverlay: dtc
 	$(MAKE) -C dtc
 	$(CP) dtc/dtc dtc/fdtoverlay build/
