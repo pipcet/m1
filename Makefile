@@ -116,9 +116,6 @@ build/m1n1.elf: stamp/m1n1 | build/m1n1
 	$(MAKE) -C m1n1
 	$(CP) m1n1/build/m1n1.elf $@
 
-build/m1n1.image: build/macho-to-image build/m1n1.macho | build/m1n1
-	$(CAT) $< build/m1n1.macho > $@
-
 build/m1n1ux.macho: build/m1n1.macho build/linux.macho | build
 	$(CAT) $^ > $@
 
@@ -140,10 +137,13 @@ build/m1lli: m1lli/src/m1lli.c
 build/commfile: m1lli/src/commfile.c
 	aarch64-linux-gnu-gcc -static -Os -o build/commfile m1lli/src/commfile.c
 
-build/%.image.m1lli.d: m1lli/%/m1lli-script
+build/m1n1.image: build/m1n1.macho.image
+	$(CP) $< $@
+
+build/%.image.m1lli.d: m1lli/%/script
 	$(MKDIR) $@
 
-build/%.image.m1lli.d/script: m1lli/%/m1lli-script build/%.m1lli.d
+build/%.image.m1lli.d/script: m1lli/%/script build/%.image.m1lli.d
 	$(CP) $< $@
 	chmod u+x $@
 
@@ -160,7 +160,7 @@ build/m1lli.tar: build/linux.image build/script
 build/m1lli.tar.gz: build/m1lli.tar
 	gzip < build/m1lli.tar > build/m1lli.tar.gz
 
-%.image.m1lli: build/%.image.m1lli.d/script build/%.image.m1lli.d/Image
+build/%.image.m1lli: build/%.image.m1lli.d/script build/%.image.m1lli.d/Image
 	(cd $(dir $<); tar czv .) > $@
 
 m1lli/%.m1lli!: %.m1lli
@@ -178,14 +178,7 @@ build/%-m1lli.tar.gz: build/%-m1lli.tar
 build/%.m1lli: build/%-m1lli.tar.gz
 	$(CP) $< $@
 
-build/m1n1.tar: build/m1n1.image.macho.image build/m1n1.elf build/script
-	cp build/m1n1.macho.image build/m1n1.macho
-	(cd build/m1n1; tar cvf m1n1.tar m1n1.image m1n1.elf script)
-
-build/m1n1.tar.gz: build/m1n1.tar
-	gzip < build/m1n1.tar > build/m1n1.tar.gz
-
-m1lli-%!: build/%.m1lli
+m1lli-%!: build/%.m1lli{m1lli}
 	$(SUDO) perl ./misc/commfile-server.pl $<
 
 m1n1-shell!:
@@ -339,6 +332,9 @@ artifact-timestamp:
 	sleep 1
 
 artifacts/up/%.image: build/%.image artifact-timestamp | artifacts/up
+	$(CP) $< $@
+
+artifacts/up/%.macho: build/%.macho artifact-timestamp | artifacts/up
 	$(CP) $< $@
 
 artifact-push!:
