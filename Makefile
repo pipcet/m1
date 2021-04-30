@@ -219,6 +219,7 @@ m1lli/asm-snippets/.all: \
 	m1lli/asm-snippets/jump-to-start-of-page..h \
 	m1lli/asm-snippets/mini-m1lli..h \
 	m1lli/asm-snippets/mov-x0-0..h \
+	m1lli/asm-snippets/nop..h \
 	m1lli/asm-snippets/perform-alignment..h \
 	m1lli/asm-snippets/perform-alignment-2..h \
 	m1lli/asm-snippets/perform-alignment-3..h \
