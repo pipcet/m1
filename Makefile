@@ -70,7 +70,7 @@ build/stage2.image: build/linux.image build/m1lli build/busybox build/kexec buil
 build/stage1.image: build/stage2.image build/m1lli build/busybox build/kexec build/commfile misc/init m1lli/stage1/init m1lli/stage1/linux-initrd-spec binaries/perl.tar.gz build/m1lli-scripts.tar build/stage2.dtb build/dtc build/fdtoverlay build/linux.macho m1lli/asm-snippets/maximal-dt.dts.dtb.h
 
 build/m1lli-scripts.tar: m1lli/scripts/adt-convert.pl m1lli/scripts/adt-transform.pl m1lli/scripts/fdt-to-props.pl m1lli/scripts/fdtdiff.pl m1lli/scripts/props-to-fdt.pl m1lli/scripts/adt2fdt
-	(cd m1lli/scripts; tar cv adt-convert.pl adt-finalize.pl adt-transform.pl fdt-to-props.pl fdtdiff.pl props-to-fdt.pl adt2fdt copy-fdt-props.pl) > build/m1lli-scripts.tar
+	(cd m1lli/scripts; tar cv adt-convert.pl adt-transform.pl fdt-to-props.pl fdtdiff.pl props-to-fdt.pl adt2fdt) > build/m1lli-scripts.tar
 
 m1lli/scripts/%.pl: m1lli/src/%.pl | m1lli/scripts
 	$(CP) $< $@
