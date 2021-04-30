@@ -79,7 +79,7 @@ m1lli/scripts/adt2fdt: m1lli/src/adt2fdt.cc
 	aarch64-linux-gnu-g++ -Os -static -o $@ $<
 
 m1lli/scripts/adtdump: m1lli/src/adtdump.c
-	aarch64-linux-gnu-gcc -Os -static -o $@ $< m1lli/src/adt2fdt.cc
+	aarch64-linux-gnu-gcc -Os -static -o $@ $<
 
 m1lli/scripts/adt2fdt.native: m1lli/src/adt2fdt.cc
 	g++ -Os -o $@ $<
