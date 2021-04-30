@@ -241,8 +241,8 @@ m1lli/asm-snippets/.all: \
 	m1lli/asm-snippets/x8r8g8b8..h
 	touch $@
 
-%.macho.image: %.macho build/machoImage
-	cat build/machoImage $< > $@
+%.macho.image: %.macho build/macho-to-image
+	build/macho-to-image $< $@
 
 %.image.macho: %.image build/image-to-macho
 	build/image-to-macho $< $@
@@ -300,7 +300,7 @@ m1lli/asm-snippets/%.elf.bin: m1lli/asm-snippets/%.elf
 	aarch64-linux-gnu-objcopy -O binary -S --only-section .pretext.0 --only-section .text --only-section .data --only-section .got --only-section .last --only-section .text.2 $< $@
 
 m1lli/asm-snippets/%.bin.s: m1lli/asm-snippets/%.bin
-	aarch64-linux-gnu-objdump -maarch64 -D -bbinary $< > $@
+	aarch64-linux-gnu-objdump -maarch64 --disassemble-zeroes -D -bbinary $< > $@
 
 #m1lli/asm-snippets/%.h: m1lli/asm-snippets/%
 #:	(NAME=$$(echo $* | sed -e 's/\..*//' -e 's/-/_/g'); echo "unsigned int $$NAME[] = {";  cat m1lli/asm-snippets/$* | od -tx4 --width=4 -Anone -v | sed -e 's/ \(.*\)/\t0x\1,/'; echo "};") > m1lli/asm-snippets/$*.h
