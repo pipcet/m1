@@ -105,8 +105,8 @@ build/%.macho: build/%.image build/m1-%.dtb $(wildcard preloader-m1/*.c) $(wildc
 	$(MAKE) -C preloader-m1
 	$(CP) preloader-m1/linux.macho build/$*.macho
 
-build/m1n1.macho: stamp/m1n1 | build/m1n1
-	$(MAKE) -C m1n1
+build/m1n1.macho: stamp/m1n1 build/dtc.native | build/m1n1
+	$(MAKE) DTC=$(shell pwd)/build/dtc.native -C m1n1
 	$(CP) m1n1/build/m1n1.macho $@
 
 build/m1n1.elf: stamp/m1n1 | build/m1n1
