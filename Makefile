@@ -206,6 +206,9 @@ misc/linux-config/%.pospart: misc/linux-config/%
 build/image-to-macho: m1lli/macho-image/image-to-macho.c m1lli/asm-snippets/.all
 	gcc -Os -o $@ $<
 
+build/macho-to-image: m1lli/macho-image/macho-to-image.c m1lli/asm-snippets/.all
+	gcc -Os -o $@ $<
+
 build/machoImage: build/machoImage.elf
 	aarch64-linux-gnu-objcopy -O binary -S --only-section .text --only-section .data --only-section .got --only-section .last build/machoImage.elf build/machoImage
 
@@ -222,7 +225,9 @@ m1lli/asm-snippets/.all: \
 	m1lli/asm-snippets/bring-up-phys..h \
 	m1lli/asm-snippets/enable-all-clocks..h \
 	m1lli/asm-snippets/fillrect..h \
+	m1lli/asm-snippets/image-header..h \
 	m1lli/asm-snippets/jump-to-start-of-page..h \
+	m1lli/asm-snippets/macho-boot..h \
 	m1lli/asm-snippets/mini-m1lli..h \
 	m1lli/asm-snippets/mov-x0-0..h \
 	m1lli/asm-snippets/nop..h \
