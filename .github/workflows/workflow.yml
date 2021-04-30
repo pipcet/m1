@@ -32,4 +32,8 @@ jobs:
     - run: make -kj3 artifacts/up/linux.image.macho
     - run: make -kj3 artifacts/up/stage2.image.macho
     - run: make -kj3 artifacts/up/stage1.image.macho
+    - run: make -kj3 build/m1n1.macho
+    - run: make -kj3 build/m1n1.macho.image
+    - run: make -kj3 artifacts/up/m1n1.macho
+    - run: make -kj3 artifacts/up/m1n1.macho.image
     - run: make -kj3 artifact-push!
