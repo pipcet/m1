@@ -115,7 +115,7 @@ build/m1n1ux.macho: build/m1n1.macho build/linux.macho | build
 
 build/kexec: stamp/kexec-tools | build
 	(cd kexec-tools; ./bootstrap)
-	(cd kexec-tools; LDFLAGS=-static CC=aarch64-linux-gnu-gcc BUILD_CC=gcc ./configure --target=aarch64-linux-gnu --host=x86_64-pc-linux-gnu TARGET_CC=aarch64-linux-gnu-gcc LD=aarch64-linux-gnu-ld)
+	(cd kexec-tools; LDFLAGS=-static CC=aarch64-linux-gnu-gcc BUILD_CC=gcc ./configure --target=aarch64-linux-gnu --host=x86_64-pc-linux-gnu TARGET_CC=aarch64-linux-gnu-gcc LD=aarch64-linux-gnu-ld STRIP=aarch64-linux-gnu-strip)
 	$(MAKE) -C kexec-tools
 	$(CP) kexec-tools/build/sbin/kexec build/kexec
 
