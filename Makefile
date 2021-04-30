@@ -185,7 +185,7 @@ build/m1n1.tar: build/m1n1.image.macho.image build/m1n1.elf build/script
 build/m1n1.tar.gz: build/m1n1.tar
 	gzip < build/m1n1.tar > build/m1n1.tar.gz
 
-m1lli-%!: build/%-m1lli.m1lli
+m1lli-%!: build/%.m1lli
 	$(SUDO) perl ./misc/commfile-server.pl $<
 
 m1n1-shell!:
