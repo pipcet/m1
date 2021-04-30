@@ -166,13 +166,10 @@ build/m1lli.tar.gz: build/m1lli.tar
 m1lli/%.m1lli!: %.m1lli
 	$(SUDO) perl misc/commfile-server.pl $<
 
-build/linux.m1lli: build/m1lli.tar.gz
-	$(CP) build/m1lli.tar.gz build/linux.m1lli
-
-build/%-m1lli.tar: build/%.image build/script
+build/%-m1lli.tar: build/%.image m1lli/%/script
 	$(MKDIR) build/$*-m1lli
 	$(CP) $< build/$*-m1lli/Image
-	$(CP) build/script build/$*-m1lli/script
+	$(CP) m1lli/$*/script build/$*-m1lli/script
 	(cd build; cd $*-m1lli; tar cvf ../$*-m1lli.tar Image script)
 
 build/%-m1lli.tar.gz: build/%-m1lli.tar
@@ -225,7 +222,9 @@ build/linux-to-macho: m1lli/macho-linux/linux-to-macho.c
 	gcc -o $@ $<
 
 m1lli/asm-snippets/.all: \
+	m1lli/asm-snippets/blank-screen-physical..h \
 	m1lli/asm-snippets/bring-up-phys..h \
+	m1lli/asm-snippets/cpu-init..h \
 	m1lli/asm-snippets/enable-all-clocks..h \
 	m1lli/asm-snippets/fillrect..h \
 	m1lli/asm-snippets/image-header..h \
