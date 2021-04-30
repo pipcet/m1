@@ -57,17 +57,16 @@ build/%.image: stamp/linux m1lli/%/linux.config | build
 	diff -u m1lli/$*/linux.config linux/o/$*/.config
 	$(MAKE) -C linux ARCH=arm64 CROSS_COMPILE=$(CROSS_COMPILE) O=o/$* Image dtbs
 	$(CP) linux/o/$*/arch/arm64/boot/Image build/$*.image
-	$(MAKE) linux/o/$*/arch/arm64/boot/dts/apple/apple-m1-j293.dtb.dts.dtb
-	$(CP) linux/o/$*/arch/arm64/boot/dts/apple/apple-m1-j293.dtb.dts.dtb build/$*.dtb
 
 build/%.dtb: build/%.image
-	true
+	$(MAKE) linux/o/$*/arch/arm64/boot/dts/apple/apple-m1-j293.dtb.dts.dtb
+	$(CP) linux/o/$*/arch/arm64/boot/dts/apple/apple-m1-j293.dtb.dts.dtb $@
 
 build/linux.image: m1lli/asm-snippets/maximal-dt.dts.dtb.h
 
 build/stage2.image: build/linux.image build/m1lli build/busybox build/kexec build/commfile misc/init m1lli/stage2/init m1lli/stage2/init-cpio-spec m1lli/stage1/linux-initrd-spec binaries/perl.tar.gz build/m1lli-scripts.tar build/linux.dtb build/dtc build/fdtoverlay build/linux.macho m1lli/asm-snippets/maximal-dt.dts.dtb.h build/memtool build/m1n1.macho.image
 
-build/stage1.image: build/stage2.image build/m1lli build/busybox build/kexec build/commfile misc/init m1lli/stage1/init m1lli/stage1/linux-initrd-spec binaries/perl.tar.gz build/m1lli-scripts.tar build/stage2.dtb build/dtc build/fdtoverlay build/linux.macho m1lli/asm-snippets/maximal-dt.dts.dtb.h
+build/stage1.image: build/stage2.image build/m1lli build/busybox build/kexec build/commfile misc/init m1lli/stage1/init m1lli/stage1/init-cpio-spec binaries/perl.tar.gz build/m1lli-scripts.tar build/stage2.dtb build/dtc build/fdtoverlay build/linux.macho m1lli/asm-snippets/maximal-dt.dts.dtb.h
 
 build/m1lli-scripts.tar: m1lli/scripts/adt-convert.pl m1lli/scripts/adt-transform.pl m1lli/scripts/fdt-to-props.pl m1lli/scripts/fdtdiff.pl m1lli/scripts/props-to-fdt.pl m1lli/scripts/adt2fdt m1lli/scripts/adtdump
 	(cd m1lli/scripts; tar cv adt-convert.pl adt-transform.pl fdt-to-props.pl fdtdiff.pl props-to-fdt.pl adt2fdt) > build/m1lli-scripts.tar
@@ -239,6 +238,8 @@ m1lli/asm-snippets/.all: \
 	m1lli/asm-snippets/reboot-physical..h \
 	m1lli/asm-snippets/reboot-physical-2..h \
 	m1lli/asm-snippets/remap-to-physical..h \
+	m1lli/asm-snippets/restore-boot-args..h \
+	m1lli/asm-snippets/save-boot-args..h \
 	m1lli/asm-snippets/x8r8g8b8..h
 	touch $@
 
