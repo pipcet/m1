@@ -26,3 +26,6 @@
 	path = m1lli
 	url = https://github.com/pipcet/m1lli
 	branch = pearl
+[submodule "memtool"]
+	path = memtool
+	url = https://github.com/pipcet/memtool
