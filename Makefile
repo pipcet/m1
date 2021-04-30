@@ -288,7 +288,7 @@ hammer!:
 	while true; do make -j12 build/stage1.image.macho && (M1N1DEVICE=$(M1N1DEVICE) python3 ./m1n1/proxyclient/chainload.py ./build/stage1.image.macho); sleep 1; done
 
 m1lli/asm-snippets/%.c.S: m1lli/asm-snippets/%.c
-	aarch64-linux-gnu-gcc -march=armv8.4-a -Os -S -o $@ $<
+	aarch64-linux-gnu-gcc -fno-builtin -ffunction-sections -march=armv8.4-a -Os -S -o $@ $<
 
 m1lli/asm-snippets/%.o.S: m1lli/asm-snippets/%.S
 	aarch64-linux-gnu-gcc -Os -c -o $@ $<
