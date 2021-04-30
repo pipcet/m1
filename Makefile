@@ -201,7 +201,7 @@ build/image-to-macho: m1lli/macho-image/image-to-macho.c m1lli/asm-snippets/.all
 	gcc -Os -o $@ $<
 
 build/machoImage: build/machoImage.elf
-	objcopy -O binary -S --only-section .text --only-section .data --only-section .got --only-section .last build/machoImage.elf build/machoImage
+	aarch64-linux-gnu-objcopy -O binary -S --only-section .text --only-section .data --only-section .got --only-section .last build/machoImage.elf build/machoImage
 
 build/machoImage.elf: m1lli/machoImage/machoImage.c
 	aarch64-linux-gnu-gcc -static -nostdlib -nolibc -Os -fPIC -o $@ $<
@@ -286,10 +286,10 @@ m1lli/asm-snippets/%.S.elf: m1lli/asm-snippets/%.S
 	aarch64-linux-gnu-gcc -Os -static -nostdlib -o $@ $<
 
 m1lli/asm-snippets/%.elf.bin: m1lli/asm-snippets/%.elf
-	objcopy -O binary -S --only-section .pretext.0 --only-section .text --only-section .data --only-section .got --only-section .last --only-section .text.2 $< $@
+	aarch64-linux-gnu-objcopy -O binary -S --only-section .pretext.0 --only-section .text --only-section .data --only-section .got --only-section .last --only-section .text.2 $< $@
 
 m1lli/asm-snippets/%.bin.s: m1lli/asm-snippets/%.bin
-	objdump -maarch64 -D -bbinary $< > $@
+	aarch64-linux-gnu-objdump -maarch64 -D -bbinary $< > $@
 
 #m1lli/asm-snippets/%.h: m1lli/asm-snippets/%
 #:	(NAME=$$(echo $* | sed -e 's/\..*//' -e 's/-/_/g'); echo "unsigned int $$NAME[] = {";  cat m1lli/asm-snippets/$* | od -tx4 --width=4 -Anone -v | sed -e 's/ \(.*\)/\t0x\1,/'; echo "};") > m1lli/asm-snippets/$*.h
