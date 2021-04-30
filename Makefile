@@ -200,6 +200,12 @@ m1n1-m1n1!: build/m1n1.macho
 m1lli-m1n1!: build/m1n1.tar.gz misc/commfile-server.pl
 	$(SUDO) perl misc/commfile-server.pl build/m1n1.tar.gz
 
+%.macho{m1n1}: %.macho
+	M1N1DEVICE=$(M1N1DEVICE) python3 ./m1n1/proxyclient/chainload.py $<
+
+%.m1lli{m1lli}: %.m1lli
+	$(SUDO) perl misc/commfile-server.pl $<
+
 misc/linux-config/%.pospart: misc/linux-config/%
 	egrep -v '^#' < misc/linux-config/$* > misc/linux-config/$*.pospart
 
@@ -339,4 +345,4 @@ artifact-push!:
 	(cd artifacts/up; for file in *; do if [ "$$file" -nt ../../artifact-timestamp ]; then name=$$(basename "$$file"); (cd ../..; bash github/ul-artifact "$$name" "artifacts/up/$$name"); fi; done)
 
 .SECONDARY:
-.PHONY: %!
+.PHONY: %! %}
