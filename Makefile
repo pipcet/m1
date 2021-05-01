@@ -64,9 +64,65 @@ build/%.dtb: build/%.image
 
 build/linux.image: m1lli/asm-snippets/maximal-dt.dts.dtb.h
 
-build/stage2.image: build/linux.image build/m1lli build/busybox build/kexec build/commfile misc/init m1lli/stage2/init m1lli/stage2/init-cpio-spec binaries/perl.tar.gz build/m1lli-scripts.tar build/linux.dtb build/dtc build/fdtoverlay build/linux.macho m1lli/asm-snippets/maximal-dt.dts.dtb.h build/memtool build/m1n1.macho.image
+define perstage
+build/$(stage)/initfs:
+	$$(MKDIR) $$@
 
-build/stage1.image: build/stage2.image build/m1lli build/busybox build/kexec build/commfile misc/init m1lli/stage1/init m1lli/stage1/init-cpio-spec binaries/perl.tar.gz build/m1lli-scripts.tar build/stage2.dtb build/dtc build/fdtoverlay build/linux.macho m1lli/asm-snippets/maximal-dt.dts.dtb.h
+build/$(stage)/initfs/:
+	$$(MKDIR) $$@
+
+build/$(stage)/initfs/%/:
+	$$(MKDIR) $$@
+
+build/$(stage)/initfs/perl.tar.gz: binaries/perl.tar.gz | build/$(stage)/initfs
+	cp $$< $$@
+
+build/$(stage)/initfs/%: build/% | build/$(stage)/initfs
+	cp $$< $$@
+
+build/$(stage)/initfs/bin/%: build/% | build/$(stage)/initfs/bin/
+	cp $$< $$@
+	chmod a+x $$@
+
+build/$(stage)/initfs/boot/fdt: m1lli/asm-snippets/maximal-dt.dts.dtb | build/$(stage)/initfs/boot/
+	cp $$< $$@
+
+build/$(stage)/initfs/init: m1lli/$(stage)/init | build/$(stage)/initfs/
+	cp $$< $$@
+	chmod a+x $$@
+
+build/$(stage).cpiospec: \
+	m1lli/$(stage)/fixed.cpiospec \
+	build/$(stage)/initfs/perl.tar.gz \
+	build/$(stage)/initfs/m1lli-scripts.tar \
+	build/$(stage)/initfs/bin/busybox \
+	build/$(stage)/initfs/bin/kexec \
+	build/$(stage)/initfs/Image \
+	build/$(stage)/initfs/init \
+	build/$(stage)/initfs/m1lli \
+	build/$(stage)/initfs/m1n1.macho.image \
+	build/$(stage)/initfs/bin/commfile \
+	build/$(stage)/initfs/bin/dtc \
+	build/$(stage)/initfs/bin/fdtoverlay \
+	build/$(stage)/initfs/bin/memtool \
+	build/$(stage)/initfs/boot/fdt
+	(cat $$<; \
+	 ($$(foreach file,$$(patsubst build/$(stage)/initfs/%,%,$$(wordlist 2,$$(words $$^),$$^)),echo dir $$(dir $$(patsubst %/,%,$$(file))) 755 0 0; echo file $$(file) ../../../build/$(stage)/initfs/$$(file) 755 0 0;))) | sort | uniq > $$@
+endef
+
+$(foreach stage,stage1 stage2 linux,$(eval $(perstage)))
+
+build/stage1/initfs/Image: build/stage2.image | build/stage1/initfs/
+	cp $< $@
+
+build/stage2/initfs/Image: build/linux.image | build/stage2/initfs/
+	cp $< $@
+
+build/linux/initfs/Image: /dev/null | build/linux/initfs/
+
+build/stage2.image: build/linux.image build/m1lli build/busybox build/kexec build/commfile misc/init m1lli/stage2/init binaries/perl.tar.gz build/m1lli-scripts.tar build/linux.dtb build/dtc build/fdtoverlay build/linux.macho m1lli/asm-snippets/maximal-dt.dts.dtb.h build/memtool build/m1n1.macho.image build/stage2.cpiospec
+
+build/stage1.image: build/stage2.image build/m1lli build/busybox build/kexec build/commfile misc/init m1lli/stage1/init binaries/perl.tar.gz build/m1lli-scripts.tar build/stage2.dtb build/dtc build/fdtoverlay build/linux.macho m1lli/asm-snippets/maximal-dt.dts.dtb.h build/stage1.cpiospec
 
 build/m1lli-scripts.tar: m1lli/scripts/adt-convert.pl m1lli/scripts/adt-transform.pl m1lli/scripts/fdt-to-props.pl m1lli/scripts/fdtdiff.pl m1lli/scripts/props-to-fdt.pl m1lli/scripts/adt2fdt m1lli/scripts/adtdump
 	(cd m1lli/scripts; tar cv adt-convert.pl adt-transform.pl fdt-to-props.pl fdtdiff.pl props-to-fdt.pl adt2fdt) > build/m1lli-scripts.tar
