@@ -419,7 +419,7 @@ build/debootstrap/.stage1: | build/debootstrap/
 	touch $@
 
 build/debootstrap/.stage2: build/debootstrap/.stage1 | build/debootstrap/
-	sudo qemu-aarch64 -L $(shell pwd)/$(dir $<) $(shell pwd)/$(dir $<)/usr/sbin/chroot $(shell pwd)/build/debootstrap ls '*' || sudo qemu-aarch64 -L $(shell pwd)/$(dir $<) $(shell pwd)/$(dir $<)/usr/sbin/chroot $(shell pwd)/build/debootstrap /bin/ls '*'
+	sudo strace qemu-aarch64 -L $(shell pwd)/$(dir $<) $(shell pwd)/$(dir $<)/usr/sbin/chroot $(shell pwd)/build/debootstrap ls '*' || sudo qemu-aarch64 -L $(shell pwd)/$(dir $<) $(shell pwd)/$(dir $<)/usr/sbin/chroot $(shell pwd)/build/debootstrap /bin/ls '*'
 	sudo qemu-aarch64 -L $(shell pwd)/$(dir $<) $(shell pwd)/$(dir $<)/usr/sbin/chroot $(shell pwd)/build/debootstrap ./debootstrap/debootstrap --second-stage
 	touch $@
 
