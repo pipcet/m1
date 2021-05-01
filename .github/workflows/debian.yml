@@ -1,0 +1,21 @@
+name: workflow
+on:
+  push:
+    branches: [ main, pearl ]
+  pull_request:
+    branches: [ main, pearl ]
+jobs:
+  all:
+    name: all
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+    - name: Set env variables
+      uses: ./github/env/
+    - run: sudo apt-get install gcc-aarch64-linux-gnu
+    - run: sudo apt-get install binutils-aarch64-linux-gnu
+    - run: sudo apt-get install g++-aarch64-linux-gnu
+    - run: sudo apt-get install fakeroot
+    - run: make -kj3 build/debootstrap/.stage1
