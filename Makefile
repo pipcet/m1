@@ -64,7 +64,7 @@ build/%.dtb: build/%.image
 
 build/linux.image: m1lli/asm-snippets/maximal-dt.dts.dtb.h
 
-build/stage2.image: build/linux.image build/m1lli build/busybox build/kexec build/commfile misc/init m1lli/stage2/init m1lli/stage2/init-cpio-spec m1lli/stage1/linux-initrd-spec binaries/perl.tar.gz build/m1lli-scripts.tar build/linux.dtb build/dtc build/fdtoverlay build/linux.macho m1lli/asm-snippets/maximal-dt.dts.dtb.h build/memtool build/m1n1.macho.image
+build/stage2.image: build/linux.image build/m1lli build/busybox build/kexec build/commfile misc/init m1lli/stage2/init m1lli/stage2/init-cpio-spec binaries/perl.tar.gz build/m1lli-scripts.tar build/linux.dtb build/dtc build/fdtoverlay build/linux.macho m1lli/asm-snippets/maximal-dt.dts.dtb.h build/memtool build/m1n1.macho.image
 
 build/stage1.image: build/stage2.image build/m1lli build/busybox build/kexec build/commfile misc/init m1lli/stage1/init m1lli/stage1/init-cpio-spec binaries/perl.tar.gz build/m1lli-scripts.tar build/stage2.dtb build/dtc build/fdtoverlay build/linux.macho m1lli/asm-snippets/maximal-dt.dts.dtb.h
 
@@ -158,6 +158,9 @@ build/m1lli.tar: build/linux.image build/script
 
 build/m1lli.tar.gz: build/m1lli.tar
 	gzip < build/m1lli.tar > build/m1lli.tar.gz
+
+m1lli/%.image.macho: m1lli/%
+	ln -sf $(notdir $<) $@
 
 build/%.image.m1lli: build/%.image.m1lli.d/script build/%.image.m1lli.d/Image
 	(cd $(dir $<); tar czv .) > $@
