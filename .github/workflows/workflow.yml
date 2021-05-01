@@ -19,17 +19,22 @@ jobs:
     - run: sudo apt-get install g++-aarch64-linux-gnu
     - run: make -kj3 oldconfig-linux/stage1!
     - run: make -kj3 oldconfig-linux/stage2!
+    - run: make -kj3 oldconfig-linux/stage3!
     - run: make -kj3 oldconfig-linux/linux!
     - run: make -kj3 build/linux.image
+    - run: make -kj3 build/stage3.image
     - run: make -kj3 build/stage2.image
     - run: make -kj3 build/stage1.image
     - run: make -kj3 artifacts/up/linux.image
+    - run: make -kj3 artifacts/up/stage3.image
     - run: make -kj3 artifacts/up/stage2.image
     - run: make -kj3 artifacts/up/stage1.image
     - run: make -kj3 build/linux.image.macho
+    - run: make -kj3 build/stage3.image.macho
     - run: make -kj3 build/stage2.image.macho
     - run: make -kj3 build/stage1.image.macho
     - run: make -kj3 artifacts/up/linux.image.macho
+    - run: make -kj3 artifacts/up/stage3.image.macho
     - run: make -kj3 artifacts/up/stage2.image.macho
     - run: make -kj3 artifacts/up/stage1.image.macho
     - run: make -kj3 build/m1n1.macho
