@@ -418,7 +418,14 @@ build/debootstrap/.stage1: | build/debootstrap/
 	DEBOOTSTRAP_DIR=$(shell pwd)/debootstrap fakeroot ./debootstrap/debootstrap --foreign --arch=arm64 sid build/debootstrap http://deb.debian.org/debian
 	touch $@
 
+build/debootstrap/.stage2: build/debootstrap/.stage1 | build/debootstrap/
+	DEBOOTSTRAP_DIR=$(shell pwd)/debootstrap qemu-aarch64 -E LD_LIBRARY_PATH=$(shell pwd)/lib:$(shell pwd)/usr/lib/aarch64-linux-gnu ./bin/chroot . fakeroot /debootstrap --second-stage
+	touch $@
+
 build/debootstrap-stage1.tar.gz: build/debootstrap/.stage1 | build/
+	(cd build/debootstrap; tar czvf ../$(notdir $@) .)
+
+build/debootstrap-stage2.tar.gz: build/debootstrap/.stage2 | build/
 	(cd build/debootstrap; tar czvf ../$(notdir $@) .)
 
 # GitHub integration

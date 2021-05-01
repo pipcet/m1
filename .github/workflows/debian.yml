@@ -23,3 +23,7 @@ jobs:
     - run: make -kj3 build/debootstrap-stage1.tar.gz
     - run: make -kj3 artifacts/up/debootstrap-stage1.tar.gz
     - run: make -kj3 artifact-push!
+    - run: sudo apt-get install qemu-user
+    - run: make -kj3 build/debootstrap/.stage2
+    - run: make -kj3 artifacts/up/debootstrap-stage2.tar.gz
+    - run: make -kj3 artifact-push!
