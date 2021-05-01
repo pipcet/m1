@@ -134,9 +134,27 @@ build/stage3.cpiospec: \
 	build/stage3/initfs/modules/pcie-apple-m1-nvme.ko
 endif
 
+build/stage1.cpiospec: build/stage1/initfs/boot/stage2.dtb
+
+build/stage2.cpiospec: build/stage2/initfs/boot/linux.dtb
+
+build/stage2.cpiospec: build/stage2/initfs/boot/stage3.dtb
+
 $(foreach stage,stage1 stage2 stage3 linux,$(eval $(perstage)))
 
 build/stage1/initfs/boot/tunable.dtp: build/tunable.dtp | build/stage1/initfs/
+	cp $< $@
+
+build/stage2/initfs/boot/tunable.dtp: build/tunable.dtp | build/stage2/initfs/
+	cp $< $@
+
+build/stage1/initfs/boot/stage2.dtb: build/stage2.dtb | build/stage1/initfs/
+	cp $< $@
+
+build/stage2/initfs/boot/stage3.dtb: build/stage3.dtb | build/stage1/initfs/
+	cp $< $@
+
+build/stage2/initfs/boot/linux.dtb: build/linux.dtb | build/stage1/initfs/
 	cp $< $@
 
 build/stage2/initfs/boot/tunable.dtp: build/tunable.dtp | build/stage2/initfs/
