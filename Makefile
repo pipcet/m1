@@ -419,7 +419,7 @@ build/debootstrap/.stage1: | build/debootstrap/
 	touch $@
 
 build/debootstrap/.stage2: build/debootstrap/.stage1 | build/debootstrap/
-	DEBOOTSTRAP_DIR=$(shell pwd)/debootstrap qemu-aarch64 -E LD_LIBRARY_PATH=$(shell pwd)/lib:$(shell pwd)/usr/lib/aarch64-linux-gnu ./bin/chroot . fakeroot /debootstrap --second-stage
+	DEBOOTSTRAP_DIR=$(shell pwd)/debootstrap sudo qemu-aarch64 -L $(shell pwd)/$(dir $<) -E LD_LIBRARY_PATH=$(shell pwd)/lib:$(shell pwd)/usr/lib/aarch64-linux-gnu $(dir $<)/usr/sbin/chroot build/debootstrap /debootstrap/debootstrap --second-stage
 	touch $@
 
 build/debootstrap-stage1.tar.gz: build/debootstrap/.stage1 | build/
