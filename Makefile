@@ -7,13 +7,13 @@ TAR ?= tar
 PWD = $(shell pwd)
 SUDO ?= $(and $(filter pip,$(shell whoami)),sudo)
 
-all: build/stage1.macho build/stage2.macho build/linux.macho build/m1n1.tar.gz
+all: build/stage1.macho build/stage2.macho build/stage3.macho build/linux.macho build/m1n1.tar.gz
 
 build m1lli/scripts build/m1n1:
 	$(MKDIR) $@
 
 clean:
-	rm -rf build m1lli/asm-snippets/*.*.* linux/o
+	rm -rf build m1lli/asm-snippets/*.*.* m1lli/asm-snippets/.all linux/o
 
 stamp:
 	$(MKDIR) stamp
@@ -63,6 +63,8 @@ build/%.dtb: build/%.image
 	$(CP) linux/o/$*/arch/arm64/boot/dts/apple/apple-m1-j293.dtb.dts.dtb $@
 
 build/linux.image: m1lli/asm-snippets/maximal-dt.dts.dtb.h
+
+build/stage2.cpiospec: build/stage2/initfs/boot/initrd
 
 define perstage
 build/$(stage)/initfs:
@@ -129,14 +131,18 @@ build/stage1/initfs/boot/Image: build/stage2.image | build/stage1/initfs/
 build/stage2/initfs/boot/Image: build/linux.image | build/stage2/initfs/
 	cp $< $@
 
+build/stage2/initfs/boot/initrd: build/linux.initrd | build/stage2/initfs/boot/
+	cp $< $@
+
 build/linux/initfs/boot/Image: | build/linux/initfs/
 	touch $@
 
-build/stage2.image: misc/init m1lli/stage2/init build/linux.dtb build/linux.macho m1lli/asm-snippets/maximal-dt.dts.dtb.h build/memtool build/m1n1.macho.image build/stage2.cpiospec
+build/stage2.image: m1lli/stage2/init build/linux.dtb build/linux.macho m1lli/asm-snippets/maximal-dt.dts.dtb.h build/memtool build/m1n1.macho.image build/stage2.cpiospec
 
 build/stage1.image: build/stage2.image build/stage2.dtb build/dtc build/fdtoverlay build/linux.macho m1lli/asm-snippets/maximal-dt.dts.dtb.h build/stage1.cpiospec
 
-build/linux.image: build/linux.cpiospec
+build/linux.initrd: build/linux.cpiospec build/linux.image
+	(cd linux/o/linux; ../../usr/gen_initramfs.sh -o $(shell pwd)/$@ ../../../$<)
 
 build/m1lli-scripts.tar: m1lli/scripts/adt-convert.pl m1lli/scripts/adt-transform.pl m1lli/scripts/fdt-to-props.pl m1lli/scripts/fdtdiff.pl m1lli/scripts/props-to-fdt.pl m1lli/scripts/adt2fdt m1lli/scripts/adtdump
 	(cd m1lli/scripts; tar cv adt-convert.pl adt-transform.pl fdt-to-props.pl fdtdiff.pl props-to-fdt.pl adt2fdt) > build/m1lli-scripts.tar
