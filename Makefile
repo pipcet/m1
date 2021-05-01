@@ -91,6 +91,8 @@ build/$(stage)/initfs/init: m1lli/$(stage)/init | build/$(stage)/initfs/
 	cp $$< $$@
 	chmod a+x $$@
 
+build/linux.cpiospec: build/linux/initfs/modules/brcmfmac.ko
+build/linux.cpiospec: build/linux/initfs/modules/brcmutil.ko
 build/$(stage).cpiospec: \
 	m1lli/$(stage)/fixed.cpiospec \
 	build/$(stage)/initfs/perl.tar.gz \
@@ -110,6 +112,12 @@ build/$(stage).cpiospec: \
 	 ($$(foreach file,$$(patsubst build/$(stage)/initfs/%,%,$$(wordlist 2,$$(words $$^),$$^)),echo dir $$(dir $$(patsubst %/,%,$$(file))) 755 0 0; echo file $$(file) ../../../build/$(stage)/initfs/$$(file) 755 0 0;))) | sort | uniq > $$@
 endef
 
+build/linux/initfs/modules/brcmfmac.ko: build/modules.tar  | build/linux/initfs/modules/
+	cp linux/o/linux/drivers/net/wireless/broadcom/brcm80211/brcmfmac/brcmfmac.ko $@
+
+build/linux/initfs/modules/brcmutil.ko: build/modules.tar | build/linux/initfs/modules/
+	cp linux/o/linux/drivers/net/wireless/broadcom/brcm80211/brcmutil/brcmutil.ko $@
+
 $(foreach stage,stage1 stage2 linux,$(eval $(perstage)))
 
 build/stage1/initfs/Image: build/stage2.image | build/stage1/initfs/
@@ -123,6 +131,8 @@ build/linux/initfs/Image: /dev/null | build/linux/initfs/
 build/stage2.image: misc/init m1lli/stage2/init build/linux.dtb build/linux.macho m1lli/asm-snippets/maximal-dt.dts.dtb.h build/memtool build/m1n1.macho.image build/stage2.cpiospec
 
 build/stage1.image: build/stage2.image build/stage2.dtb build/dtc build/fdtoverlay build/linux.macho m1lli/asm-snippets/maximal-dt.dts.dtb.h build/stage1.cpiospec
+
+build/linux.image: build/linux.cpiospec
 
 build/m1lli-scripts.tar: m1lli/scripts/adt-convert.pl m1lli/scripts/adt-transform.pl m1lli/scripts/fdt-to-props.pl m1lli/scripts/fdtdiff.pl m1lli/scripts/props-to-fdt.pl m1lli/scripts/adt2fdt m1lli/scripts/adtdump
 	(cd m1lli/scripts; tar cv adt-convert.pl adt-transform.pl fdt-to-props.pl fdtdiff.pl props-to-fdt.pl adt2fdt) > build/m1lli-scripts.tar
@@ -145,8 +155,9 @@ build/memtool: stamp/memtool
 	$(MAKE) -C memtool
 	$(CP) memtool/memtool $@
 
-build/modules.tar: build/linux.image | build
+build/modules.tar: stamp/linux | build
 	rm -rf build/modules
+	$(MAKE) -C linux ARCH=arm64 CROSS_COMPILE=$(CROSS_COMPILE) O=o/linux modules
 	$(MKDIR) build/modules
 	$(MAKE) -C linux ARCH=arm64 CROSS_COMPILE=$(CROSS_COMPILE) O=o/linux INSTALL_MOD_PATH=$(PWD)/build/modules modules_install
 	(cd build/modules; $(TAR) cf ../modules.tar .)
