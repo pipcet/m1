@@ -9,6 +9,9 @@ SUDO ?= $(and $(filter pip,$(shell whoami)),sudo)
 
 all: build/stage1.macho build/stage2.macho build/stage3.macho build/linux.macho build/m1n1.tar.gz
 
+%/:
+	$(MKDIR) $@
+
 build m1lli/scripts build/m1n1 build/debootstrap:
 	$(MKDIR) $@
 
