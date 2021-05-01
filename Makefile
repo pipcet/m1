@@ -121,9 +121,13 @@ build/linux/initfs/modules/brcmutil.ko: build/modules.tar | build/linux/initfs/m
 
 build/linux.cpiospec: build/linux/initfs/modules/brcmfmac.ko
 build/linux.cpiospec: build/linux/initfs/modules/brcmutil.ko
+
+build/stage3.cpiospec: \
+	build/stage3/initfs/modules/applespi.ko \
+	build/stage3/initfs/modules/pcie-apple-m1-nvme.ko
 endif
 
-$(foreach stage,stage1 stage2 linux,$(eval $(perstage)))
+$(foreach stage,stage1 stage2 stage3 linux,$(eval $(perstage)))
 
 build/stage1/initfs/boot/Image: build/stage2.image | build/stage1/initfs/
 	cp $< $@
@@ -134,8 +138,16 @@ build/stage2/initfs/boot/Image: build/linux.image | build/stage2/initfs/
 build/stage2/initfs/boot/initrd: build/linux.initrd | build/stage2/initfs/boot/
 	cp $< $@
 
+build/stage2/initfs/boot/stage3.image: build/stage3.image | build/stage3/initfs/
+	cp $< $@
+
+build/stage3/initfs/boot/Image: build/linux.image | build/stage3/initfs/
+	cp $< $@
+
 build/linux/initfs/boot/Image: | build/linux/initfs/
 	touch $@
+
+build/stage3.image: m1lli/stage3/init build/linux.dtb build/linux.macho m1lli/asm-snippets/maximal-dt.dts.dtb.h build/memtool build/m1n1.macho.image build/stage3.cpiospec
 
 build/stage2.image: m1lli/stage2/init build/linux.dtb build/linux.macho m1lli/asm-snippets/maximal-dt.dts.dtb.h build/memtool build/m1n1.macho.image build/stage2.cpiospec
 
