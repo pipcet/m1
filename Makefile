@@ -419,7 +419,7 @@ build/debootstrap/.stage1: | build/debootstrap/
 	touch $@
 
 build/debootstrap/.stage2: build/debootstrap/.stage1 | build/debootstrap/
-	sudo chroot $(shell pwd)/build/debootstrap ./debootstrap/debootstrap --second-stage || cat build/debootstrap/debootstrap/debootstrap.log
+	sudo chroot $(shell pwd)/build/debootstrap ./debootstrap/debootstrap --second-stage
 	touch $@
 
 build/debootstrap-stage1.tar.gz: build/debootstrap/.stage1 | build/
@@ -453,6 +453,12 @@ artifacts/up/%.tar.gz: build/%.tar.gz artifact-timestamp | artifacts/up
 artifact-push!:
 	(cd artifacts/up; for file in *; do if [ "$$file" -nt ../../artifact-timestamp ]; then name=$$(basename "$$file"); (cd ../..; bash github/ul-artifact "$$name" "artifacts/up/$$name"); fi; done)
 	rm -f artifacts/up/*
+
+qemu!:
+	git clone git://git.qemu.org/qemu.git qemu
+	(cd qemu; ./configure --target-list=aarch64-linux-user --static --prefix=/usr)
+	(cd qemu; make -kj3)
+	(cd qemu; sudo make install)
 
 %/checkout!:
 	git submodule update --depth=1 --single-branch --init --recursive $*
