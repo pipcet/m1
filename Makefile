@@ -419,7 +419,7 @@ build/debootstrap/.stage1: | build/debootstrap/
 	touch $@
 
 build/debootstrap-stage1.tar.gz: build/debootstrap/.stage1 | build/
-	(cd build; tar czvf $@ debootstrap)
+	(cd build; tar czvf $(notdir $@) debootstrap)
 
 # GitHub integration
 
