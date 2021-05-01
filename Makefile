@@ -112,11 +112,13 @@ build/$(stage).cpiospec: \
 	 ($$(foreach file,$$(patsubst build/$(stage)/initfs/%,%,$$(wordlist 2,$$(words $$^),$$^)),echo dir $$(dir $$(patsubst %/,%,$$(file))) 755 0 0; echo file $$(file) ../../../build/$(stage)/initfs/$$(file) 755 0 0;))) | sort | uniq > $$@
 endef
 
+ifneq ($(INCLUDE_MODULES),)
 build/linux/initfs/modules/brcmfmac.ko: build/modules.tar  | build/linux/initfs/modules/
 	cp linux/o/linux/drivers/net/wireless/broadcom/brcm80211/brcmfmac/brcmfmac.ko $@
 
 build/linux/initfs/modules/brcmutil.ko: build/modules.tar | build/linux/initfs/modules/
 	cp linux/o/linux/drivers/net/wireless/broadcom/brcm80211/brcmutil/brcmutil.ko $@
+endif
 
 $(foreach stage,stage1 stage2 linux,$(eval $(perstage)))
 
