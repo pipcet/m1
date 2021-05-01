@@ -440,6 +440,9 @@ artifacts/up/%.image: build/%.image artifact-timestamp | artifacts/up
 artifacts/up/%.macho: build/%.macho artifact-timestamp | artifacts/up
 	$(CP) $< $@
 
+artifacts/up/%.tar.gz: build/%.tar.gz artifact-timestamp | artifacts/up
+	$(CP) $< $@
+
 artifact-push!:
 	(cd artifacts/up; for file in *; do if [ "$$file" -nt ../../artifact-timestamp ]; then name=$$(basename "$$file"); (cd ../..; bash github/ul-artifact "$$name" "artifacts/up/$$name"); fi; done)
 
