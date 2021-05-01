@@ -160,7 +160,7 @@ build/linux.initrd: build/linux.cpiospec build/linux.image
 	(cd linux/o/linux; ../../usr/gen_initramfs.sh -o $(shell pwd)/$@ ../../../$<)
 
 build/m1lli-scripts.tar: m1lli/scripts/adt-convert.pl m1lli/scripts/adt-transform.pl m1lli/scripts/fdt-to-props.pl m1lli/scripts/fdtdiff.pl m1lli/scripts/props-to-fdt.pl m1lli/scripts/adt2fdt m1lli/scripts/adtdump
-	(cd m1lli/scripts; tar cv adt-convert.pl adt-transform.pl fdt-to-props.pl fdtdiff.pl props-to-fdt.pl adt2fdt) > build/m1lli-scripts.tar
+	(cd m1lli/scripts; tar c adt-convert.pl adt-transform.pl fdt-to-props.pl fdtdiff.pl props-to-fdt.pl adt2fdt) > build/m1lli-scripts.tar
 
 m1lli/scripts/%.pl: m1lli/src/%.pl | m1lli/scripts
 	$(CP) $< $@
@@ -246,7 +246,7 @@ build/script: misc/script-m1n1
 	chmod u+x build/script
 
 build/m1lli.tar: build/linux.image build/script
-	(cd build; cp linux.image Image; tar cvf $< Image script)
+	(cd build; cp linux.image Image; tar cf $< Image script)
 
 build/m1lli.tar.gz: build/m1lli.tar
 	gzip < build/m1lli.tar > build/m1lli.tar.gz
@@ -255,7 +255,7 @@ m1lli/%.image.macho: m1lli/%
 	ln -sf $(notdir $<) $@
 
 build/%.image.m1lli: build/%.image.m1lli.d/script build/%.image.m1lli.d/Image
-	(cd $(dir $<); tar czv .) > $@
+	(cd $(dir $<); tar cz .) > $@
 
 m1lli/%.m1lli!: %.m1lli
 	$(SUDO) perl misc/commfile-server.pl $<
@@ -264,7 +264,7 @@ build/%-m1lli.tar: build/%.image m1lli/%/script
 	$(MKDIR) build/$*-m1lli
 	$(CP) $< build/$*-m1lli/Image
 	$(CP) m1lli/$*/script build/$*-m1lli/script
-	(cd build; cd $*-m1lli; tar cvf ../$*-m1lli.tar Image script)
+	(cd build; cd $*-m1lli; tar cf ../$*-m1lli.tar Image script)
 
 build/%-m1lli.tar.gz: build/%-m1lli.tar
 	gzip < $< > $@
@@ -424,10 +424,10 @@ build/debootstrap/.stage2: build/debootstrap/.stage1 | build/debootstrap/
 	touch $@
 
 build/debootstrap-stage1.tar.gz: build/debootstrap/.stage1 | build/
-	(cd build/debootstrap; tar czvf ../$(notdir $@) .)
+	(cd build/debootstrap; tar czf ../$(notdir $@) .)
 
 build/debootstrap-stage2.tar.gz: build/debootstrap/.stage2 | build/
-	(cd build/debootstrap; tar czvf ../$(notdir $@) .)
+	(cd build/debootstrap; tar czf ../$(notdir $@) .)
 
 # GitHub integration
 
