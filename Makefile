@@ -419,7 +419,7 @@ build/debootstrap/.stage1: | build/debootstrap/
 	touch $@
 
 build/debootstrap/.stage2: build/debootstrap/.stage1 | build/debootstrap/
-	sudo $(shell pwd)/$(dir $<)/usr/sbin/chroot $(shell pwd)/build/debootstrap ./debootstrap/debootstrap --second-stage || cat build/debootstrap/debootstrap/debootstrap.log
+	sudo chroot $(shell pwd)/build/debootstrap ./debootstrap/debootstrap --second-stage || cat build/debootstrap/debootstrap/debootstrap.log
 	touch $@
 
 build/debootstrap-stage1.tar.gz: build/debootstrap/.stage1 | build/
