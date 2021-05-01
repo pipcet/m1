@@ -65,6 +65,9 @@ build/%.dtb: build/%.image
 	$(MAKE) linux/o/$*/arch/arm64/boot/dts/apple/apple-m1-j293.dtb.dts.dtb
 	$(CP) linux/o/$*/arch/arm64/boot/dts/apple/apple-m1-j293.dtb.dts.dtb $@
 
+build/tunables.dtp: m1lli/asm-snippets/maximal-dt.dts.dtb.dts.dtp
+	egrep 'tunable' < $< > $@
+
 build/linux.image: m1lli/asm-snippets/maximal-dt.dts.dtb.h
 
 build/stage2.cpiospec: build/stage2/initfs/boot/initrd
