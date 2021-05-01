@@ -419,9 +419,8 @@ build/debootstrap/.stage1: | build/debootstrap/
 	touch $@
 
 build/debootstrap/.stage2: build/debootstrap/.stage1 | build/debootstrap/
-	sudo env
-	env
-	sudo qemu-aarch64 -L $(shell pwd)/$(dir $<) -E LD_LIBRARY_PATH=/lib:/lib/aarch64-linux-gnu/:/usr/lib/:/usr/lib/aarch64-linux-gnu $(shell pwd)/$(dir $<)/usr/sbin/chroot $(shell pwd)/build/debootstrap ./debootstrap/debootstrap --second-stage
+	sudo qemu-aarch64 -L $(shell pwd)/$(dir $<) $(shell pwd)/$(dir $<)/usr/sbin/chroot $(shell pwd)/build/debootstrap ls '*' || sudo qemu-aarch64 -L $(shell pwd)/$(dir $<) $(shell pwd)/$(dir $<)/usr/sbin/chroot $(shell pwd)/build/debootstrap /bin/ls '*'
+	sudo qemu-aarch64 -L $(shell pwd)/$(dir $<) $(shell pwd)/$(dir $<)/usr/sbin/chroot $(shell pwd)/build/debootstrap ./debootstrap/debootstrap --second-stage
 	touch $@
 
 build/debootstrap-stage1.tar.gz: build/debootstrap/.stage1 | build/
