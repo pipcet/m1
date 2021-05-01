@@ -91,8 +91,6 @@ build/$(stage)/initfs/init: m1lli/$(stage)/init | build/$(stage)/initfs/
 	cp $$< $$@
 	chmod a+x $$@
 
-build/linux.cpiospec: build/linux/initfs/modules/brcmfmac.ko
-build/linux.cpiospec: build/linux/initfs/modules/brcmutil.ko
 build/$(stage).cpiospec: \
 	m1lli/$(stage)/fixed.cpiospec \
 	build/$(stage)/initfs/perl.tar.gz \
@@ -118,6 +116,9 @@ build/linux/initfs/modules/brcmfmac.ko: build/modules.tar  | build/linux/initfs/
 
 build/linux/initfs/modules/brcmutil.ko: build/modules.tar | build/linux/initfs/modules/
 	cp linux/o/linux/drivers/net/wireless/broadcom/brcm80211/brcmutil/brcmutil.ko $@
+
+build/linux.cpiospec: build/linux/initfs/modules/brcmfmac.ko
+build/linux.cpiospec: build/linux/initfs/modules/brcmutil.ko
 endif
 
 $(foreach stage,stage1 stage2 linux,$(eval $(perstage)))
