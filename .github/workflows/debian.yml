@@ -22,6 +22,5 @@ jobs:
     - run: make -kj3 qemu!
     - run: sudo apt-get install fakeroot
     - run: make -kj3 build/debootstrap/.stage1
-    - run: make -kj3 build/debootstrap/.stage2
-    - run: make -kj3 artifacts/up/debootstrap-stage2.tar.gz
+    - run: make -kj3 artifacts/up/debootstrap-stage1.tar.gz
     - run: make -kj3 artifact-push!
