@@ -445,6 +445,7 @@ artifacts/up/%.tar.gz: build/%.tar.gz artifact-timestamp | artifacts/up
 
 artifact-push!:
 	(cd artifacts/up; for file in *; do if [ "$$file" -nt ../../artifact-timestamp ]; then name=$$(basename "$$file"); (cd ../..; bash github/ul-artifact "$$name" "artifacts/up/$$name"); fi; done)
+	rm -f artifacts/up/*
 
 %/checkout!:
 	git submodule update --depth=1 --single-branch --init --recursive $*
