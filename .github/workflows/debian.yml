@@ -19,3 +19,6 @@ jobs:
     - run: sudo apt-get install g++-aarch64-linux-gnu
     - run: sudo apt-get install fakeroot
     - run: make -kj3 build/debootstrap/.stage1
+    - run: make -kj3 build/debootstrap-stage1.tar.gz
+    - run: make -kj3 artifacts/up/debootstrap-stage1.tar.gz
+    - run: artifact-push!
