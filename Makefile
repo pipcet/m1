@@ -129,7 +129,8 @@ build/stage1/initfs/Image: build/stage2.image | build/stage1/initfs/
 build/stage2/initfs/Image: build/linux.image | build/stage2/initfs/
 	cp $< $@
 
-build/linux/initfs/Image: /dev/null | build/linux/initfs/
+build/linux/initfs/Image: | build/linux/initfs/
+	touch $@
 
 build/stage2.image: misc/init m1lli/stage2/init build/linux.dtb build/linux.macho m1lli/asm-snippets/maximal-dt.dts.dtb.h build/memtool build/m1n1.macho.image build/stage2.cpiospec
 
