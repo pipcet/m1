@@ -413,6 +413,7 @@ m1lli/asm-snippets/%..h: m1lli/asm-snippets/%.S.elf.bin.s.h
 
 build/debootstrap/.stage1: build/debootstrap
 	DEBOOTSTRAP_DIR=$(shell pwd)/debootstrap fakeroot ./debootstrap/debootstrap --foreign --arch=arm64 sid build/debootstrap http://deb.debian.org/debian
+	touch $@
 
 build/debootstrap-stage1.tar.gz: build/debootstrap/.stage1
 	(cd build; tar czvf $@ $(dir $<))
