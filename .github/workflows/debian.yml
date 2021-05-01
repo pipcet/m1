@@ -11,13 +11,14 @@ jobs:
     steps:
     - uses: actions/checkout@v2
       with:
-        submodules: true
+        submodules: false
     - name: Set env variables
       uses: ./github/env/
     - run: sudo apt-get install gcc-aarch64-linux-gnu
     - run: sudo apt-get install binutils-aarch64-linux-gnu
     - run: sudo apt-get install g++-aarch64-linux-gnu
     - run: sudo apt-get install fakeroot
+    - run: make -kj3 debootstrap/checkout!
     - run: make -kj3 build/debootstrap/.stage1
     - run: make -kj3 build/debootstrap-stage1.tar.gz
     - run: make -kj3 artifacts/up/debootstrap-stage1.tar.gz
