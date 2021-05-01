@@ -22,4 +22,4 @@ jobs:
     - run: make -kj3 build/debootstrap/.stage1
     - run: make -kj3 build/debootstrap-stage1.tar.gz
     - run: make -kj3 artifacts/up/debootstrap-stage1.tar.gz
-    - run: artifact-push!
+    - run: make -kj3 artifact-push!
