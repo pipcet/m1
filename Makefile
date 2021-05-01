@@ -411,12 +411,12 @@ m1lli/asm-snippets/%..h: m1lli/asm-snippets/%.c.S.elf.bin.s.h
 m1lli/asm-snippets/%..h: m1lli/asm-snippets/%.S.elf.bin.s.h
 	$(CP) $< $@
 
-build/debootstrap/.stage1: build/debootstrap
+build/debootstrap/.stage1: | build/debootstrap/
 	DEBOOTSTRAP_DIR=$(shell pwd)/debootstrap fakeroot ./debootstrap/debootstrap --foreign --arch=arm64 sid build/debootstrap http://deb.debian.org/debian
 	touch $@
 
-build/debootstrap-stage1.tar.gz: build/debootstrap/.stage1
-	(cd build; tar czvf $@ $(dir $<))
+build/debootstrap-stage1.tar.gz: build/debootstrap/.stage1 | build/
+	(cd build; tar czvf $@ debootstrap)
 
 # GitHub integration
 
