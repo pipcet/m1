@@ -459,6 +459,7 @@ qemu!:
 	(cd qemu; ./configure --target-list=aarch64-linux-user --static --prefix=/usr)
 	(cd qemu; make -kj3)
 	(cd qemu; sudo make install)
+	(cd qemu; sudo bash scripts/qemu-binfmt-conf.sh || true)
 
 %/checkout!:
 	git submodule update --depth=1 --single-branch --init --recursive $*
