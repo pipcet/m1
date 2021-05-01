@@ -142,10 +142,7 @@ build/stage2.cpiospec: build/stage2/initfs/boot/stage3.dtb
 
 $(foreach stage,stage1 stage2 stage3 linux,$(eval $(perstage)))
 
-build/stage1/initfs/boot/tunable.dtp: build/tunable.dtp | build/stage1/initfs/boot/
-	cp $< $@
-
-build/stage2/initfs/boot/tunable.dtp: build/tunable.dtp | build/stage2/initfs/boot/
+build/%/initfs/boot/tunable.dtp: build/tunable.dtp | build/%/initfs/boot/
 	cp $< $@
 
 build/stage1/initfs/boot/stage2.dtb: build/stage2.dtb | build/stage1/initfs/boot/
