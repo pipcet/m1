@@ -9,7 +9,7 @@ SUDO ?= $(and $(filter pip,$(shell whoami)),sudo)
 
 all: build/stage1.macho build/stage2.macho build/stage3.macho build/linux.macho build/m1n1.tar.gz
 
-build m1lli/scripts build/m1n1:
+build m1lli/scripts build/m1n1 build/debootstrap:
 	$(MKDIR) $@
 
 clean:
@@ -410,6 +410,9 @@ m1lli/asm-snippets/%..h: m1lli/asm-snippets/%.c.S.elf.bin.s.h
 
 m1lli/asm-snippets/%..h: m1lli/asm-snippets/%.S.elf.bin.s.h
 	$(CP) $< $@
+
+build/debootstrap/.stage1: build/debootstrap
+	DEBOOTSTRAP_DIR=$(shell pwd)/debootstrap fakeroot ./debootstrap/debootstrap --foreign --arch=arm64 sid build/debootstrap http://deb.debian.org/debian
 
 # GitHub integration
 

@@ -29,3 +29,6 @@
 [submodule "memtool"]
 	path = memtool
 	url = https://github.com/pipcet/memtool
+[submodule "debootstrap"]
+	path = debootstrap
+	url = https://github.com/pipcet/debootstrap
