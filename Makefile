@@ -459,6 +459,7 @@ qemu!:
 	(cd qemu; ./configure --target-list=aarch64-linux-user --static --prefix=/usr)
 	(cd qemu; make -kj3)
 	(cd qemu; sudo make install)
+	for i in /proc/sys/fs/binfmt_misc/*; do echo 0 | sudo tee $a; done || true
 	(cd qemu; sudo bash scripts/qemu-binfmt-conf.sh || true)
 
 %/checkout!:
