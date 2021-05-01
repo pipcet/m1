@@ -19,6 +19,7 @@ jobs:
     - run: sudo apt-get install binutils-aarch64-linux-gnu
     - run: sudo apt-get install g++-aarch64-linux-gnu
     - run: sudo apt-get install qemu-user qemu-user-static binfmt-support
+    - run: sudo apt-get install ninja
     - run: make -kj3 qemu!
     - run: sudo apt-get install fakeroot
     - run: make -kj3 build/debootstrap/.stage1
