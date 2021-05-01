@@ -142,40 +142,40 @@ build/stage2.cpiospec: build/stage2/initfs/boot/stage3.dtb
 
 $(foreach stage,stage1 stage2 stage3 linux,$(eval $(perstage)))
 
-build/stage1/initfs/boot/tunable.dtp: build/tunable.dtp | build/stage1/initfs/
+build/stage1/initfs/boot/tunable.dtp: build/tunable.dtp | build/stage1/initfs/boot/
 	cp $< $@
 
-build/stage2/initfs/boot/tunable.dtp: build/tunable.dtp | build/stage2/initfs/
+build/stage2/initfs/boot/tunable.dtp: build/tunable.dtp | build/stage2/initfs/boot/
 	cp $< $@
 
-build/stage1/initfs/boot/stage2.dtb: build/stage2.dtb | build/stage1/initfs/
+build/stage1/initfs/boot/stage2.dtb: build/stage2.dtb | build/stage1/initfs/boot/
 	cp $< $@
 
-build/stage2/initfs/boot/stage3.dtb: build/stage3.dtb | build/stage1/initfs/
+build/stage2/initfs/boot/stage3.dtb: build/stage3.dtb | build/stage2/initfs/boot/
 	cp $< $@
 
-build/stage2/initfs/boot/linux.dtb: build/linux.dtb | build/stage1/initfs/
+build/stage2/initfs/boot/linux.dtb: build/linux.dtb | build/stage2/initfs/boot/
 	cp $< $@
 
-build/stage2/initfs/boot/tunable.dtp: build/tunable.dtp | build/stage2/initfs/
+build/stage2/initfs/boot/tunable.dtp: build/tunable.dtp | build/stage2/initfs/boot/
 	cp $< $@
 
-build/stage1/initfs/boot/Image: build/stage2.image | build/stage1/initfs/
+build/stage1/initfs/boot/Image: build/stage2.image | build/stage1/initfs/boot/
 	cp $< $@
 
-build/stage2/initfs/boot/Image: build/linux.image | build/stage2/initfs/
+build/stage2/initfs/boot/Image: build/linux.image | build/stage2/initfs/boot/
 	cp $< $@
 
 build/stage2/initfs/boot/initrd: build/linux.initrd | build/stage2/initfs/boot/
 	cp $< $@
 
-build/stage2/initfs/boot/stage3.image: build/stage3.image | build/stage3/initfs/
+build/stage2/initfs/boot/stage3.image: build/stage3.image | build/stage3/initfs/boot/
 	cp $< $@
 
-build/stage3/initfs/boot/Image: build/linux.image | build/stage3/initfs/
+build/stage3/initfs/boot/Image: build/linux.image | build/stage3/initfs/boot/
 	cp $< $@
 
-build/linux/initfs/boot/Image: | build/linux/initfs/
+build/linux/initfs/boot/Image: | build/linux/initfs/boot/
 	touch $@
 
 build/stage3.image: m1lli/stage3/init build/linux.dtb build/linux.macho m1lli/asm-snippets/maximal-dt.dts.dtb.h build/memtool build/m1n1.macho.image build/stage3.cpiospec
