@@ -7,10 +7,12 @@ for my $path (glob "smc-smooth/*.*.*") {
     open $fh, "|gnuplot" or die;
     print $fh "set xdata time\n";
     print $fh "set timefmt '\%s'\n";
-    print $fh "set terminal png size 1600,1200\n";
+    print $fh "set terminal png size 800,600\n";
     print $fh "set output \"$outpath.png\"\n";
     print $fh "plot \"$path\" using (\$1):(\$2) with lines\n";
     close $fh;
+    print "** $outpath\n\n";
+    print "[[file:$outpath.png]]\n"
 }
 for my $path (glob "smc-num/*.*.*") {
     warn $path;
@@ -20,9 +22,11 @@ for my $path (glob "smc-num/*.*.*") {
     open $fh, "|gnuplot" or die;
     print $fh "set xdata time\n";
     print $fh "set timefmt '\%s'\n";
-    print $fh "set terminal png size 1600,1200\n";
+    print $fh "set terminal png size 800,600\n";
     print $fh "set output \"$outpath.png\"\n";
     print $fh "plot \"$path\" using (\$1):(\$2) with lines\n";
     close $fh;
+    print "** $outpath\n\n";
+    print "[[file:$outpath.png]]\n"
 }
 system("find smc-plot -type f -empty | xargs rm");
