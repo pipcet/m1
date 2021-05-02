@@ -7,6 +7,8 @@ TAR ?= tar
 PWD = $(shell pwd)
 SUDO ?= $(and $(filter pip,$(shell whoami)),sudo)
 
+# INCLUDE_DEBOOTSTRAP = t
+
 all: build/stage1.macho build/stage2.macho build/stage3.macho build/linux.macho build/m1n1.tar.gz
 
 %/:
