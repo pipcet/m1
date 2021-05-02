@@ -70,7 +70,7 @@ build/tunable.dtp: m1lli/asm-snippets/maximal-dt.dts.dtb.dts.dtp
 
 build/linux.image: m1lli/asm-snippets/maximal-dt.dts.dtb.h
 
-build/stage2.cpiospec: build/stage2/initfs/boot/initrd
+build/stage2.cpiospec: build/stage2/initfs/boot/initfs
 
 define perstage
 build/$(stage)/initfs:
@@ -119,6 +119,9 @@ build/$(stage).cpiospec: \
 	 ($$(foreach file,$$(patsubst build/$(stage)/initfs/%,%,$$(wordlist 2,$$(words $$^),$$^)),echo dir $$(dir $$(patsubst %/,%,$$(file))) 755 0 0; echo file $$(file) ../../../build/$(stage)/initfs/$$(file) 755 0 0;))) | sort | uniq > $$@
 endef
 
+build/debootstrap.initfs: build/debootstrap/.stage1
+	(cd build/debootstrap; find . -print0 | cpio --null -o --format=newc) | gzip > $@
+
 ifneq ($(INCLUDE_MODULES),)
 build/linux/initfs/modules/brcmfmac.ko: build/modules.tar  | build/linux/initfs/modules/
 	cp linux/o/linux/drivers/net/wireless/broadcom/brcm80211/brcmfmac/brcmfmac.ko $@
@@ -137,6 +140,10 @@ endif
 build/stage1.cpiospec: build/stage1/initfs/boot/stage2.dtb
 
 build/stage2.cpiospec: build/stage2/initfs/boot/linux.dtb
+
+ifneq ($(INCLUDE_DEBOOTSTRAP),)
+build/stage2.cpiospec: build/stage2/initfs/boot/debootstrap.initfs
+endif
 
 ifneq ($(INCLUDE_STAGE_3),)
 build/stage2.cpiospec: build/stage2/initfs/boot/stage3.dtb
@@ -165,7 +172,10 @@ build/stage1/initfs/boot/Image: build/stage2.image | build/stage1/initfs/boot/
 build/stage2/initfs/boot/Image: build/linux.image | build/stage2/initfs/boot/
 	cp $< $@
 
-build/stage2/initfs/boot/initrd: build/linux.initrd | build/stage2/initfs/boot/
+build/stage2/initfs/boot/initfs: build/linux.initfs | build/stage2/initfs/boot/
+	cp $< $@
+
+build/stage2/initfs/boot/debootstrap.initfs: build/debootstrap.initfs | build/stage2/initfs/boot/
 	cp $< $@
 
 ifneq ($(INCLUDE_STAGE_3),)
@@ -185,7 +195,7 @@ build/stage2.image: m1lli/stage2/init build/linux.dtb build/linux.macho m1lli/as
 
 build/stage1.image: build/stage2.image build/stage2.dtb build/dtc build/fdtoverlay build/linux.macho m1lli/asm-snippets/maximal-dt.dts.dtb.h build/stage1.cpiospec
 
-build/linux.initrd: build/linux.cpiospec build/linux.image
+build/linux.initfs: build/linux.cpiospec build/linux.image
 	(cd linux/o/linux; ../../usr/gen_initramfs.sh -o $(shell pwd)/$@ ../../../$<)
 
 build/m1lli-scripts.tar: m1lli/scripts/adt-convert.pl m1lli/scripts/adt-transform.pl m1lli/scripts/fdt-to-props.pl m1lli/scripts/fdtdiff.pl m1lli/scripts/props-to-fdt.pl m1lli/scripts/adt2fdt m1lli/scripts/adtdump
