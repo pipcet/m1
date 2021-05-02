@@ -64,7 +64,7 @@ if ($var eq "± 0%") {
     $var = "";
 }
 
-warn "| $key.$flags | $type | | | |  $mean$var |\n";
+warn "| $key.$flags | $type | $mean$var | | | | | | |\n";
 if ($var2) {
     my $fh2;
     open $fh2, "|gnuplot";
