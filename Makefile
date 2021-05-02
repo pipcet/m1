@@ -122,7 +122,7 @@ build/$(stage).cpiospec: \
 endef
 
 build/debootstrap.initfs: build/debootstrap/.stage1
-	(cd build/debootstrap; find . -print0 | cpio --null -o --format=newc) | gzip > $@
+	(cd build/debootstrap; sudo find . -print0 | cpio --null -o --format=newc) | gzip > $@
 
 ifneq ($(INCLUDE_MODULES),)
 build/linux/initfs/modules/brcmfmac.ko: build/modules.tar  | build/linux/initfs/modules/
@@ -142,10 +142,6 @@ endif
 build/stage1.cpiospec: build/stage1/initfs/boot/stage2.dtb
 
 build/stage2.cpiospec: build/stage2/initfs/boot/linux.dtb
-
-ifneq ($(INCLUDE_DEBOOTSTRAP),)
-build/stage2.cpiospec: build/stage2/initfs/boot/debootstrap.initfs
-endif
 
 ifneq ($(INCLUDE_STAGE_3),)
 build/stage2.cpiospec: build/stage2/initfs/boot/stage3.dtb
@@ -457,17 +453,27 @@ m1lli/asm-snippets/%..h: m1lli/asm-snippets/%.S.elf.bin.s.h
 	$(CP) $< $@
 
 build/debootstrap/.stage1: | build/debootstrap/
-	sudo DEBOOTSTRAP_DIR=$(shell pwd)/debootstrap ./debootstrap/debootstrap --foreign --arch=arm64 --include=dash,wget,busybox,linux-image-arm64,busybox-static,network-manager,openssh-client,net-tools sid build/debootstrap http://deb.debian.org/debian
+	sudo DEBOOTSTRAP_DIR=$(shell pwd)/debootstrap ./debootstrap/debootstrap --foreign --arch=arm64 --include=dash,wget,busybox,linux-image-arm64,busybox-static,network-manager,openssh-client,net-tools,libpam-systemd sid build/debootstrap http://deb.debian.org/debian
 	touch $@
 
-build/debootstrap/.stage15: build/debootstrap/.stage1
+build/debootstrap/.stage15: build/debootstrap/.stage1 m1lli/debootstrap/init
 	for a in build/debootstrap/var/cache/apt/archives/*.deb; do sudo dpkg -x $$a build/debootstrap; done
-	echo "#!/bin/sh\n/bin/busybox sh\n" | sudo tee build/debootstrap/init
+	sudo cp m1lli/debootstrap/init build/debootstrap/init
 	sudo chmod a+x build/debootstrap/init
 	sudo touch $@
 
 build/debian-initrd.gz: build/debootstrap/.stage15
 	(cd build/debootstrap; sudo find . | cpio -Hnewc -o) | gzip > $@
+
+build/stage2/initfs/boot/debian-initrd.gz: build/debian-initrd.gz
+	$(CP) $< $@
+
+ifneq ($(INCLUDE_DEBOOTSTRAP),)
+build/stage2.cpiospec: build/stage2/initfs/boot/debian-initrd.gz
+endif
+
+# PACKAGES_TO_REMOVE=debconf-i18n libbluetooth3 
+
 build/debootstrap/.stage2: build/debootstrap/.stage1 | build/debootstrap/
 	sudo chroot $(shell pwd)/build/debootstrap ./debootstrap/debootstrap --second-stage
 	touch $@
