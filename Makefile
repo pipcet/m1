@@ -460,6 +460,14 @@ build/debootstrap/.stage1: | build/debootstrap/
 	sudo DEBOOTSTRAP_DIR=$(shell pwd)/debootstrap ./debootstrap/debootstrap --foreign --arch=arm64 --include=dash,wget,busybox,linux-image-arm64,busybox-static,network-manager,openssh-client,net-tools sid build/debootstrap http://deb.debian.org/debian
 	touch $@
 
+build/debootstrap/.stage15: build/debootstrap/.stage1
+	for a in build/debootstrap/var/cache/apt/archives/*.deb; do sudo dpkg -x $$a build/debootstrap; done
+	echo "#!/bin/sh\n/bin/busybox sh\n" | sudo tee build/debootstrap/init
+	sudo chmod a+x build/debootstrap/init
+	sudo touch $@
+
+build/debian-initrd.gz: build/debootstrap/.stage15
+	(cd build/debootstrap; sudo find . | cpio -Hnewc -o) | gzip > $@
 build/debootstrap/.stage2: build/debootstrap/.stage1 | build/debootstrap/
 	sudo chroot $(shell pwd)/build/debootstrap ./debootstrap/debootstrap --second-stage
 	touch $@
