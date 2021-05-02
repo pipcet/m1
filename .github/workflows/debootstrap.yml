@@ -1,0 +1,23 @@
+name: debootstrap
+on:
+  push:
+    branches: [ main, pearl ]
+  pull_request:
+    branches: [ main, pearl ]
+jobs:
+  all:
+    name: all
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+    - name: Set env variables
+      uses: ./github/env/
+    - run: make -kj3 INCLUDE_DEBOOTSTRAP=t INCLUDE_MODULES=t oldconfig-linux/stage1!
+    - run: make -kj3 INCLUDE_DEBOOTSTRAP=t INCLUDE_MODULES=t oldconfig-linux/stage2!
+    - run: make -kj3 INCLUDE_DEBOOTSTRAP=t INCLUDE_MODULES=t oldconfig-linux/linux!
+    - run: make -kj3 INCLUDE_DEBOOTSTRAP=t INCLUDE_MODULES=t build/stage1.image
+    - run: make -kj3 INCLUDE_DEBOOTSTRAP=t INCLUDE_MODULES=t build/stage1.image.macho
+    - run: make -kj3 artifacts/up/stage1.image.macho
+    - run: make -kj3 artifact-push!
