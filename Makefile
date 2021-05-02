@@ -472,6 +472,21 @@ ifneq ($(INCLUDE_DEBOOTSTRAP),)
 build/stage2.cpiospec: build/stage2/initfs/boot/debian-initrd.gz
 endif
 
+# build/debootstrap.img.stage15: build/debootstrap/.stage15
+# 	dd if=/dev/zero of=$@ bs=1M count=1024
+# 	mkfs.ext4 $@
+# 	sudo rmdir mnt
+# 	mkdir mnt
+# 	sudo mount -o loop $@ mnt
+# 	sudo cp -av build/debootstrap/* mnt/
+# 	sudo umount mnt
+# 	touch $@
+
+# build/debootstrap.img.stage2: build/debootstrap.img.stage15 build/debian-initrd.gz
+# 	cp $< $@.tmp
+# 	(echo "mount -t proc proc proc; mount -t sysfs sys sys; mount -t devtmpfs dev dev; depmod -a; modprobe virtio_blk; modprobe ext4; mkdir mnt; mount /dev/virtio0 /mnt "echo "echo root:!:0:0::/root:/bin/sh > /etc/passwd"; echo /debootstrap/debootstrap --second-stage) | cat
+# 	qemu-system-aarch64 -drive id=rootimg,format=raw,if=none,file=$@.tmp -kernel ./build/debootstrap/boot/vmlinuz-*-arm64 -initrd ./build/debian-initrd.gz -M virt -m 2g -append 'console=ttyAMA0 TERM=dumb 1' -serial stdio -vnc :91 -cpu cortex-a57 -net user -device virtio-blk-device,drive=rootimg -net user -netdev user,id=unet -device virtio-net-device,netdev=unet
+
 # PACKAGES_TO_REMOVE=debconf-i18n libbluetooth3 
 
 build/debootstrap/.stage2: build/debootstrap/.stage1 | build/debootstrap/
