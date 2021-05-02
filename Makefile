@@ -406,10 +406,10 @@ build/dtc build/fdtoverlay: dtc
 %.dtb.dts: %.dtb build/dtc.native
 	build/dtc.native -O dts -I dtb < $< > $@
 
-%.dts.dtp: %.dts m1lli/src/fdt-to-props.pl
+%.dts.dtp: %.dts m1lli/scripts/fdt-to-props.pl
 	perl m1lli/scripts/fdt-to-props.pl < $< > $@
 
-%.dtp.dts: %.dtp m1lli/src/props-to-fdt.pl
+%.dtp.dts: %.dtp m1lli/scripts/props-to-fdt.pl
 	perl m1lli/scripts/props-to-fdt.pl < $< > $@
 
 %.dts.dtb: %.dts build/dtc.native
