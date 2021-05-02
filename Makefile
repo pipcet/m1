@@ -66,7 +66,7 @@ build/%.dtb: build/%.image
 	$(CP) linux/o/$*/arch/arm64/boot/dts/apple/apple-m1-j293.dtb.dts.dtb $@
 
 build/tunable.dtp: m1lli/asm-snippets/maximal-dt.dts.dtb.dts.dtp
-	egrep 'tunable' < $< > $@
+	egrep '(tunable|thunderbolt-drom)' < $< > $@
 
 build/linux.image: m1lli/asm-snippets/maximal-dt.dts.dtb.h
 
@@ -390,10 +390,10 @@ build/dtc build/fdtoverlay: dtc
 	build/dtc.native -O dts -I dtb < $< > $@
 
 %.dts.dtp: %.dts m1lli/src/fdt-to-props.pl
-	perl m1lli/src/fdt-to-props.pl < $< > $@
+	perl m1lli/scripts/fdt-to-props.pl < $< > $@
 
 %.dtp.dts: %.dtp m1lli/src/props-to-fdt.pl
-	perl m1lli/src/fdt-to-props.pl < $< > $@
+	perl m1lli/scripts/props-to-fdt.pl < $< > $@
 
 %.dts.dtb: %.dts build/dtc.native
 	build/dtc.native -O dtb -I dts < $< > $@
