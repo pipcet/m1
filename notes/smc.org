@@ -28,6 +28,7 @@
 | BIMX.84 | ui16 |              | %%  |   |   |   | battery capacity uncorrected? |
 | BRSC.84 | ui16 |              | %   |   |   |   | battery charge                |
 | CH0V.94 | ui32 |              | mV  |   |   |   | charger voltage               |
+| SBAR.85 | flt  |              | mAH |   |   |   | battery remaining?            |
 
 ** Legend
 | field    | description                          |
