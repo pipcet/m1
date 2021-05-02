@@ -138,7 +138,9 @@ build/stage1.cpiospec: build/stage1/initfs/boot/stage2.dtb
 
 build/stage2.cpiospec: build/stage2/initfs/boot/linux.dtb
 
+ifneq ($(INCLUDE_STAGE_3),)
 build/stage2.cpiospec: build/stage2/initfs/boot/stage3.dtb
+endif
 
 $(foreach stage,stage1 stage2 stage3 linux,$(eval $(perstage)))
 
@@ -166,8 +168,10 @@ build/stage2/initfs/boot/Image: build/linux.image | build/stage2/initfs/boot/
 build/stage2/initfs/boot/initrd: build/linux.initrd | build/stage2/initfs/boot/
 	cp $< $@
 
+ifneq ($(INCLUDE_STAGE_3),)
 build/stage2/initfs/boot/stage3.image: build/stage3.image | build/stage3/initfs/boot/
 	cp $< $@
+endif
 
 build/stage3/initfs/boot/Image: build/linux.image | build/stage3/initfs/boot/
 	cp $< $@
