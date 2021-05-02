@@ -342,6 +342,7 @@ build/linux-to-macho: m1lli/macho-linux/linux-to-macho.c
 m1lli/asm-snippets/.all: \
 	m1lli/asm-snippets/blank-screen-physical..h \
 	m1lli/asm-snippets/bring-up-phys..h \
+	m1lli/asm-snippets/bring-up-phys-2..h \
 	m1lli/asm-snippets/cpu-init..h \
 	m1lli/asm-snippets/enable-all-clocks..h \
 	m1lli/asm-snippets/fillrect..h \
