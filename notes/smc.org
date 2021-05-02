@@ -1,18 +1,33 @@
 * SMC keys
 
-| Key.fl  | type | measured     | u   | B | L | C | interpretation              |
-|---------+------+--------------+-----+---+---+---+-----------------------------|
-| #KEY    | ui32 | 2.42e+09     |     |   |   |   | key count (byte-swapped)    |
-|---------+------+--------------+-----+---+---+---+-----------------------------|
-| SBAS.85 | flt  | 84.5±26%     | %   | X |   |   | battery charge              |
-|---------+------+--------------+-----+---+---+---+-----------------------------|
-| B0TE.84 | ui16 | 6.12e+04±27  | min | X |   |   | time to empty               |
-| B0TF.84 | ui16 | 6.12e+04±27  | min | X |   |   | time to full                |
-| B0RV.84 | ui16 | 1.3e+04      | mV  |   |   |   | battery ? voltage, constant |
-| B0AV.84 | ui16 | 1.27e+04± 3% | mV  | X |   |   | battery voltage, variable   |
-| BC1V.84 | ui16 | 4.25e+03± 3% | mV  | X |   |   | battery cell 1 voltage?     |
-| BC2V.84 | ui16 | 4.23e+03± 3% | mV  | X |   |   | battery cell 2 voltage      |
-| BC3V.84 | ui16 | 4.25e+03± 3% | mV  | X |   |   | battery cell 3 voltage?     |
+| Key.fl  | type | measured     | u   | B | L | C | interpretation                |
+|---------+------+--------------+-----+---+---+---+-------------------------------|
+| #KEY    | ui32 | 2.42e+09     |     |   |   |   | key count (byte-swapped)      |
+|---------+------+--------------+-----+---+---+---+-------------------------------|
+| SBAS.85 | flt  | 84.5±26%     | %   | X |   |   | battery charge                |
+|---------+------+--------------+-----+---+---+---+-------------------------------|
+| B0TE.84 | ui16 | 6.12e+04±27  | min | X |   |   | time to empty                 |
+| B0TF.84 | ui16 | 6.12e+04±27  | min | X |   |   | time to full                  |
+| B0RV.84 | ui16 | 1.3e+04      | mV  |   |   |   | battery ? voltage, constant   |
+| B0AV.84 | ui16 | 1.27e+04± 3% | mV  | X |   |   | battery voltage, variable     |
+| BC1V.84 | ui16 | 4.25e+03± 3% | mV  | X |   |   | battery cell 1 voltage?       |
+| BC2V.84 | ui16 | 4.23e+03± 3% | mV  | X |   |   | battery cell 2 voltage        |
+| BC3V.84 | ui16 | 4.25e+03± 3% | mV  | X |   |   | battery cell 3 voltage?       |
+| B0AC.84 | si16 |              | mA  | X |   |   | battery charge signed         |
+| B0AP.84 | si16 |              | mW  | X |   |   | battery power signed          |
+| B0AV.84 | ui16 |              | mV  | X |   |   | battery voltage               |
+| B0CF.84 | ui16 |              | mAh |   |   |   | battery capacity full?        |
+| B0FC.84 | ui16 |              | mAh |   |   |   | battery capacity full?        |
+| B0IV.84 | si16 |              |     |   |   |   | ~ B0AC                        |
+| B0NC.84 | ui16 |              | mAh |   |   |   | battery nominal charge        |
+| B0RC.84 | ui16 |              | #   |   |   |   | battery recharge cycles?      |
+| B0RM.91 | ui16 |              | ??? |   |   |   | low 16 bits of something      |
+| B0AT.84 | ui16 |              | % C |   |   |   | battery temperature?          |
+| B1AT.84 | ui16 |              | .1C |   |   |   | battery temperature?          |
+| B2AT.84 | ui16 |              | .1C |   |   |   | battery temperature?          |
+| BIMX.84 | ui16 |              | %%  |   |   |   | battery capacity uncorrected? |
+| BRSC.84 | ui16 |              | %   |   |   |   | battery charge                |
+| CH0V.94 | ui32 |              | mV  |   |   |   | charger voltage               |
 
 ** Legend
 | field    | description                          |
