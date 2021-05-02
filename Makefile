@@ -462,14 +462,19 @@ build/debootstrap/.stage15: build/debootstrap/.stage1 m1lli/debootstrap/init
 	sudo chmod a+x build/debootstrap/init
 	sudo touch $@
 
-build/debian-initrd.gz: build/debootstrap/.stage15
+build/debian-initfs.gz: build/debootstrap/.stage15
 	(cd build/debootstrap; sudo find . | cpio -Hnewc -o) | gzip > $@
 
-build/stage2/initfs/boot/debian-initrd.gz: build/debian-initrd.gz
+build/stage2/initfs/boot/debian-initfs.gz: build/debian-initfs.gz
 	$(CP) $< $@
 
+build/stage2/initfs/bin/debian: m1lli/stage2/bin/debian
+	$(CP) $< $@
+	chmod a+x $@
+
 ifneq ($(INCLUDE_DEBOOTSTRAP),)
-build/stage2.cpiospec: build/stage2/initfs/boot/debian-initrd.gz
+build/stage2.cpiospec: build/stage2/initfs/boot/debian-initfs.gz
+build/stage2.cpiospec: build/stage2/initfs/bin/debian
 endif
 
 # build/debootstrap.img.stage15: build/debootstrap/.stage15
@@ -482,10 +487,10 @@ endif
 # 	sudo umount mnt
 # 	touch $@
 
-# build/debootstrap.img.stage2: build/debootstrap.img.stage15 build/debian-initrd.gz
+# build/debootstrap.img.stage2: build/debootstrap.img.stage15 build/debian-initfs.gz
 # 	cp $< $@.tmp
 # 	(echo "mount -t proc proc proc; mount -t sysfs sys sys; mount -t devtmpfs dev dev; depmod -a; modprobe virtio_blk; modprobe ext4; mkdir mnt; mount /dev/virtio0 /mnt "echo "echo root:!:0:0::/root:/bin/sh > /etc/passwd"; echo /debootstrap/debootstrap --second-stage) | cat
-# 	qemu-system-aarch64 -drive id=rootimg,format=raw,if=none,file=$@.tmp -kernel ./build/debootstrap/boot/vmlinuz-*-arm64 -initrd ./build/debian-initrd.gz -M virt -m 2g -append 'console=ttyAMA0 TERM=dumb 1' -serial stdio -vnc :91 -cpu cortex-a57 -net user -device virtio-blk-device,drive=rootimg -net user -netdev user,id=unet -device virtio-net-device,netdev=unet
+# 	qemu-system-aarch64 -drive id=rootimg,format=raw,if=none,file=$@.tmp -kernel ./build/debootstrap/boot/vmlinuz-*-arm64 -initrd ./build/debian-initfs.gz -M virt -m 2g -append 'console=ttyAMA0 TERM=dumb 1' -serial stdio -vnc :91 -cpu cortex-a57 -net user -device virtio-blk-device,drive=rootimg -net user -netdev user,id=unet -device virtio-net-device,netdev=unet
 
 # PACKAGES_TO_REMOVE=debconf-i18n libbluetooth3 
 
