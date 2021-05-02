@@ -457,7 +457,7 @@ m1lli/asm-snippets/%..h: m1lli/asm-snippets/%.S.elf.bin.s.h
 	$(CP) $< $@
 
 build/debootstrap/.stage1: | build/debootstrap/
-	sudo DEBOOTSTRAP_DIR=$(shell pwd)/debootstrap ./debootstrap/debootstrap --foreign --arch=arm64 sid build/debootstrap http://deb.debian.org/debian
+	sudo DEBOOTSTRAP_DIR=$(shell pwd)/debootstrap ./debootstrap/debootstrap --foreign --arch=arm64 --include=wget --include=busybox --include=linux-image --include=busybox-static sid build/debootstrap http://deb.debian.org/debian
 	touch $@
 
 build/debootstrap/.stage2: build/debootstrap/.stage1 | build/debootstrap/
