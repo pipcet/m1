@@ -453,7 +453,7 @@ m1lli/asm-snippets/%..h: m1lli/asm-snippets/%.S.elf.bin.s.h
 	$(CP) $< $@
 
 build/debootstrap/.stage1: | build/debootstrap/
-	sudo DEBOOTSTRAP_DIR=$(shell pwd)/debootstrap ./debootstrap/debootstrap --foreign --arch=arm64 --include=dash,wget,busybox,linux-image-arm64,busybox-static,network-manager,openssh-client,net-tools,libpam-systemd sid build/debootstrap http://deb.debian.org/debian
+	sudo DEBOOTSTRAP_DIR=$(shell pwd)/debootstrap ./debootstrap/debootstrap --foreign --arch=arm64 --include=dash,wget,busybox,busybox-static,network-manager,openssh-client,net-tools,libpam-systemd sid build/debootstrap http://deb.debian.org/debian
 	touch $@
 
 build/debootstrap/.stage15: build/debootstrap/.stage1 m1lli/debootstrap/init
