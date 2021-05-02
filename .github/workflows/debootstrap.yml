@@ -12,6 +12,9 @@ jobs:
     - uses: actions/checkout@v2
       with:
         submodules: true
+    - run: sudo apt-get install gcc-aarch64-linux-gnu
+    - run: sudo apt-get install binutils-aarch64-linux-gnu
+    - run: sudo apt-get install g++-aarch64-linux-gnu
     - name: Set env variables
       uses: ./github/env/
     - run: make -kj3 INCLUDE_DEBOOTSTRAP=t INCLUDE_MODULES=t oldconfig-linux/stage1!
