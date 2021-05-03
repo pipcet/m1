@@ -217,7 +217,7 @@ build/memtool: stamp/memtool
 	$(MAKE) -C memtool
 	$(CP) memtool/memtool $@
 
-build/modules.tar: stamp/linux | build
+build/modules.tar: build/linux.image | build
 	rm -rf build/modules
 	$(MAKE) -C linux ARCH=arm64 CROSS_COMPILE=$(CROSS_COMPILE) O=o/linux modules
 	$(MKDIR) build/modules
