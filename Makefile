@@ -545,7 +545,7 @@ github/release/list!: | github/release/
 release!:
 	this_release_date="$$(date --iso)"; \
 	node ./github/release.js $$this_release_date $$this_release_date > github/release.json; \
-	curl -sSL -XPOST -H "Authorization: token $$GITHUB_TOKEN" "https://api.github.com/repos/$$GITHUB_REPOSITORY/releases" --data '@github/release.json'; \
+	curl -sSL -XPOST -H "Authorization: token $$ACTIONS_RUNTIME_TOKEN" "https://api.github.com/repos/$$GITHUB_REPOSITORY/releases" --data '@github/release.json'; \
 	sleep 1m; \
 	$(MAKE) ship/$$this_release_date!
 
