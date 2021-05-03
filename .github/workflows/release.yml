@@ -18,3 +18,5 @@ jobs:
     - run: make -kj3 INCLUDE_DEBOOTSTRAP=t INCLUDE_MODULES=t oldconfig-linux/stage2!
     - run: make -kj3 INCLUDE_DEBOOTSTRAP=t INCLUDE_MODULES=t oldconfig-linux/linux!
     - run: make -kj3 INCLUDE_DEBOOTSTRAP=t INCLUDE_MODULES=t release!
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
