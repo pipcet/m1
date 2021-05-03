@@ -1,0 +1,34 @@
+on:
+  push:
+    branches: [ release ]
+jobs:
+  release:
+    name: release
+    runs-on: ubuntu-latest
+name: debootstrap
+on:
+  push:
+    branches: [ main, pearl ]
+  pull_request:
+    branches: [ main, pearl ]
+jobs:
+  all:
+    name: all
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+    - run: sudo apt-get install gcc-aarch64-linux-gnu
+    - run: sudo apt-get install binutils-aarch64-linux-gnu
+    - run: sudo apt-get install g++-aarch64-linux-gnu
+    - name: Set env variables
+      uses: ./github/env/
+    - run: make -kj3 INCLUDE_DEBOOTSTRAP=t INCLUDE_MODULES=t oldconfig-linux/stage1!
+    - run: make -kj3 INCLUDE_DEBOOTSTRAP=t INCLUDE_MODULES=t oldconfig-linux/stage2!
+    - run: make -kj3 INCLUDE_DEBOOTSTRAP=t INCLUDE_MODULES=t oldconfig-linux/linux!
+    - run: make -kj3 INCLUDE_DEBOOTSTRAP=t INCLUDE_MODULES=t build/stage1.image
+    - run: make -kj3 INCLUDE_DEBOOTSTRAP=t INCLUDE_MODULES=t build/stage1.image.macho
+    - run: make -kj3 INCLUDE_DEBOOTSTRAP=t INCLUDE_MODULES=t artifacts/up/stage1.image.macho
+    - run: make -kj3 INCLUDE_DEBOOTSTRAP=t INCLUDE_MODULES=t artifact-push!
+    - run: make -kj3 INCLUDE_DEBOOTSTRAP=t INCLUDE_MODULES=t release!

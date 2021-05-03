@@ -530,6 +530,26 @@ artifact-push!:
 	(cd artifacts/up; for file in *; do if [ "$$file" -nt ../../artifact-timestamp ]; then name=$$(basename "$$file"); (cd ../..; bash github/ul-artifact "$$name" "artifacts/up/$$name"); fi; done)
 	rm -f artifacts/up/*
 
+ship/m1-debian.macho: build/stage1.image.macho
+	$(CP) $< $@
+
+ship/%!: ship/m1-debian.macho github/release/list! | ship/ github/release/
+	$(MAKE) github/release/list!
+	for name in $$(cd ship; ls *); do for id in $$(jq ".[] | if .name == \"$$name\" then .id else 0 end" < github/assets/$*.json); do [ $$id != "0" ] && curl -sSL -XDELETE -H "Authorization: token $$GITHUB_TOKEN" "https://api.github.com/repos/$$GITHUB_REPOSITORY/releases/assets/$$id"; echo; done; done
+	(for name in ship/*; do bname=$$(basename "$$name"); curl -sSL -XPOST -H "Authorization: token $$GITHUB_TOKEN" --header "Content-Type: application/octet-stream" "https://uploads.github.com/repos/$$GITHUB_REPOSITORY/releases/$$(cat github/release/\"$*\")/assets?name=$$bname" --upload-file $$name; echo; done)
+
+github/release/list!: | github/release/
+	curl -sSL https://api.github.com/repos/$$GITHUB_REPOSITORY/releases?per_page=100 | jq '.[] | [(.).tag_name,(.).id] | .[]' | while read tag; do read id; echo $$id > github/release/$$tag; done
+	curl -sSL https://api.github.com/repos/$$GITHUB_REPOSITORY/releases/tags/latest | jq '.[.tag_name,.id] | .[]' | while read tag; do read id; echo $$id > github/release/$$tag; done
+	ls -l github/release/
+
+release!:
+	this_release_date="$$(date --iso)"; \
+	node ./github/release.js $$this_release_date $$this_release_date > github/release.json; \
+	curl -sSL -XPOST -H "Authorization: token $$GITHUB_TOKEN" "https://api.github.com/repos/$$GITHUB_REPOSITORY/releases" --data '@github/release.json'; \
+	sleep 1m; \
+	$(MAKE) ship/$$this_release_date!
+
 qemu!:
 	git clone git://git.qemu.org/qemu.git qemu
 	(cd qemu; ./configure --target-list=aarch64-linux-user --static --prefix=/usr)
