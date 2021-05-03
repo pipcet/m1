@@ -17,8 +17,4 @@ jobs:
     - run: make -kj3 INCLUDE_DEBOOTSTRAP=t INCLUDE_MODULES=t oldconfig-linux/stage1!
     - run: make -kj3 INCLUDE_DEBOOTSTRAP=t INCLUDE_MODULES=t oldconfig-linux/stage2!
     - run: make -kj3 INCLUDE_DEBOOTSTRAP=t INCLUDE_MODULES=t oldconfig-linux/linux!
-    - run: make -kj3 INCLUDE_DEBOOTSTRAP=t INCLUDE_MODULES=t build/stage1.image
-    - run: make -kj3 INCLUDE_DEBOOTSTRAP=t INCLUDE_MODULES=t build/stage1.image.macho
-    - run: make -kj3 INCLUDE_DEBOOTSTRAP=t INCLUDE_MODULES=t artifacts/up/stage1.image.macho
-    - run: make -kj3 INCLUDE_DEBOOTSTRAP=t INCLUDE_MODULES=t artifact-push!
     - run: make -kj3 INCLUDE_DEBOOTSTRAP=t INCLUDE_MODULES=t release!
