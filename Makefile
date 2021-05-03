@@ -530,8 +530,8 @@ artifact-push!:
 	(cd artifacts/up; for file in *; do if [ "$$file" -nt ../../artifact-timestamp ]; then name=$$(basename "$$file"); (cd ../..; bash github/ul-artifact "$$name" "artifacts/up/$$name"); fi; done)
 	rm -f artifacts/up/*
 
-ship/m1-debian.macho:
-	touch $< $@
+ship/m1-debian.macho: build/stage1.image.macho
+	$(CP) $< $@
 
 ship/%!: ship/m1-debian.macho | ship/ github/release/
 	for name in $$(cd ship; ls *); do for id in $$(jq ".[] | if .name == \"$$name\" then .id else 0 end" < github/assets/$*.json); do [ $$id != "0" ] && curl -sSL -XDELETE -H "Authorization: token $$GITHUB_TOKEN" "https://api.github.com/repos/$$GITHUB_REPOSITORY/releases/assets/$$id"; echo; done; done
