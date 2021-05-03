@@ -11,4 +11,5 @@ json.prelease = true;
 let body = `\n\n`;
 body += log;
 json.body = body;
+console.error(JSON.stringify(json));
 console.log(JSON.stringify(json));
