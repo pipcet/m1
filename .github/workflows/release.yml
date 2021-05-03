@@ -5,16 +5,6 @@ jobs:
   release:
     name: release
     runs-on: ubuntu-latest
-name: debootstrap
-on:
-  push:
-    branches: [ main, pearl ]
-  pull_request:
-    branches: [ main, pearl ]
-jobs:
-  all:
-    name: all
-    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
       with:
