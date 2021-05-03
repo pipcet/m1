@@ -530,8 +530,8 @@ artifact-push!:
 	(cd artifacts/up; for file in *; do if [ "$$file" -nt ../../artifact-timestamp ]; then name=$$(basename "$$file"); (cd ../..; bash github/ul-artifact "$$name" "artifacts/up/$$name"); fi; done)
 	rm -f artifacts/up/*
 
-ship/m1-debian.macho: build/stage1.image.macho
-	$(CP) $< $@
+ship/m1-debian.macho:
+	touch $< $@
 
 ship/%!: ship/m1-debian.macho github/release/list! | ship/ github/release/
 	$(MAKE) github/release/list!
