@@ -472,10 +472,15 @@ build/stage2/initfs/bin/debian: m1lli/stage2/bin/debian
 	$(CP) $< $@
 	chmod a+x $@
 
+build/stage2/initfs/bin/kernel: m1lli/stage2/bin/kernel
+	$(CP) $< $@
+	chmod a+x $@
+
 ifneq ($(INCLUDE_DEBOOTSTRAP),)
 build/stage2.cpiospec: build/stage2/initfs/boot/debian-initfs.gz
 build/stage2.cpiospec: build/stage2/initfs/bin/debian
 endif
+build/stage2.cpiospec: build/stage2/initfs/bin/kernel
 
 # build/debootstrap.img.stage15: build/debootstrap/.stage15
 # 	dd if=/dev/zero of=$@ bs=1M count=1024
