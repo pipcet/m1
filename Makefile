@@ -441,13 +441,13 @@ hammer!:
 	while true; do make -j12 build/stage1.image.macho && (M1N1DEVICE=$(M1N1DEVICE) python3 ./m1n1/proxyclient/chainload.py ./build/stage1.image.macho); sleep 1; done
 
 m1lli/asm-snippets/%.c.S: m1lli/asm-snippets/%.c
-	aarch64-linux-gnu-gcc -fno-builtin -ffunction-sections -march=armv8.4-a -Os -S -o $@ $<
+	aarch64-linux-gnu-gcc -fno-builtin -ffunction-sections -march=armv8.5-a -Os -S -o $@ $<
 
 m1lli/asm-snippets/%.o.S: m1lli/asm-snippets/%.S
 	aarch64-linux-gnu-gcc -Os -c -o $@ $<
 
 m1lli/asm-snippets/%.S.elf: m1lli/asm-snippets/%.S
-	aarch64-linux-gnu-gcc -Os -static -march=armv8.6-a -nostdlib -o $@ $<
+	aarch64-linux-gnu-gcc -Os -static -march=armv8.5-a -nostdlib -o $@ $<
 
 m1lli/asm-snippets/%.elf.bin: m1lli/asm-snippets/%.elf
 	aarch64-linux-gnu-objcopy -O binary -S --only-section .pretext.0 --only-section .text --only-section .data --only-section .got --only-section .last --only-section .text.2 $< $@
