@@ -148,16 +148,16 @@ ifneq ($(INCLUDE_STAGE_3),)
 build/stage2.cpiospec: build/stage2/initfs/boot/stage3.dtb
 endif
 
-$(foreach stage,stage1 stage2 stage3 linux,$(eval $(perstage)))
+$(foreach stage,stage1 stage2 stage3 linux parasite usbparasite,$(eval $(perstage)))
 
 build/%/initfs/boot/tunable.dtp: build/tunable.dtp | build/%/initfs/boot/
-	cp $< $@
+	cmp $< $@ || cp $< $@
 
 build/stage1/initfs/boot/stage2.dtb: build/stage2.dtb | build/stage1/initfs/boot/
-	cp $< $@
+	cmp $< $@ || cp $< $@
 
 build/stage2/initfs/boot/stage3.dtb: build/stage3.dtb | build/stage2/initfs/boot/
-	cp $< $@
+	cmp $< $@ || cp $< $@
 
 build/stage2/initfs/boot/linux.dtb: build/linux.dtb | build/stage2/initfs/boot/
 	cp $< $@
@@ -182,6 +182,12 @@ build/stage2/initfs/boot/stage3.image: build/stage3.image | build/stage3/initfs/
 	cp $< $@
 endif
 
+build/parasite/initfs/boot/Image: | build/parasite/initfs/boot/
+	touch $@
+
+build/usbparasite/initfs/boot/Image: | build/usbparasite/initfs/boot/
+	touch $@
+
 build/stage3/initfs/boot/Image: build/linux.image | build/stage3/initfs/boot/
 	cp $< $@
 
@@ -193,6 +199,10 @@ build/stage3.image: m1lli/stage3/init build/linux.dtb build/linux.macho m1lli/as
 build/stage2.image: m1lli/stage2/init build/linux.dtb build/linux.macho m1lli/asm-snippets/maximal-dt.dts.dtb.h build/memtool build/m1n1.macho.image build/stage2.cpiospec
 
 build/stage1.image: build/stage2.image build/stage2.dtb build/dtc build/fdtoverlay build/linux.macho m1lli/asm-snippets/maximal-dt.dts.dtb.h build/stage1.cpiospec
+
+build/parasite.image: build/dtc build/fdtoverlay m1lli/asm-snippets/maximal-dt.dts.dtb.h build/parasite.cpiospec
+
+build/usbparasite.image: build/dtc build/fdtoverlay m1lli/asm-snippets/maximal-dt.dts.dtb.h build/usbparasite.cpiospec
 
 build/linux.initfs: build/linux.cpiospec build/linux.image
 	(cd linux/o/linux; ../../usr/gen_initramfs.sh -o $(shell pwd)/$@ ../../../$<)
@@ -328,6 +338,12 @@ m1lli-m1n1!: build/m1n1.tar.gz misc/commfile-server.pl
 %.macho{m1n1}: %.macho
 	M1N1DEVICE=$(M1N1DEVICE) python3 ./m1n1/proxyclient/chainload.py $<
 
+%.macho{m1n1.parasite}: %.macho
+	M1N1DEVICE=$(M1N1DEVICE) python3 ./m1n1/proxyclient/chainload-linux.py $<
+
+macos{m1n1}:
+	M1N1DEVICE=$(M1N1DEVICE) python3 ./m1n1/proxyclient/chainload.py --sepfw ~/m1/macos/kernelcache
+
 %.m1lli{m1lli}: %.m1lli
 	$(SUDO) perl misc/commfile-server.pl $<
 
@@ -431,7 +447,7 @@ m1lli/asm-snippets/%.o.S: m1lli/asm-snippets/%.S
 	aarch64-linux-gnu-gcc -Os -c -o $@ $<
 
 m1lli/asm-snippets/%.S.elf: m1lli/asm-snippets/%.S
-	aarch64-linux-gnu-gcc -Os -static -nostdlib -o $@ $<
+	aarch64-linux-gnu-gcc -Os -static -march=armv8.6-a -nostdlib -o $@ $<
 
 m1lli/asm-snippets/%.elf.bin: m1lli/asm-snippets/%.elf
 	aarch64-linux-gnu-objcopy -O binary -S --only-section .pretext.0 --only-section .text --only-section .data --only-section .got --only-section .last --only-section .text.2 $< $@
