@@ -1,5 +1,5 @@
 CROSS_COMPILE ?= aarch64-linux-gnu-
-M1N1DEVICE ?= /dev/ttyACM0
+M1N1DEVICE ?= $(shell ls /dev/ttyACM* | tail -1)
 MKDIR ?= mkdir -p
 CP ?= cp
 CAT ?= cat
