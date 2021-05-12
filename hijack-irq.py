@@ -10,9 +10,8 @@ for irq in [0x6a, 0x35d, 0x359, 0x269, 0x0d]:
     write32(0x23b100000 + 0x3000 + 4 * irq, 0x80)
 
 code = [0xa9bf07e0,0xd11003e0,0x9272c400,0x58000121,0xf9000001,0xd5382001,0xa94007e0,0x910043ff,0x1400041c,0xd503201f,0xd503201f,0xd503201f,0x7b5a3da3,0x2ff2a7a3]
-if True:
-    for i in range(len(code) - 1, 0, -1):
-        write32(base + 0xc02080 + 4 * i, code[i])
+for i in range(len(code) - 1, 0, -1):
+    write32(base + 0xc02080 + 4 * i, code[i])
 
 write32(base + 0xc02080, 0x14000424);
 for i in range(0, len(code)):
@@ -24,7 +23,7 @@ stackbase = 0
 if True:
     udelay(100000)
     off = 0x808000000
-    for i in range(0 + off, 0xb00000000, 16384):
+    for i in range(0 + off, 0x900000000, 16384):
         val = read64(i)
         if val & 0xffff == 0x3da3:
             print(f"{i:x} {read64(i):x}")
