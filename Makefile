@@ -148,7 +148,7 @@ ifneq ($(INCLUDE_STAGE_3),)
 build/stage2.cpiospec: build/stage2/initfs/boot/stage3.dtb
 endif
 
-$(foreach stage,stage1 stage2 stage3 linux parasite usbparasite,$(eval $(perstage)))
+$(foreach stage,stage1 stage2 stage3 linux parasite usbparasite harbinger,$(eval $(perstage)))
 
 build/%/initfs/boot/tunable.dtp: build/tunable.dtp | build/%/initfs/boot/
 	cmp $< $@ || cp $< $@
@@ -163,6 +163,9 @@ build/stage2/initfs/boot/linux.dtb: build/linux.dtb | build/stage2/initfs/boot/
 	cp $< $@
 
 build/stage2/initfs/boot/tunable.dtp: build/tunable.dtp | build/stage2/initfs/boot/
+	cp $< $@
+
+build/harbinger/initfs/boot/Image: build/m1n1.macho.image | build/harbinger/initfs/boot/
 	cp $< $@
 
 build/stage1/initfs/boot/Image: build/stage2.image | build/stage1/initfs/boot/
@@ -204,6 +207,13 @@ build/parasite.image: build/dtc build/fdtoverlay m1lli/asm-snippets/maximal-dt.d
 
 build/usbparasite.image: build/dtc build/fdtoverlay m1lli/asm-snippets/maximal-dt.dts.dtb.h build/usbparasite.cpiospec
 
+build/usbparasite.cpiospec: build/usbparasite/initfs/bin/scanmem
+
+build/usbparasite/initfs/bin/scanmem: m1lli/scripts/scanmem
+	cp $< $@
+
+build/harbinger.image: m1lli/harbinger/init build/harbinger.cpiospec
+
 build/linux.initfs: build/linux.cpiospec build/linux.image
 	(cd linux/o/linux; ../../usr/gen_initramfs.sh -o $(shell pwd)/$@ ../../../$<)
 
@@ -221,6 +231,9 @@ m1lli/scripts/adtdump: m1lli/src/adtdump.c
 
 m1lli/scripts/adt2fdt.native: m1lli/src/adt2fdt.cc
 	g++ -Os -o $@ $<
+
+m1lli/scripts/scanmem: m1lli/src/scanmem.c
+	aarch64-linux-gnu-gcc -Os -static -o $@ $<
 
 build/memtool: stamp/memtool
 	(cd memtool; autoreconf -fi)
@@ -323,6 +336,10 @@ build/%.m1lli: build/%-m1lli.tar.gz
 m1lli-%!: build/%.m1lli{m1lli}
 	$(SUDO) perl ./misc/commfile-server.pl $<
 
+m1n1-wait!:
+	while [ x"$(M1N1DEVICE)" = "x" ]; do sleep 1; done
+	true
+
 m1n1-shell!:
 	M1N1DEVICE=$(M1N1DEVICE) python3 ./m1n1/proxyclient/shell.py
 
@@ -336,19 +353,27 @@ m1lli-m1n1!: build/m1n1.tar.gz misc/commfile-server.pl
 	$(SUDO) perl misc/commfile-server.pl build/m1n1.tar.gz
 
 %.macho{m1n1}: %.macho
-	M1N1DEVICE=$(M1N1DEVICE) python3 ./m1n1/proxyclient/chainload.py $<
+	M1N1DEVICE=$(M1N1DEVICE) python3 ./m1n1/proxyclient/chainload.py --sepfw $<
 
 %.macho{m1n1.parasite}: %.macho
 	M1N1DEVICE=$(M1N1DEVICE) python3 ./m1n1/proxyclient/chainload-linux.py $<
 
-macos{m1n1}:
-	M1N1DEVICE=$(M1N1DEVICE) python3 ./m1n1/proxyclient/chainload.py --sepfw ~/m1/macos/kernelcache
+%.macho{m1n1.high}: %.macho
+	M1N1DEVICE=$(M1N1DEVICE) python3 ./m1n1/proxyclient/chainload.py --high $<
+
+macos{m1n1}: m1lli/asm-snippets/.all build/m1n1.macho
+#	M1N1DEVICE=$(M1N1DEVICE) python3 ./m1n1/proxyclient/shell.py < m1lli/scripts/disable-irqs
+	M1N1DEVICE=$(M1N1DEVICE) python3 ./m1n1/proxyclient/chainload.py --sepfw --debug ~/m1/macos/kernelcache
+
+macos{m1n1.asahi}: m1lli/asm-snippets/.all build/m1n1.macho
+#	M1N1DEVICE=$(M1N1DEVICE) python3 ./m1n1/proxyclient/shell.py < m1lli/scripts/disable-irqs
+	M1N1DEVICE=$(M1N1DEVICE) python3 ./m1n1/proxyclient/chainload-asahi.py --xnu ~/m1/macos/kernelcache
 
 %.m1lli{m1lli}: %.m1lli
 	$(SUDO) perl misc/commfile-server.pl $<
 
-misc/linux-config/%.pospart: misc/linux-config/%
-	egrep -v '^#' < misc/linux-config/$* > misc/linux-config/$*.pospart
+%/linux.config.pospart: %/linux.config
+	(egrep -v '^#' | egrep '.') < $< > $@
 
 build/image-to-macho: m1lli/macho-image/image-to-macho.c m1lli/asm-snippets/.all
 	gcc -Os -o $@ $<
@@ -375,6 +400,7 @@ m1lli/asm-snippets/.all: \
 	m1lli/asm-snippets/cpu-init..h \
 	m1lli/asm-snippets/disable-timers..h \
 	m1lli/asm-snippets/enable-all-clocks..h \
+	m1lli/asm-snippets/fadescreen..h \
 	m1lli/asm-snippets/fillrect..h \
 	m1lli/asm-snippets/image-header..h \
 	m1lli/asm-snippets/jump-to-start-of-page..h \
