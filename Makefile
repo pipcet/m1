@@ -207,9 +207,18 @@ build/parasite.image: build/dtc build/fdtoverlay m1lli/asm-snippets/maximal-dt.d
 
 build/usbparasite.image: build/dtc build/fdtoverlay m1lli/asm-snippets/maximal-dt.dts.dtb.h build/usbparasite.cpiospec
 
-build/usbparasite.cpiospec: build/usbparasite/initfs/bin/scanmem
+build/usbparasite.cpiospec: \
+	build/usbparasite/initfs/bin/scanmem \
+	build/usbparasite/initfs/bin/pt \
+	build/usbparasite/initfs/bin/wait4mmio
 
 build/usbparasite/initfs/bin/scanmem: m1lli/scripts/scanmem
+	cp $< $@
+
+build/usbparasite/initfs/bin/pt: m1lli/scripts/pt m1lli/asm-snippets/.all
+	cp $< $@
+
+build/usbparasite/initfs/bin/wait4mmio: m1lli/scripts/wait4mmio
 	cp $< $@
 
 build/harbinger.image: m1lli/harbinger/init build/harbinger.cpiospec
@@ -232,7 +241,13 @@ m1lli/scripts/adtdump: m1lli/src/adtdump.c
 m1lli/scripts/adt2fdt.native: m1lli/src/adt2fdt.cc
 	g++ -Os -o $@ $<
 
-m1lli/scripts/scanmem: m1lli/src/scanmem.c
+m1lli/scripts/scanmem: m1lli/src/scanmem.c m1lli/src/ptstuff.h
+	aarch64-linux-gnu-gcc -Os -static -o $@ $<
+
+m1lli/scripts/pt: m1lli/src/pt.c m1lli/src/ptstuff.h
+	aarch64-linux-gnu-gcc -Os -static -o $@ $<
+
+m1lli/scripts/wait4mmio: m1lli/src/wait4mmio.c m1lli/src/ptstuff.h
 	aarch64-linux-gnu-gcc -Os -static -o $@ $<
 
 build/memtool: stamp/memtool
@@ -361,9 +376,13 @@ m1lli-m1n1!: build/m1n1.tar.gz misc/commfile-server.pl
 %.macho{m1n1.high}: %.macho
 	M1N1DEVICE=$(M1N1DEVICE) python3 ./m1n1/proxyclient/chainload.py --high $<
 
-macos{m1n1}: m1lli/asm-snippets/.all build/m1n1.macho
+macos{m1n1}: m1lli/asm-snippets/.all build/usbparasite.image.macho build/m1n1.macho
 #	M1N1DEVICE=$(M1N1DEVICE) python3 ./m1n1/proxyclient/shell.py < m1lli/scripts/disable-irqs
 	M1N1DEVICE=$(M1N1DEVICE) python3 ./m1n1/proxyclient/chainload.py --sepfw --debug ~/m1/macos/kernelcache
+
+macos{m1n1.nodebug}: m1lli/asm-snippets/.all build/usbparasite.image.macho build/m1n1.macho
+#	M1N1DEVICE=$(M1N1DEVICE) python3 ./m1n1/proxyclient/shell.py < m1lli/scripts/disable-irqs
+	M1N1DEVICE=$(M1N1DEVICE) python3 ./m1n1/proxyclient/chainload.py --sepfw ~/m1/macos/kernelcache
 
 macos{m1n1.asahi}: m1lli/asm-snippets/.all build/m1n1.macho
 #	M1N1DEVICE=$(M1N1DEVICE) python3 ./m1n1/proxyclient/shell.py < m1lli/scripts/disable-irqs
@@ -394,29 +413,67 @@ build/linux-to-macho: m1lli/macho-linux/linux-to-macho.c
 	gcc -o $@ $<
 
 m1lli/asm-snippets/.all: \
+	m1lli/asm-snippets/actual-vbar..h \
+	m1lli/asm-snippets/actual-vbar-2..h \
+	m1lli/asm-snippets/adr-dot-minus-0x2000..h \
 	m1lli/asm-snippets/blank-screen-physical..h \
-	m1lli/asm-snippets/bring-up-phys..h \
+	m1lli/asm-snippets/br-x24..h \
+	m1lli/asm-snippets/br24..h \
 	m1lli/asm-snippets/bring-up-phys-2..h \
+	m1lli/asm-snippets/bring-up-phys..h \
 	m1lli/asm-snippets/cpu-init..h \
+	m1lli/asm-snippets/delay-boot-linux..h \
+	m1lli/asm-snippets/delay-then-boot-m1n1..h \
 	m1lli/asm-snippets/disable-timers..h \
 	m1lli/asm-snippets/enable-all-clocks..h \
 	m1lli/asm-snippets/fadescreen..h \
 	m1lli/asm-snippets/fillrect..h \
+	m1lli/asm-snippets/get-physical-address..h \
+	m1lli/asm-snippets/hijack-irq-2..h \
+	m1lli/asm-snippets/hijack-irq-3..h \
+	m1lli/asm-snippets/hijack-irq-4..h \
+	m1lli/asm-snippets/hijack-irq-5..h \
+	m1lli/asm-snippets/hijack-irq-6..h \
+	m1lli/asm-snippets/hijack-irq-7..h \
+	m1lli/asm-snippets/hijack-irq-8..h \
+	m1lli/asm-snippets/hijack-irq..h \
 	m1lli/asm-snippets/image-header..h \
+	m1lli/asm-snippets/inject..h \
+	m1lli/asm-snippets/inject2..h \
+	m1lli/asm-snippets/inject3..h \
+	m1lli/asm-snippets/inject4..h \
+	m1lli/asm-snippets/injector-page..h \
+	m1lli/asm-snippets/injector-page-2..h \
+	m1lli/asm-snippets/irq-handler-store-magic-cookie..h \
+	m1lli/asm-snippets/irq-handler-store-ttbr..h \
+	m1lli/asm-snippets/jump-back-by-0x2000..h \
+	m1lli/asm-snippets/jump-back-by-0x4000..h \
 	m1lli/asm-snippets/jump-to-start-of-page..h \
 	m1lli/asm-snippets/macho-boot..h \
 	m1lli/asm-snippets/mini-m1lli..h \
+	m1lli/asm-snippets/mmiotrace..h \
 	m1lli/asm-snippets/mov-x0-0..h \
+	m1lli/asm-snippets/new-irq-handler-part1..h \
+	m1lli/asm-snippets/new-irq-handler-part2..h \
+	m1lli/asm-snippets/new-vbar-entry..h \
 	m1lli/asm-snippets/nop..h \
-	m1lli/asm-snippets/perform-alignment..h \
 	m1lli/asm-snippets/perform-alignment-2..h \
 	m1lli/asm-snippets/perform-alignment-3..h \
 	m1lli/asm-snippets/perform-alignment-4..h \
-	m1lli/asm-snippets/reboot-physical..h \
+	m1lli/asm-snippets/perform-alignment..h \
 	m1lli/asm-snippets/reboot-physical-2..h \
+	m1lli/asm-snippets/reboot-physical..h \
+	m1lli/asm-snippets/redeye..h \
 	m1lli/asm-snippets/remap-to-physical..h \
+	m1lli/asm-snippets/restartm1n1-2..h \
+	m1lli/asm-snippets/restartm1n1..h \
 	m1lli/asm-snippets/restore-boot-args..h \
 	m1lli/asm-snippets/save-boot-args..h \
+	m1lli/asm-snippets/setvbar..h \
+	m1lli/asm-snippets/turn-on-kb-backlight..h \
+	m1lli/asm-snippets/vbar..h \
+	m1lli/asm-snippets/vbar2..h \
+	m1lli/asm-snippets/vbarstub..h \
 	m1lli/asm-snippets/x8r8g8b8..h
 	touch $@
 
