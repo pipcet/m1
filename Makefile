@@ -242,7 +242,7 @@ m1lli/scripts/adt2fdt.native: m1lli/src/adt2fdt.cc
 	g++ -Os -o $@ $<
 
 m1lli/scripts/scanmem: m1lli/src/scanmem.c m1lli/src/ptstuff.h
-	aarch64-linux-gnu-gcc -Os -static -o $@ $<
+	aarch64-linux-gnu-gcc -Os -static -o $@ -pthread $<
 
 m1lli/scripts/pt: m1lli/src/pt.c m1lli/src/ptstuff.h
 	aarch64-linux-gnu-gcc -Os -static -o $@ $<
