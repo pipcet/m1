@@ -241,13 +241,13 @@ m1lli/scripts/adtdump: m1lli/src/adtdump.c
 m1lli/scripts/adt2fdt.native: m1lli/src/adt2fdt.cc
 	g++ -Os -o $@ $<
 
-m1lli/scripts/scanmem: m1lli/src/scanmem.c m1lli/src/ptstuff.h
+m1lli/scripts/scanmem: m1lli/src/scanmem.c m1lli/src/ptstuff.h m1lli/asm-snippets/.all
 	aarch64-linux-gnu-gcc -Os -static -o $@ -pthread $<
 
-m1lli/scripts/pt: m1lli/src/pt.c m1lli/src/ptstuff.h
+m1lli/scripts/pt: m1lli/src/pt.c m1lli/src/ptstuff.h m1lli/asm-snippets/.all
 	aarch64-linux-gnu-gcc -Os -static -o $@ $<
 
-m1lli/scripts/wait4mmio: m1lli/src/wait4mmio.c m1lli/src/ptstuff.h
+m1lli/scripts/wait4mmio: m1lli/src/wait4mmio.c m1lli/src/ptstuff.h m1lli/asm-snippets/.all
 	aarch64-linux-gnu-gcc -Os -static -o $@ $<
 
 build/memtool: stamp/memtool
