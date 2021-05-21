@@ -263,17 +263,17 @@ build/modules.tar: build/linux.image | build
 	$(MAKE) -C linux ARCH=arm64 CROSS_COMPILE=$(CROSS_COMPILE) O=o/linux INSTALL_MOD_PATH=$(PWD)/build/modules modules_install
 	(cd build/modules; $(TAR) cf ../modules.tar .)
 
-build/linux.macho: build/linux.image build/linux.dtb $(wildcard preloader-m1/*.c) $(wildcard preloader-m1/*.h) $(wildcard preloader-m1/*.S) $(wildcard preloader-m1/Makefile) | build
-	$(CP) build/linux.image preloader-m1/Image
-	$(CP) build/linux.dtb preloader-m1/apple-m1-j293.dtb
-	$(MAKE) -C preloader-m1
-	$(CP) preloader-m1/linux.macho build/linux.macho
-
 build/%.macho: build/%.image build/m1-%.dtb $(wildcard preloader-m1/*.c) $(wildcard preloader-m1/*.h) $(wildcard preloader-m1/*.S) $(wildcard preloader-m1/Makefile) | build
 	$(CP) build/$*.image preloader-m1/Image
 	$(CP) build/m1-$*.dtb preloader-m1/apple-m1-j293.dtb
 	$(MAKE) -C preloader-m1
 	$(CP) preloader-m1/linux.macho build/$*.macho
+
+build/m1-stage1.dtb: m1lli/stage1/preloader.dts build/dtc.native
+	build/dtc.native -Idts -Odtb $< > $@
+
+build/m1-linux.dtb: m1lli/stage1/preloader.dts build/dtc.native
+	build/dtc.native -Idts -Odtb $< > $@
 
 build/m1n1.macho: stamp/m1n1 build/dtc.native | build/m1n1
 	$(MAKE) DTC=$(shell pwd)/build/dtc.native -C m1n1
