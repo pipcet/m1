@@ -24,7 +24,6 @@ int main(int argc, char **argv)
     page[5] = time(NULL);
   }
   while (true) {
-    fcntl(0, F_SETFL, O_NONBLOCK);
     while (page[4]) {
       page[1]++;
       page[5] = time(NULL);
@@ -35,8 +34,8 @@ int main(int argc, char **argv)
     struct timeval timeout = { 0, };
     printf("select\n");
     if (select(1, &readfds, NULL, NULL, &timeout)) {
-      printf("local -> remote\n");
       ssize_t ret = read(0, page + 1024, 8192);
+      printf("local -> remote %ld bytes\n", (long) ret);
       if (ret > 0) {
 	page[3] = ret;
 	page[4] = '>';
@@ -54,6 +53,7 @@ int main(int argc, char **argv)
       page[1]++;
       page[5] = time(NULL);
     }
+    printf("remote -> local read %ld bytes\n", page[3]);
     if (page[3])
       write(1, page + 1024, page[3]);
   }
