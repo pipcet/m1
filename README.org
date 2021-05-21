@@ -15,7 +15,7 @@ Corellium preloader at [https://github.com/corellium/preloader-m1], modified ver
 
 *** Linux kernel
 
-Based on the Corellium repo at [https://github.com/corellium/linux-m1], currently Linux 5.12.0
+Based on the Corellium repo at [https://github.com/corellium/linux-m1], currently Linux 5.13-rc2
 
 *** Distribution
 
