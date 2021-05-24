@@ -210,7 +210,9 @@ build/usbparasite.image: build/dtc build/fdtoverlay m1lli/asm-snippets/maximal-d
 build/usbparasite.cpiospec: \
 	build/usbparasite/initfs/bin/scanmem \
 	build/usbparasite/initfs/bin/pt \
-	build/usbparasite/initfs/bin/wait4mmio
+	build/usbparasite/initfs/bin/wait4mmio \
+	build/usbparasite/initfs/bin/mmio \
+	build/usbparasite/initfs/bin/wait4pt
 
 build/usbparasite/initfs/bin/scanmem: m1lli/scripts/scanmem
 	cp $< $@
@@ -221,13 +223,19 @@ build/usbparasite/initfs/bin/pt: m1lli/scripts/pt m1lli/asm-snippets/.all
 build/usbparasite/initfs/bin/wait4mmio: m1lli/scripts/wait4mmio
 	cp $< $@
 
+build/usbparasite/initfs/bin/mmio: m1lli/scripts/mmio
+	cp $< $@
+
+build/usbparasite/initfs/bin/wait4pt: m1lli/scripts/wait4pt
+	cp $< $@
+
 build/harbinger.image: m1lli/harbinger/init build/harbinger.cpiospec
 
 build/linux.initfs: build/linux.cpiospec build/linux.image
 	(cd linux/o/linux; ../../usr/gen_initramfs.sh -o $(shell pwd)/$@ ../../../$<)
 
-build/m1lli-scripts.tar: m1lli/scripts/adt-convert.pl m1lli/scripts/adt-transform.pl m1lli/scripts/fdt-to-props.pl m1lli/scripts/fdtdiff.pl m1lli/scripts/props-to-fdt.pl m1lli/scripts/adt2fdt m1lli/scripts/adtdump
-	(cd m1lli/scripts; tar c adt-convert.pl adt-transform.pl fdt-to-props.pl fdtdiff.pl props-to-fdt.pl adt2fdt) > build/m1lli-scripts.tar
+build/m1lli-scripts.tar: m1lli/scripts/adt-convert.pl m1lli/scripts/adt-transform.pl m1lli/scripts/fdt-to-props.pl m1lli/scripts/fdtdiff.pl m1lli/scripts/props-to-fdt.pl m1lli/scripts/adt2fdt m1lli/scripts/adtdump m1lli/scripts/adtp
+	(cd m1lli/scripts; tar c adt-convert.pl adt-transform.pl fdt-to-props.pl fdtdiff.pl props-to-fdt.pl adt2fdt adtp) > build/m1lli-scripts.tar
 
 m1lli/scripts/%.pl: m1lli/src/%.pl | m1lli/scripts
 	$(CP) $< $@
@@ -235,10 +243,16 @@ m1lli/scripts/%.pl: m1lli/src/%.pl | m1lli/scripts
 m1lli/scripts/adt2fdt: m1lli/src/adt2fdt.cc
 	aarch64-linux-gnu-g++ -Os -static -o $@ $<
 
+m1lli/scripts/adtp: m1lli/src/adtp.cc
+	aarch64-linux-gnu-g++ -Os -static -o $@ $<
+
 m1lli/scripts/adtdump: m1lli/src/adtdump.c
 	aarch64-linux-gnu-gcc -Os -static -o $@ $<
 
 m1lli/scripts/adt2fdt.native: m1lli/src/adt2fdt.cc
+	g++ -Os -o $@ $<
+
+m1lli/scripts/adtp.native: m1lli/src/adtp.cc
 	g++ -Os -o $@ $<
 
 m1lli/scripts/scanmem: m1lli/src/scanmem.c m1lli/src/ptstuff.h m1lli/asm-snippets/.all
@@ -248,6 +262,12 @@ m1lli/scripts/pt: m1lli/src/pt.c m1lli/src/ptstuff.h m1lli/asm-snippets/.all
 	aarch64-linux-gnu-gcc -Os -static -o $@ $<
 
 m1lli/scripts/wait4mmio: m1lli/src/wait4mmio.c m1lli/src/ptstuff.h m1lli/asm-snippets/.all
+	aarch64-linux-gnu-gcc -Os -static -o $@ $<
+
+m1lli/scripts/mmio: m1lli/mmio/mmio.cc m1lli/asm-snippets/.all
+	aarch64-linux-gnu-g++ -Os -static -o $@ $<
+
+m1lli/scripts/wait4pt: m1lli/src/wait4pt.c m1lli/src/ptstuff.h m1lli/asm-snippets/.all
 	aarch64-linux-gnu-gcc -Os -static -o $@ $<
 
 build/memtool: stamp/memtool
@@ -423,9 +443,14 @@ m1lli/asm-snippets/.all: \
 	m1lli/asm-snippets/bring-up-phys..h \
 	m1lli/asm-snippets/cpu-init..h \
 	m1lli/asm-snippets/delay-boot-linux..h \
+	m1lli/asm-snippets/delay-loop..h \
 	m1lli/asm-snippets/delay-then-boot-m1n1..h \
 	m1lli/asm-snippets/disable-timers..h \
 	m1lli/asm-snippets/enable-all-clocks..h \
+	m1lli/asm-snippets/expose-ttbr..h \
+	m1lli/asm-snippets/expose-ttbr-2..h \
+	m1lli/asm-snippets/expose-ttbr-3..h \
+	m1lli/asm-snippets/expose-ttbr-to-stack..h \
 	m1lli/asm-snippets/fadescreen..h \
 	m1lli/asm-snippets/fillrect..h \
 	m1lli/asm-snippets/get-physical-address..h \
@@ -438,6 +463,7 @@ m1lli/asm-snippets/.all: \
 	m1lli/asm-snippets/hijack-irq-8..h \
 	m1lli/asm-snippets/hijack-irq..h \
 	m1lli/asm-snippets/image-header..h \
+	m1lli/asm-snippets/infloop..h \
 	m1lli/asm-snippets/inject..h \
 	m1lli/asm-snippets/inject2..h \
 	m1lli/asm-snippets/inject3..h \
@@ -450,13 +476,17 @@ m1lli/asm-snippets/.all: \
 	m1lli/asm-snippets/jump-back-by-0x4000..h \
 	m1lli/asm-snippets/jump-to-start-of-page..h \
 	m1lli/asm-snippets/macho-boot..h \
+	m1lli/asm-snippets/macho-boot-2..h \
 	m1lli/asm-snippets/mini-m1lli..h \
 	m1lli/asm-snippets/mmiotrace..h \
 	m1lli/asm-snippets/mov-x0-0..h \
 	m1lli/asm-snippets/new-irq-handler-part1..h \
 	m1lli/asm-snippets/new-irq-handler-part2..h \
 	m1lli/asm-snippets/new-vbar-entry..h \
+	m1lli/asm-snippets/new-vbar-entry-special..h \
+	m1lli/asm-snippets/new-vbar-entry-for-mrs..h \
 	m1lli/asm-snippets/nop..h \
+	m1lli/asm-snippets/optimized-putc..h \
 	m1lli/asm-snippets/perform-alignment-2..h \
 	m1lli/asm-snippets/perform-alignment-3..h \
 	m1lli/asm-snippets/perform-alignment-4..h \
@@ -474,6 +504,9 @@ m1lli/asm-snippets/.all: \
 	m1lli/asm-snippets/vbar..h \
 	m1lli/asm-snippets/vbar2..h \
 	m1lli/asm-snippets/vbarstub..h \
+	m1lli/asm-snippets/wait-for-confirmation..h \
+	m1lli/asm-snippets/wait-for-confirmation-receiver..h \
+	m1lli/asm-snippets/wait-for-confirmation-receiver-part2..h \
 	m1lli/asm-snippets/x8r8g8b8..h
 	touch $@
 
@@ -512,8 +545,8 @@ build/dtc build/fdtoverlay: dtc
 %.dts.dtb: %.dts build/dtc.native
 	build/dtc.native -O dtb -I dts < $< > $@
 
-%.adtb.dtp: %.adtb m1lli/scripts/adt2fdt.native
-	m1lli/scripts/adt2fdt.native $< > $@
+%.adtb.dtp: %.adtb m1lli/scripts/adtp.native
+	m1lli/scripts/adtp.native $< > $@
 
 # This shortens dates. Update in 2999.
 README.html: README.org $(wildcard */README.org) $(wildcard */*/README.org)
