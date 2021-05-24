@@ -516,11 +516,12 @@ m1lli/asm-snippets/.all: \
 %.image.macho: %.image build/image-to-macho
 	build/image-to-macho $< $@
 
-dtc:
-	$(MKDIR) $@
+dtc/.done:
+	$(MKDIR) dtc
 	(cd dtc; ln -s ../linux/scripts/dtc/* .; rm Makefile; rm -f libfdt)
 	(cd dtc; mkdir libfdt; cd libfdt; ln -s ../../linux/scripts/dtc/libfdt/* .)
-	cp misc/dtc-Makefile $@/Makefile
+	cp misc/dtc-Makefile dtc/Makefile
+	touch $@
 
 build/dtc.native build/fdtoverlay.native:
 	$(MKDIR) linux/o/scripts
@@ -529,7 +530,8 @@ build/dtc.native build/fdtoverlay.native:
 	(cd linux; make O=o/scripts ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- scripts)
 	$(CP) linux/o/scripts/scripts/dtc/dtc build/dtc.native
 	$(CP) linux/o/scripts/scripts/dtc/fdtoverlay build/fdtoverlay.native
-build/dtc build/fdtoverlay: dtc
+
+build/dtc build/fdtoverlay: dtc/.done
 	$(MAKE) -C dtc
 	$(CP) dtc/dtc dtc/fdtoverlay build/
 
