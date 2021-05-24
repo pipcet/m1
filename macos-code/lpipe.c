@@ -14,27 +14,27 @@ int main(int argc, char **argv)
   strcpy(page + 1024, argv[1]);
   page[0] = 0x5a6b448a98b350b6;
   page[3] = 0;
-    asm volatile("isb");
-    asm volatile("dmb sy");
-    asm volatile("dsb sy");
-    asm volatile("isb");
+  asm volatile("isb");
+  asm volatile("dmb sy");
+  asm volatile("dsb sy");
+  asm volatile("isb");
   while (page[4]) {
     page[1]++;
     page[5] = time(NULL);
   }
   page[4] = '|';
-    asm volatile("isb");
-    asm volatile("dmb sy");
-    asm volatile("dsb sy");
-    asm volatile("isb");
+  asm volatile("isb");
+  asm volatile("dmb sy");
+  asm volatile("dsb sy");
+  asm volatile("isb");
   while (page[4]) {
     page[1]++;
     page[5] = time(NULL);
   }
-    asm volatile("isb");
-    asm volatile("dmb sy");
-    asm volatile("dsb sy");
-    asm volatile("isb");
+  asm volatile("isb");
+  asm volatile("dmb sy");
+  asm volatile("dsb sy");
+  asm volatile("isb");
   while (true) {
     while (page[4]) {
       page[1]++;
@@ -53,10 +53,10 @@ int main(int argc, char **argv)
 	  page[1]++;
 	  page[5] = time(NULL);
 	}
-    asm volatile("isb");
-    asm volatile("dmb sy");
-    asm volatile("dsb sy");
-    asm volatile("isb");
+	asm volatile("isb");
+	asm volatile("dmb sy");
+	asm volatile("dsb sy");
+	asm volatile("isb");
 	continue;
       }
     }
