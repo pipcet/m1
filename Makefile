@@ -234,10 +234,13 @@ build/harbinger.image: m1lli/harbinger/init build/harbinger.cpiospec
 build/linux.initfs: build/linux.cpiospec build/linux.image
 	(cd linux/o/linux; ../../usr/gen_initramfs.sh -o $(shell pwd)/$@ ../../../$<)
 
-build/m1lli-scripts.tar: m1lli/scripts/adt-convert.pl m1lli/scripts/adt-transform.pl m1lli/scripts/fdt-to-props.pl m1lli/scripts/fdtdiff.pl m1lli/scripts/props-to-fdt.pl m1lli/scripts/adt2fdt m1lli/scripts/adtdump m1lli/scripts/adtp
-	(cd m1lli/scripts; tar c adt-convert.pl adt-transform.pl fdt-to-props.pl fdtdiff.pl props-to-fdt.pl adt2fdt adtp) > build/m1lli-scripts.tar
+build/m1lli-scripts.tar: m1lli/scripts/adt-convert.pl m1lli/scripts/adt-transform.pl m1lli/scripts/fdt-to-props.pl m1lli/scripts/fdtdiff.pl m1lli/scripts/props-to-fdt.pl m1lli/scripts/adt2fdt m1lli/scripts/adtdump m1lli/scripts/adtp m1lli/scripts/dt
+	(cd m1lli/scripts; tar c adt-convert.pl adt-transform.pl fdt-to-props.pl fdtdiff.pl props-to-fdt.pl adt2fdt adtp dt) > build/m1lli-scripts.tar
 
 m1lli/scripts/%.pl: m1lli/src/%.pl | m1lli/scripts
+	$(CP) $< $@
+
+m1lli/scripts/dt: m1lli/src/dt | m1lli/scripts
 	$(CP) $< $@
 
 m1lli/scripts/adt2fdt: m1lli/src/adt2fdt.cc
