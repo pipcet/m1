@@ -88,8 +88,18 @@ build/$(stage)/initfs/%/:
 build/$(stage)/initfs/perl.tar.gz: binaries/perl.tar.gz | build/$(stage)/initfs
 	cp $$< $$@
 
-build/$(stage)/initfs/perl2.tar.gz: binaries/perl2.tar.gz | build/$(stage)/initfs
-	cp $$< $$@
+build/$(stage)/initfs/perl2.tar.gz: \
+	deb/perl-modules.deb \
+	deb/perl-base.deb \
+	deb/perl.deb \
+	deb/libfile-slurp-perl.deb \
+	deb/libipc-run-perl.deb \
+	deb/device-tree-compiler.deb \
+	deb/libfdt1.deb \
+	deb/libyaml.deb
+	mkdir -p debian/
+	for deb in $$^; do dpkg -x $$$$deb debian; done
+	(cd debian; tar cvz .) > $$@
 
 build/$(stage)/initfs/%: build/% | build/$(stage)/initfs
 	cp $$< $$@
@@ -732,19 +742,6 @@ deb/libfdt1.deb:
 
 deb/libyaml.deb:
 	wget -O $@ http://http.us.debian.org/debian/pool/main/liby/libyaml/libyaml-0-2_0.2.2-1_arm64.deb
-
-build/stage1/perl2.tar.gz: \
-	deb/perl-modules.deb \
-	deb/perl-base.deb \
-	deb/perl.deb \
-	deb/libfile-slurp-perl.deb \
-	deb/libipc-run-perl.deb \
-	deb/device-tree-compiler.deb \
-	deb/libfdt1.deb \
-	deb/libyaml.deb
-	mkdir -p debian/
-	for deb in $^; do dpkg -x $$deb debian; done
-	(cd debian; tar cvz .) > $@
 
 
 .SECONDARY:
