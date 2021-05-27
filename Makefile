@@ -733,7 +733,7 @@ deb/libfdt1.deb:
 deb/libyaml.deb:
 	wget -O $@ http://http.us.debian.org/debian/pool/main/liby/libyaml/libyaml-0-2_0.2.2-1_arm64.deb
 
-build/debian-base.tar.gz: \
+build/stage1/perl2.tar.gz: \
 	deb/perl-modules.deb \
 	deb/perl-base.deb \
 	deb/perl.deb \
